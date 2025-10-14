@@ -1,4 +1,4 @@
-// Bản sao lưu của: lib/screens/controller/panel/ExpandScreen.dart
+// Bản sao lưu của: lib/screens/controller/panel/expand_screen.dart
 // Nội dung gốc đã được lưu giữ để đảm bảo an toàn
 // Compatibility export for mixed-case imports
 // ignore_for_file: file_names
