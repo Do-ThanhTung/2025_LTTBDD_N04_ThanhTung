@@ -17,4 +17,3 @@ const icRoma = '$_path/romantic.png';
 const icHorse = '$_path/horse.png';
 const icPahm = '$_path/pahm.png';
 const icmcs = '$_path/microscope.png';
-

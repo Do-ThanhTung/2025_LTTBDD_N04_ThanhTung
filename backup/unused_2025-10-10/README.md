@@ -1,6 +1,6 @@
 # Sao lưu: backup/unused_2025-10-10
 
-Đây là thư mục tạm lưu các file được xác định là *không dùng* trong lần dọn dẹp ngày 2025-10-10.
+Đây là thư mục tạm lưu các file được xác định là _không dùng_ trong lần dọn dẹp ngày 2025-10-10.
 
 Mục đích:
 
@@ -38,8 +38,10 @@ Copy-Item -LiteralPath 'backup\unused_2025-10-10\screens_controller_panel_Expand
 ```
 
 Ghi chú:
+
 - Giữ thư mục backup ít nhất vài phiên bản/releases để đảm bảo không mất dữ liệu nếu cần quay lại.
 - Nếu muốn xóa vĩnh viễn, hãy chắc chắn kiểm tra app trên thiết bị/emulator và chạy CI tests.
 
 Liên hệ:
+
 - Nếu bạn muốn, tôi có thể tạo 1 PR với những thay đổi này hoặc xóa các file backup sau một thời gian an toàn.

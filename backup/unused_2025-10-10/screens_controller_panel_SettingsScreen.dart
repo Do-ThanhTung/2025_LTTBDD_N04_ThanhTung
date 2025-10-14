@@ -12,12 +12,8 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(AppLocalizations.t(
-              context, 'settings'))),
-      body: Center(
-          child: Text(AppLocalizations.t(
-              context, 'settings'))),
+      appBar: AppBar(title: Text(AppLocalizations.t(context, 'settings'))),
+      body: Center(child: Text(AppLocalizations.t(context, 'settings'))),
     );
   }
 }

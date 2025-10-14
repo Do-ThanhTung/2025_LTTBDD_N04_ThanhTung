@@ -14,15 +14,11 @@ class MyLearningScreen extends StatelessWidget {
           final l = lessonList[index];
           return ListTile(
             leading: Icon(
-              l.isCompleted
-                  ? Icons.check_circle
-                  : Icons.play_circle,
+              l.isCompleted ? Icons.check_circle : Icons.play_circle,
             ),
             title: Text(l.name),
             subtitle: Text(l.duration),
-            trailing: l.isPlaying
-                ? const Icon(Icons.equalizer)
-                : null,
+            trailing: l.isPlaying ? const Icon(Icons.equalizer) : null,
             onTap: () {
               // TODO: mở lesson player / mark completed
             },

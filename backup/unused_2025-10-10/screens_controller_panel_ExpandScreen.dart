@@ -60,25 +60,19 @@ class ExpandScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        mainAxisAlignment:
-                            MainAxisAlignment
-                                .spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Vừa học vừa chill'
                             '\nCàng học càng fun',
                             style: TextStyle(
                               fontSize: 24,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
@@ -86,8 +80,7 @@ class ExpandScreen extends StatelessWidget {
                             'vừa học \nvào đọc và phản xạ',
                             style: TextStyle(
                               fontSize: 15,
-                              fontWeight:
-                                  FontWeight.normal,
+                              fontWeight: FontWeight.normal,
                             ),
                           ),
                         ],
@@ -130,8 +123,7 @@ class ExpandScreen extends StatelessWidget {
                 right: 20,
               ),
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     items[index],

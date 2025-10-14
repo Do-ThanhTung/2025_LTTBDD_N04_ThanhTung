@@ -6,12 +6,10 @@ class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
   @override
-  State<SettingsScreen> createState() =>
-      _SettingsScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState
-    extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {
   // ...existing code...
 
   Widget _buildLanguageTile(
@@ -24,30 +22,22 @@ class _SettingsScreenState
       builder: (_, current, __) {
         return ListTile(
           title: Text(title),
-          trailing:
-              current.languageCode == loc.languageCode
-                  ? const Icon(Icons.check)
-                  : null,
+          trailing: current.languageCode == loc.languageCode
+              ? const Icon(Icons.check)
+              : null,
           onTap: () {
             AppLocale.save(loc);
             // Schedule the SnackBar to show after the frame so
             // MaterialApp has rebuilt with the new locale and
             // `Localizations.localeOf(context)` reflects the change.
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) {
-              final saved =
-                  AppLocale.locale.value.languageCode;
-              final current =
-                  Localizations.localeOf(context)
-                      .languageCode;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final saved = AppLocale.locale.value.languageCode;
+              final current = Localizations.localeOf(context).languageCode;
               // show a simple diagnostic SnackBar (local to Settings)
-              ScaffoldMessenger.of(context)
-                  .hideCurrentSnackBar();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                    content: Text(
-                        'saved: $saved, localizations: $current')),
+                    content: Text('saved: $saved, localizations: $current')),
               );
             });
           },
@@ -66,17 +56,14 @@ class _SettingsScreenState
       builder: (_, current, __) {
         return ListTile(
           title: Text(title),
-          trailing: current == mode
-              ? const Icon(Icons.check)
-              : null,
+          trailing: current == mode ? const Icon(Icons.check) : null,
           onTap: () {
             AppTheme.save(mode);
-            ScaffoldMessenger.of(context)
-                .hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(
-                      '${AppLocalizations.t(context, 'theme')}: $title')),
+                  content:
+                      Text('${AppLocalizations.t(context, 'theme')}: $title')),
             );
           },
         );

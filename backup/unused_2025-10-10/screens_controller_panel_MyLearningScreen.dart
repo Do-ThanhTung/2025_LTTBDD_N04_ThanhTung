@@ -11,12 +11,8 @@ class MyLearningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(AppLocalizations.t(
-              context, 'my_learning'))),
-      body: Center(
-          child: Text(AppLocalizations.t(
-              context, 'my_learning'))),
+      appBar: AppBar(title: Text(AppLocalizations.t(context, 'my_learning'))),
+      body: Center(child: Text(AppLocalizations.t(context, 'my_learning'))),
     );
   }
 }

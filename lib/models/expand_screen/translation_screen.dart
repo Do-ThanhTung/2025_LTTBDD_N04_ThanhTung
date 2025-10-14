@@ -2,18 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:translator_plus/translator_plus.dart';
 
 class TranslationScreen extends StatefulWidget {
-  const TranslationScreen({Key? key})
-    : super(key: key);
+  const TranslationScreen({Key? key}) : super(key: key);
 
   @override
-  State<TranslationScreen> createState() =>
-      _TranslationScreenState();
+  State<TranslationScreen> createState() => _TranslationScreenState();
 }
 
-class _TranslationScreenState
-    extends State<TranslationScreen> {
-  final TextEditingController _controller =
-      TextEditingController();
+class _TranslationScreenState extends State<TranslationScreen> {
+  final TextEditingController _controller = TextEditingController();
   final translator = GoogleTranslator();
   String _result = '';
   String from = 'auto';
@@ -80,8 +76,7 @@ class _TranslationScreenState
                         child: Text('Tiếng Việt'),
                       ),
                     ],
-                    onChanged: (v) =>
-                        setState(() => to = v ?? 'vi'),
+                    onChanged: (v) => setState(() => to = v ?? 'vi'),
                   ),
                 ),
               ],

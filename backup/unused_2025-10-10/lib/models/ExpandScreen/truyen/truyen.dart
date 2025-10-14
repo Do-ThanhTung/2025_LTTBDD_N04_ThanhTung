@@ -78,8 +78,7 @@ class _TruyenState extends State<Truyen> {
                     children: [
                       const Text(
                         'Một tối kia, một cặp vợ chồng có tuổi đang nằm trên giường.'
-                        '\n Người chồng rơi vào giấc ngủ nhưng người vợ cảm thấy tình cảm'
-                        ' đang dâng trong lòng và muốn nói chuyện',
+                        '\n NgườI chồng rơi vào giấc ngủ nhưng người vợ cảm thấy tình cảm đang dâng trong lòng và muốn nói chuyện',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black54,
@@ -254,7 +253,7 @@ class _TruyenState extends State<Truyen> {
                     children: [
                       const Text(
                         'Ba mươi giây sau, bà nói:"Sau đó anh thường cắn tai em." Điên'
-                        ' tiết , ông quăng tấm trải xuống giường và'
+                        ' tiết , ông quăng tấm trải giường và'
                         ' nhảy ra khỏi giường.',
                         style: TextStyle(
                           fontSize: 18,

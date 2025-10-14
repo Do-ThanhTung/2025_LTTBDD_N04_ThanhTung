@@ -10,8 +10,7 @@ class Truyen {
   final String title;
   final String content;
   Truyen({required this.title, required this.content});
-  factory Truyen.fromJson(Map<String, dynamic> j) =>
-      Truyen(
+  factory Truyen.fromJson(Map<String, dynamic> j) => Truyen(
         title: j['title'] ?? 'No title',
         content: j['content'] ?? '',
       );
@@ -21,12 +20,10 @@ class TruyenListScreen extends StatefulWidget {
   const TruyenListScreen({Key? key}) : super(key: key);
 
   @override
-  State<TruyenListScreen> createState() =>
-      _TruyenListScreenState();
+  State<TruyenListScreen> createState() => _TruyenListScreenState();
 }
 
-class _TruyenListScreenState
-    extends State<TruyenListScreen> {
+class _TruyenListScreenState extends State<TruyenListScreen> {
   List<Truyen> _list = [];
   List<Truyen> _filtered = [];
   bool _loading = true;
@@ -136,8 +133,7 @@ class _TruyenListScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.t(
-            context, 'story_short')),
+        title: Text(AppLocalizations.t(context, 'story_short')),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
@@ -146,8 +142,7 @@ class _TruyenListScreenState
               controller: _searchCtrl,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
-                hintText: AppLocalizations.t(
-                    context, 'vocabulary'),
+                hintText: AppLocalizations.t(context, 'vocabulary'),
                 border: const OutlineInputBorder(),
               ),
             ),
@@ -168,14 +163,12 @@ class _TruyenListScreenState
     final src = _filtered;
     if (src.isEmpty) {
       return Center(
-        child: Text(
-            AppLocalizations.t(context, 'no_results')),
+        child: Text(AppLocalizations.t(context, 'no_results')),
       );
     }
     return ListView.separated(
       itemCount: src.length,
-      separatorBuilder: (_, __) =>
-          const Divider(height: 1),
+      separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final t = src[index];
         final bookmarked = _bookmarks.contains(
@@ -185,19 +178,15 @@ class _TruyenListScreenState
           title: Text(t.title),
           trailing: IconButton(
             icon: Icon(
-              bookmarked
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
+              bookmarked ? Icons.bookmark : Icons.bookmark_border,
             ),
-            onPressed: () async =>
-                await _toggleBookmark(t),
+            onPressed: () async => await _toggleBookmark(t),
           ),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) =>
-                    TruyenDetailScreen(truyen: t),
+                builder: (_) => TruyenDetailScreen(truyen: t),
               ),
             );
           },
@@ -215,12 +204,10 @@ class TruyenDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<TruyenDetailScreen> createState() =>
-      _TruyenDetailScreenState();
+  State<TruyenDetailScreen> createState() => _TruyenDetailScreenState();
 }
 
-class _TruyenDetailScreenState
-    extends State<TruyenDetailScreen> {
+class _TruyenDetailScreenState extends State<TruyenDetailScreen> {
   final FlutterTts _tts = FlutterTts();
   bool _speaking = false;
   bool _awaiting = false;
@@ -265,8 +252,7 @@ class _TruyenDetailScreenState
       final text = widget.truyen.content;
       String lang;
       try {
-        final code =
-            AppLocale.locale.value.languageCode;
+        final code = AppLocale.locale.value.languageCode;
         if (code == 'vi') {
           lang = 'vi-VN';
         } else {
@@ -314,9 +300,7 @@ class _TruyenDetailScreenState
         actions: [
           IconButton(
             icon: Icon(
-              _speaking
-                  ? Icons.volume_off
-                  : Icons.volume_up,
+              _speaking ? Icons.volume_off : Icons.volume_up,
             ),
             onPressed: _toggleTts,
           ),

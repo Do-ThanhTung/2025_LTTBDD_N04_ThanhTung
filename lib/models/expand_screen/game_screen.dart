@@ -5,8 +5,7 @@ class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   @override
-  State<GameScreen> createState() =>
-      _GameScreenState();
+  State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
@@ -30,8 +29,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void _newWord() {
     final r = Random();
-    word = words[r.nextInt(words.length)]
-        .toUpperCase();
+    word = words[r.nextInt(words.length)].toUpperCase();
     guessed.clear();
     remaining = 6;
     finished = false;
@@ -45,10 +43,7 @@ class _GameScreenState extends State<GameScreen> {
       remaining--;
     }
     guessed.add(ch);
-    if (remaining <= 0 ||
-        word
-            .split('')
-            .every((c) => guessed.contains(c))) {
+    if (remaining <= 0 || word.split('').every((c) => guessed.contains(c))) {
       finished = true;
     }
     setState(() {});
@@ -64,9 +59,7 @@ class _GameScreenState extends State<GameScreen> {
       children: letters.map((l) {
         final used = guessed.contains(l);
         return ElevatedButton(
-          onPressed: used || finished
-              ? null
-              : () => _guess(l),
+          onPressed: used || finished ? null : () => _guess(l),
           child: Text(l),
         );
       }).toList(),
@@ -75,10 +68,8 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final display = word
-        .split('')
-        .map((c) => guessed.contains(c) ? c : '_')
-        .join(' ');
+    final display =
+        word.split('').map((c) => guessed.contains(c) ? c : '_').join(' ');
     return Scaffold(
       appBar: AppBar(title: const Text('Đoán chữ')),
       body: Padding(

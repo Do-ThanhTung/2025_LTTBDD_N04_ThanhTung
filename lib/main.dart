@@ -8,8 +8,7 @@ import 'package:education/services/notification_service.dart';
 
 // App-level theme holder (persisted)
 class AppTheme {
-  static final ValueNotifier<ThemeMode> mode =
-      ValueNotifier(ThemeMode.system);
+  static final ValueNotifier<ThemeMode> mode = ValueNotifier(ThemeMode.system);
   static const _key = 'app_theme';
 
   static Future<void> load() async {
@@ -41,8 +40,7 @@ class AppTheme {
 
 // App-level locale holder (persisted with SharedPreferences)
 class AppLocale {
-  static final ValueNotifier<Locale> locale =
-      ValueNotifier(const Locale('en'));
+  static final ValueNotifier<Locale> locale = ValueNotifier(const Locale('en'));
   static const _key = 'app_locale';
 
   static Future<void> load() async {
@@ -99,8 +97,7 @@ class MyApp extends StatelessWidget {
           valueListenable: AppLocale.locale,
           builder: (context, locale, _) {
             // expose navigatorKey to NotificationService so it can show overlays without BuildContext
-            NotificationService.instance.navigatorKey =
-                navigatorKey;
+            NotificationService.instance.navigatorKey = navigatorKey;
             return MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
@@ -117,23 +114,17 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               // Fallback logic if saved locale isn't supported
-              localeResolutionCallback:
-                  (deviceLocale, supportedLocales) {
+              localeResolutionCallback: (deviceLocale, supportedLocales) {
                 // If the selected locale is supported, use it.
-                if (supportedLocales.any((l) =>
-                    l.languageCode ==
-                    locale.languageCode)) {
+                if (supportedLocales
+                    .any((l) => l.languageCode == locale.languageCode)) {
                   return locale;
                 }
                 // Try to match device locale by language code.
                 if (deviceLocale != null) {
-                  final match =
-                      supportedLocales.firstWhere(
-                    (l) =>
-                        l.languageCode ==
-                        deviceLocale.languageCode,
-                    orElse: () =>
-                        supportedLocales.first,
+                  final match = supportedLocales.firstWhere(
+                    (l) => l.languageCode == deviceLocale.languageCode,
+                    orElse: () => supportedLocales.first,
                   );
                   return match;
                 }
@@ -166,17 +157,13 @@ class MyApp extends StatelessWidget {
               darkTheme: ThemeData.dark().copyWith(
                 // Palette provided (light -> dark):
                 // #E7F5DC, #CFE1B9, #B6C99B, #98A77C, #88976C, #728156
-                scaffoldBackgroundColor:
-                    const Color(0xFF728156), // darkest
+                scaffoldBackgroundColor: const Color(0xFF728156), // darkest
                 canvasColor: const Color(0xFF728156),
-                cardColor: const Color(
-                    0xFFB6C99B), // lighter card tone
+                cardColor: const Color(0xFFB6C99B), // lighter card tone
                 appBarTheme: const AppBarTheme(
-                  backgroundColor:
-                      Color(0xFF88976C), // medium-dark
+                  backgroundColor: Color(0xFF88976C), // medium-dark
                   foregroundColor: Color(0xFFE7F5DC),
-                  iconTheme: IconThemeData(
-                      color: Color(0xFFE7F5DC)),
+                  iconTheme: IconThemeData(color: Color(0xFFE7F5DC)),
                 ),
                 // Use the palette for color scheme too so widgets pick palette colors
                 colorScheme: const ColorScheme.dark(
@@ -209,84 +196,62 @@ class MyApp extends StatelessWidget {
                     color: Color(0xFFFFFFFF),
                   ),
                 ),
-                iconTheme: const IconThemeData(
-                    color: Color(0xFFFFFFFF)),
+                iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)),
                 dividerColor: const Color(0xFF98A77C),
-                floatingActionButtonTheme:
-                    const FloatingActionButtonThemeData(
+                floatingActionButtonTheme: const FloatingActionButtonThemeData(
                   backgroundColor: Color(0xFF98A77C),
                   foregroundColor: Color(0xFFE7F5DC),
                 ),
                 // Button and control themes using the palette
-                elevatedButtonTheme:
-                    ElevatedButtonThemeData(
+                elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFF98A77C),
-                    foregroundColor:
-                        const Color(0xFFE7F5DC),
+                    backgroundColor: const Color(0xFF98A77C),
+                    foregroundColor: const Color(0xFFE7F5DC),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
-                    foregroundColor:
-                        const Color(0xFFE7F5DC),
+                    foregroundColor: const Color(0xFFE7F5DC),
                   ),
                 ),
-                outlinedButtonTheme:
-                    OutlinedButtonThemeData(
+                outlinedButtonTheme: OutlinedButtonThemeData(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor:
-                        const Color(0xFFE7F5DC),
-                    side: const BorderSide(
-                        color: Color(0xFFCFE1B9)),
+                    foregroundColor: const Color(0xFFE7F5DC),
+                    side: const BorderSide(color: Color(0xFFCFE1B9)),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
                 switchTheme: SwitchThemeData(
-                  thumbColor: WidgetStateProperty.all(
-                      const Color(0xFFE7F5DC)),
-                  trackColor: WidgetStateProperty.all(
-                      const Color(0xFF98A77C)),
+                  thumbColor: WidgetStateProperty.all(const Color(0xFFE7F5DC)),
+                  trackColor: WidgetStateProperty.all(const Color(0xFF98A77C)),
                 ),
-                toggleButtonsTheme:
-                    const ToggleButtonsThemeData(
+                toggleButtonsTheme: const ToggleButtonsThemeData(
                   color: Color(0xFFE7F5DC),
                   fillColor: Color(0xFF98A77C),
-                  selectedBorderColor:
-                      Color(0xFFB6C99B),
+                  selectedBorderColor: Color(0xFFB6C99B),
                   borderColor: Color(0xFF88976C),
                 ),
                 sliderTheme: const SliderThemeData(
                   activeTrackColor: Color(0xFF98A77C),
-                  inactiveTrackColor:
-                      Color(0xFF88976C),
+                  inactiveTrackColor: Color(0xFF88976C),
                   thumbColor: Color(0xFFE7F5DC),
                   overlayColor: Color(0x33E7F5DC),
                 ),
                 // Bottom navigation: background uses a lighter palette tone,
                 // unselected items use the darkest tone, selected use the lightest.
-                bottomNavigationBarTheme:
-                    const BottomNavigationBarThemeData(
+                bottomNavigationBarTheme: const BottomNavigationBarThemeData(
                   backgroundColor: Color(0xFFB6C99B),
-                  unselectedItemColor:
-                      Color(0xFF728156),
-                  unselectedIconTheme: IconThemeData(
-                      color: Color(0xFF728156)),
-                  unselectedLabelStyle: TextStyle(
-                      color: Color(0xFF728156)),
+                  unselectedItemColor: Color(0xFF728156),
+                  unselectedIconTheme: IconThemeData(color: Color(0xFF728156)),
+                  unselectedLabelStyle: TextStyle(color: Color(0xFF728156)),
                   selectedItemColor: Colors.white,
-                  selectedIconTheme: IconThemeData(
-                      color: Colors.white),
-                  selectedLabelStyle:
-                      TextStyle(color: Colors.white),
+                  selectedIconTheme: IconThemeData(color: Colors.white),
+                  selectedLabelStyle: TextStyle(color: Colors.white),
                   showUnselectedLabels: true,
                 ),
               ),

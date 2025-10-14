@@ -3,23 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   NotificationService._();
-  static final NotificationService instance =
-      NotificationService._();
+  static final NotificationService instance = NotificationService._();
 
   /// Optional global navigator key to allow showing overlays/snackbars without a BuildContext
   /// If your app sets this key on MaterialApp.navigatorKey, NotificationService can use it.
   GlobalKey<NavigatorState>? navigatorKey;
 
-  static const _prefsKeyEnabled =
-      'notifications_enabled';
+  static const _prefsKeyEnabled = 'notifications_enabled';
   bool enabled = true;
 
   Future<void> loadConfig() async {
     try {
-      final prefs =
-          await SharedPreferences.getInstance();
-      enabled =
-          prefs.getBool(_prefsKeyEnabled) ?? true;
+      final prefs = await SharedPreferences.getInstance();
+      enabled = prefs.getBool(_prefsKeyEnabled) ?? true;
     } catch (_) {
       enabled = true;
     }
@@ -27,15 +23,13 @@ class NotificationService {
 
   Future<void> saveConfig(bool value) async {
     try {
-      final prefs =
-          await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_prefsKeyEnabled, value);
       enabled = value;
     } catch (_) {}
   }
 
-  void showSnackBar(
-      BuildContext context, String message,
+  void showSnackBar(BuildContext context, String message,
       {Duration? duration}) {
     if (!enabled) return;
     final messenger = ScaffoldMessenger.of(context);
@@ -43,42 +37,36 @@ class NotificationService {
     messenger.showSnackBar(
       SnackBar(
         content: Text(message),
-        duration:
-            duration ?? const Duration(seconds: 2),
+        duration: duration ?? const Duration(seconds: 2),
       ),
     );
   }
 
   /// Show a snackbar without passing a BuildContext. Requires [navigatorKey] to be set.
-  void showSnackBarWithoutContext(String message,
-      {Duration? duration}) {
+  void showSnackBarWithoutContext(String message, {Duration? duration}) {
     if (!enabled) return;
     final key = navigatorKey;
-    if (key == null || key.currentState == null)
-      return;
+    if (key == null || key.currentState == null) return;
     final context = key.currentState!.overlay!.context;
     final messenger = ScaffoldMessenger.of(context);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
         content: Text(message),
-        duration:
-            duration ?? const Duration(seconds: 2),
+        duration: duration ?? const Duration(seconds: 2),
       ),
     );
   }
 
   /// A very small overlay toast (non-blocking) that sits above content.
-  void showToast(BuildContext context, String message,
-      {Duration? duration}) {
+  void showToast(BuildContext context, String message, {Duration? duration}) {
     if (!enabled) return;
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (ctx) => ToastOverlay(
         message: message,
-        duration:
-            duration ?? const Duration(seconds: 2),
+        duration: duration ?? const Duration(seconds: 2),
         onFinish: () {
           entry.remove();
         },
@@ -89,12 +77,10 @@ class NotificationService {
   }
 
   /// Show a toast without a BuildContext. Requires [navigatorKey] to be set.
-  void showToastWithoutContext(String message,
-      {Duration? duration}) {
+  void showToastWithoutContext(String message, {Duration? duration}) {
     if (!enabled) return;
     final key = navigatorKey;
-    if (key == null || key.currentState == null)
-      return;
+    if (key == null || key.currentState == null) return;
     final context = key.currentState!.overlay!.context;
     showToast(context, message, duration: duration);
   }
@@ -115,8 +101,7 @@ class ToastOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ToastOverlay> createState() =>
-      _ToastOverlayState();
+  State<ToastOverlay> createState() => _ToastOverlayState();
 }
 
 class _ToastOverlayState extends State<ToastOverlay>
@@ -135,10 +120,8 @@ class _ToastOverlayState extends State<ToastOverlay>
     _offsetAnim = Tween<Offset>(
       begin: const Offset(0, 0.4),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _ctrl, curve: Curves.easeOutCubic));
-    _fadeAnim = CurvedAnimation(
-        parent: _ctrl, curve: Curves.easeIn);
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+    _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
     Future.delayed(widget.duration, () async {
       if (!mounted) return;
@@ -156,8 +139,7 @@ class _ToastOverlayState extends State<ToastOverlay>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(widget.themeContext);
-    final bg = theme.colorScheme.surface
-        .withAlpha((0.95 * 255).round());
+    final bg = theme.colorScheme.surface.withAlpha((0.95 * 255).round());
     final fg = theme.colorScheme.onSurface;
     return Positioned(
       bottom: 50,
@@ -170,8 +152,7 @@ class _ToastOverlayState extends State<ToastOverlay>
           child: Material(
             color: Colors.transparent,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: bg,
                 borderRadius: BorderRadius.circular(8),
