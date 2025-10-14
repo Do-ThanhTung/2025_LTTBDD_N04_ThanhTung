@@ -417,9 +417,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         tooltip:
                             '${AppLocalizations.t(context, 'translation')} (${TranslationService.instance.targetLang})',
                         icon: const Icon(Icons.translate),
-                        onPressed: () async {
-                          setState(() => _translating[meaningIndex] = true);
-                          try {
+            onPressed: () async {
+              setState(() => _translating[meaningIndex] = true);
+              // Capture localization strings before any awaits to avoid
+              // using BuildContext across async gaps.
+              final locDefinition =
+                AppLocalizations.t(context, 'definition');
+              final locSynonyms =
+                AppLocalizations.t(context, 'synonyms');
+              final locTranslation =
+                AppLocalizations.t(context, 'translation');
+              final locOk = AppLocalizations.t(context, 'ok');
+              final locNotFoundInLocal = AppLocalizations.t(
+                context, 'not_found_in_local');
+              final locSourceText =
+                AppLocalizations.t(context, 'source_text');
+              final locTranslationText = AppLocalizations.t(
+                context, 'translation_text');
+
+              try {
                             // Build the text to translate
                             final synonymsText = (meanings.synonyms
                                         ?.toSet()
@@ -502,27 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               translatedSyns.add(ts);
                             }
 
-                            // Capture localization strings and build formatted output to match requested Vietnamese layout.
-                            // ignore: use_build_context_synchronously
-                            final locDefinition =
-                                AppLocalizations.t(context, 'definition');
-                            // ignore: use_build_context_synchronously
-                            final locSynonyms =
-                                AppLocalizations.t(context, 'synonyms');
-                            // ignore: use_build_context_synchronously
-                            final locTranslation =
-                                AppLocalizations.t(context, 'translation');
-                            // ignore: use_build_context_synchronously
-                            final locOk = AppLocalizations.t(context, 'ok');
-                            // ignore: use_build_context_synchronously
-                            final locNotFoundInLocal = AppLocalizations.t(
-                                context, 'not_found_in_local');
-                            // ignore: use_build_context_synchronously
-                            final locSourceText =
-                                AppLocalizations.t(context, 'source_text');
-                            // ignore: use_build_context_synchronously
-                            final locTranslationText =
-                                AppLocalizations.t(context, 'translation_text');
+              // Use the previously captured localization strings.
 
                             // Build formatted output to match requested Vietnamese layout.
                             // - Show 'Definition' label, blank line, then each definition as its own
