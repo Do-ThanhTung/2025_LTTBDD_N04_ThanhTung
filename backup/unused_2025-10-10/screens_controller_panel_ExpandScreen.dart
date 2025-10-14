@@ -6,8 +6,8 @@ export 'package:education/screens/controller/panel/expand_screen.dart';
 
 import 'package:education/constants/icons.dart';
 import 'package:education/models/ExpandScreen/translation_screen.dart';
-import 'package:education/models/ExpandScreen/GameScreen.dart';
-import 'package:education/models/ExpandScreen/StoryScreen.dart';
+import 'package:education/models/expand_screen/game_screen.dart';
+import 'package:education/models/expand_screen/story_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

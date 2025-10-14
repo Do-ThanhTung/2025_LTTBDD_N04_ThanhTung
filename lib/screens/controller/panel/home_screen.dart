@@ -15,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 
   @override
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() =>
+      _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -25,21 +26,27 @@ class _HomeScreenState extends State<HomeScreen> {
   final translator = GoogleTranslator();
   final Map<int, bool> _translating = {};
   bool _notifEnabled = true;
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController =
+      TextEditingController();
   Map<String, String> _suggestionMap = {};
 
   @override
   void initState() {
     super.initState();
     // ensure notification setting is loaded before UI interactions
-    NotificationService.instance.loadConfig().then((_) {
+    NotificationService.instance
+        .loadConfig()
+        .then((_) {
       if (!mounted) return;
       setState(() {
-        _notifEnabled = NotificationService.instance.enabled;
+        _notifEnabled =
+            NotificationService.instance.enabled;
       });
     });
     // Load local suggestion words (original -> translation)
-    TranslationService.instance.getEnglishMap().then((map) {
+    TranslationService.instance
+        .getEnglishMap()
+        .then((map) {
       if (!mounted) return;
       setState(() {
         _suggestionMap = map;
@@ -79,8 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
@@ -100,15 +109,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           CircleButton(
                             icon: _notifEnabled
                                 ? Icons.notifications
-                                : Icons.notifications_none,
+                                : Icons
+                                    .notifications_none,
                             onPressed: () async {
                               // toggle notification enabled state
-                              final newVal = !_notifEnabled;
+                              final newVal =
+                                  !_notifEnabled;
                               // compute feedback message before awaiting to avoid using context after async gap
                               final toastMsg = newVal
                                   ? 'Thông báo đã bật'
                                   : 'Thông báo đã tắt';
-                              await NotificationService.instance
+                              await NotificationService
+                                  .instance
                                   .saveConfig(newVal);
                               if (!mounted) return;
                               setState(() {
@@ -117,10 +129,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               // immediate feedback regardless of setting
                               if (!mounted) return;
                               // ignore: use_build_context_synchronously
-                              NotificationService.instance
+                              NotificationService
+                                  .instance
                                   .showToastWithoutContext(
                                 toastMsg,
-                                duration: const Duration(seconds: 1),
+                                duration:
+                                    const Duration(
+                                        seconds: 1),
                               );
                             },
                           ),
@@ -128,9 +143,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Ensure settings button is tappable even if custom widget
                           Material(
                             color: Colors.transparent,
-                            shape: const CircleBorder(),
+                            shape:
+                                const CircleBorder(),
                             child: InkWell(
-                              customBorder: const CircleBorder(),
+                              customBorder:
+                                  const CircleBorder(),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -143,16 +160,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 height: 40,
                                 width: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                                decoration:
+                                    BoxDecoration(
+                                  shape:
+                                      BoxShape.circle,
                                   color:
-                                      Theme.of(context).colorScheme.secondary,
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets
+                                          .all(8.0),
                                   child: Icon(
                                     Icons.settings,
-                                    color: Theme.of(context)
+                                    color: Theme.of(
+                                            context)
                                         .colorScheme
                                         .onSecondary,
                                   ),
@@ -184,18 +208,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _buildSearchWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 0),
       child: Autocomplete<String>(
-        optionsBuilder: (TextEditingValue textEditingValue) {
-          final input = textEditingValue.text.toLowerCase();
+        optionsBuilder:
+            (TextEditingValue textEditingValue) {
+          final input =
+              textEditingValue.text.toLowerCase();
           if (input.isEmpty) {
             return const Iterable<String>.empty();
           }
-          return _suggestionMap.keys
-              .where((k) => k.toLowerCase().contains(input));
+          return _suggestionMap.keys.where(
+              (k) => k.toLowerCase().contains(input));
         },
         displayStringForOption: (option) => option,
-        optionsViewBuilder: (context, onSelected, options) {
+        optionsViewBuilder:
+            (context, onSelected, options) {
           return Align(
             alignment: Alignment.topLeft,
             child: Material(
@@ -205,41 +233,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius:
+                      BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha((0.12 * 255).round()),
+                      color: Colors.black.withAlpha(
+                          (0.12 * 255).round()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                constraints:
-                    const BoxConstraints(maxHeight: 260, maxWidth: 520),
+                constraints: const BoxConstraints(
+                    maxHeight: 260, maxWidth: 520),
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: options.length,
                   itemBuilder: (context, index) {
-                    final option = options.elementAt(index);
-                    final vi = _suggestionMap[option] ?? '';
+                    final option =
+                        options.elementAt(index);
+                    final vi =
+                        _suggestionMap[option] ?? '';
                     return InkWell(
                       onTap: () => onSelected(option),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                        padding:
+                            const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                              MainAxisAlignment
+                                  .spaceBetween,
                           children: [
                             Expanded(
                               child: Text(option,
                                   style: const TextStyle(
-                                      fontSize: 16, color: Colors.black87)),
+                                      fontSize: 16,
+                                      color: Colors
+                                          .black87)),
                             ),
                             const SizedBox(width: 12),
                             if (vi.isNotEmpty)
                               Text(vi,
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.grey[700])),
+                                      fontSize: 14,
+                                      color: Colors
+                                          .grey[700])),
                           ],
                         ),
                       ),
@@ -250,24 +290,28 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
-        fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        fieldViewBuilder: (context, controller,
+            focusNode, onFieldSubmitted) {
           // keep the local controller in sync
           controller.text = _searchController.text;
-          controller.selection = _searchController.selection;
+          controller.selection =
+              _searchController.selection;
           controller.addListener(() {
             _searchController.value = controller.value;
           });
           // styled pill container
           return Container(
             height: 56,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: const EdgeInsets.symmetric(
+                horizontal: 4),
             decoration: BoxDecoration(
-              color:
-                  const Color(0xFFCBD9A8), // light green fill matching header
+              color: const Color(
+                  0xFFCBD9A8), // light green fill matching header
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha((0.12 * 255).round()),
+                  color: Colors.black
+                      .withAlpha((0.12 * 255).round()),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -276,20 +320,27 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextField(
               controller: controller,
               focusNode: focusNode,
-              style: const TextStyle(color: Colors.white),
+              style:
+                  const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: AppLocalizations.t(context, 'vocabulary'),
+                hintText: AppLocalizations.t(
+                    context, 'vocabulary'),
                 hintStyle: TextStyle(
-                    color: Colors.white.withAlpha((0.9 * 255).round())),
+                    color: Colors.white.withAlpha(
+                        (0.9 * 255).round())),
                 prefixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 12.0, right: 8.0),
-                  child: Icon(Icons.search, color: Colors.white),
+                  padding: EdgeInsets.only(
+                      left: 12.0, right: 8.0),
+                  child: Icon(Icons.search,
+                      color: Colors.white),
                 ),
                 prefixIconConstraints:
-                    const BoxConstraints(minWidth: 36, minHeight: 36),
+                    const BoxConstraints(
+                        minWidth: 36, minHeight: 36),
                 border: InputBorder.none,
                 contentPadding:
-                    const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                    const EdgeInsets.symmetric(
+                        vertical: 18, horizontal: 8),
               ),
               onSubmitted: (value) {
                 _getMeaningFromApi(value);
@@ -338,7 +389,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           responseModel!.word!,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+            color:
+                Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -377,13 +429,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _buildMeaningWidget(Meanings meanings, int meaningIndex) {
+  _buildMeaningWidget(
+      Meanings meanings, int meaningIndex) {
     String definitionList = "";
     meanings.definitions?.forEach((element) {
       int index = meanings.definitions!.indexOf(
         element,
       );
-      definitionList += "\n${index + 1}. ${element.definition}\n";
+      definitionList +=
+          "\n${index + 1}. ${element.definition}\n";
     });
     return Card(
       elevation: 4,
@@ -398,7 +452,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     meanings.partOfSpeech!,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
@@ -410,78 +466,93 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 36,
                         child: Padding(
                           padding: EdgeInsets.all(6.0),
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child:
+                              CircularProgressIndicator(
+                                  strokeWidth: 2),
                         ),
                       )
                     : IconButton(
                         tooltip:
                             '${AppLocalizations.t(context, 'translation')} (${TranslationService.instance.targetLang})',
-                        icon: const Icon(Icons.translate),
-            onPressed: () async {
-              setState(() => _translating[meaningIndex] = true);
-              // Capture localization strings before any awaits to avoid
-              // using BuildContext across async gaps.
-              final locDefinition =
-                AppLocalizations.t(context, 'definition');
-              final locSynonyms =
-                AppLocalizations.t(context, 'synonyms');
-              final locTranslation =
-                AppLocalizations.t(context, 'translation');
-              final locOk = AppLocalizations.t(context, 'ok');
-              final locNotFoundInLocal = AppLocalizations.t(
-                context, 'not_found_in_local');
-              final locSourceText =
-                AppLocalizations.t(context, 'source_text');
-              final locTranslationText = AppLocalizations.t(
-                context, 'translation_text');
-
-              try {
+                        icon: const Icon(
+                            Icons.translate),
+                        onPressed: () async {
+                          setState(() => _translating[
+                              meaningIndex] = true);
+                          try {
                             // Build the text to translate
-                            final synonymsText = (meanings.synonyms
-                                        ?.toSet()
-                                        .toList()
-                                        .join(', ') ??
-                                    '')
-                                .trim();
-                            final antonymsText = (meanings.antonyms
-                                        ?.toSet()
-                                        .toList()
-                                        .join(', ') ??
-                                    '')
-                                .trim();
-                            final combined = StringBuffer();
+                            final synonymsText =
+                                (meanings
+                                            .synonyms
+                                            ?.toSet()
+                                            .toList()
+                                            .join(
+                                                ', ') ??
+                                        '')
+                                    .trim();
+                            final antonymsText =
+                                (meanings
+                                            .antonyms
+                                            ?.toSet()
+                                            .toList()
+                                            .join(
+                                                ', ') ??
+                                        '')
+                                    .trim();
+                            final combined =
+                                StringBuffer();
                             // Include the header (part of speech) and labels so the
                             // translation covers the entire visible card content.
-                            combined.writeln(meanings.partOfSpeech ?? '');
+                            combined.writeln(meanings
+                                    .partOfSpeech ??
+                                '');
                             combined.writeln(
                                 '${AppLocalizations.t(context, 'definition')} :');
-                            combined.writeln(definitionList);
-                            if (synonymsText.isNotEmpty) {
+                            combined.writeln(
+                                definitionList);
+                            if (synonymsText
+                                .isNotEmpty) {
                               combined.writeln(
                                   '${AppLocalizations.t(context, 'synonyms')}: $synonymsText');
                             }
-                            if (antonymsText.isNotEmpty) {
+                            if (antonymsText
+                                .isNotEmpty) {
                               combined.writeln(
                                   '${AppLocalizations.t(context, 'antonyms')}: $antonymsText');
                             }
 
-                            final combinedStr = combined.toString().trim();
+                            final combinedStr =
+                                combined
+                                    .toString()
+                                    .trim();
                             if (combinedStr.isEmpty) {
                               final title =
-                                  AppLocalizations.t(context, 'translation');
-                              final content = AppLocalizations.t(
-                                  context, 'nothing_to_translate');
-                              final okText = AppLocalizations.t(context, 'ok');
+                                  AppLocalizations.t(
+                                      context,
+                                      'translation');
+                              final content =
+                                  AppLocalizations.t(
+                                      context,
+                                      'nothing_to_translate');
+                              final okText =
+                                  AppLocalizations.t(
+                                      context, 'ok');
                               if (!mounted) return;
                               showDialog(
                                 context: context,
-                                builder: (ctx) => AlertDialog(
+                                builder: (ctx) =>
+                                    AlertDialog(
                                   title: Text(title),
-                                  content: Text(content),
+                                  content:
+                                      Text(content),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.of(ctx).pop(),
-                                      child: Text(okText),
+                                      onPressed: () =>
+                                          Navigator.of(
+                                                  ctx)
+                                              .pop(),
+                                      child:
+                                          Text(okText),
                                     ),
                                   ],
                                 ),
@@ -492,33 +563,90 @@ class _HomeScreenState extends State<HomeScreen> {
                             // limit input size to avoid heavy work
                             // component-based translation (no global length limit)
                             // Translate components individually using local dictionary
-                            final part = meanings.partOfSpeech ?? '';
-                            final tgt = TranslationService.instance.targetLang;
-                            final translatedPart = await TranslationService
+                            final part = meanings
+                                    .partOfSpeech ??
+                                '';
+                            final tgt =
+                                TranslationService
                                     .instance
-                                    .translateLocal(part, to: tgt) ??
-                                part;
+                                    .targetLang;
+                            final translatedPart =
+                                await TranslationService
+                                        .instance
+                                        .translateLocal(
+                                            part,
+                                            to: tgt) ??
+                                    part;
 
                             // Translate each definition separately
-                            final List<String> translatedDefs = [];
-                            for (var def in meanings.definitions ?? []) {
-                              final d = def.definition ?? '';
-                              final td = await TranslationService.instance
-                                      .translateLocal(d, to: tgt) ??
-                                  d;
+                            final List<String>
+                                translatedDefs = [];
+                            for (var def in meanings
+                                    .definitions ??
+                                []) {
+                              final d =
+                                  def.definition ?? '';
+                              final td =
+                                  await TranslationService
+                                          .instance
+                                          .translateLocal(
+                                              d,
+                                              to: tgt) ??
+                                      d;
                               translatedDefs.add(td);
                             }
 
                             // Translate synonyms list items
-                            final List<String> translatedSyns = [];
-                            for (var s in meanings.synonyms ?? []) {
-                              final ts = await TranslationService.instance
-                                      .translateLocal(s, to: tgt) ??
-                                  s;
+                            final List<String>
+                                translatedSyns = [];
+                            for (var s
+                                in meanings.synonyms ??
+                                    []) {
+                              final ts =
+                                  await TranslationService
+                                          .instance
+                                          .translateLocal(
+                                              s,
+                                              to: tgt) ??
+                                      s;
                               translatedSyns.add(ts);
                             }
 
-              // Use the previously captured localization strings.
+                            // Capture localization strings and build formatted output to match requested Vietnamese layout.
+                            // ignore: use_build_context_synchronously
+                            final locDefinition =
+                                AppLocalizations.t(
+                                    context,
+                                    'definition');
+                            // ignore: use_build_context_synchronously
+                            final locSynonyms =
+                                AppLocalizations.t(
+                                    context,
+                                    'synonyms');
+                            // ignore: use_build_context_synchronously
+                            final locTranslation =
+                                AppLocalizations.t(
+                                    context,
+                                    'translation');
+                            // ignore: use_build_context_synchronously
+                            final locOk =
+                                AppLocalizations.t(
+                                    context, 'ok');
+                            // ignore: use_build_context_synchronously
+                            final locNotFoundInLocal =
+                                AppLocalizations.t(
+                                    context,
+                                    'not_found_in_local');
+                            // ignore: use_build_context_synchronously
+                            final locSourceText =
+                                AppLocalizations.t(
+                                    context,
+                                    'source_text');
+                            // ignore: use_build_context_synchronously
+                            final locTranslationText =
+                                AppLocalizations.t(
+                                    context,
+                                    'translation_text');
 
                             // Build formatted output to match requested Vietnamese layout.
                             // - Show 'Definition' label, blank line, then each definition as its own
@@ -526,17 +654,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             // - Then show 'Synonyms' label, blank line, then each synonym on its own line.
                             final out = StringBuffer();
                             // include the part-of-speech header (e.g., 'noun')
-                            out.writeln(translatedPart);
+                            out.writeln(
+                                translatedPart);
                             out.writeln();
                             // Definition section
                             out.writeln(locDefinition);
                             out.writeln();
-                            for (int i = 0; i < translatedDefs.length; i++) {
-                              var d = translatedDefs[i].trim();
+                            for (int i = 0;
+                                i <
+                                    translatedDefs
+                                        .length;
+                                i++) {
+                              var d = translatedDefs[i]
+                                  .trim();
                               // Add smart quotes if the translation doesn't already include quotes
-                              if (!(d.startsWith('“') ||
+                              if (!(d.startsWith(
+                                      '“') ||
                                   d.startsWith('"') ||
-                                  d.startsWith('\u201c'))) {
+                                  d.startsWith(
+                                      '\u201c'))) {
                                 d = '“$d”';
                               }
                               out.writeln(d);
@@ -545,26 +681,38 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
 
                             // Synonyms section (if any)
-                            if (translatedSyns.isNotEmpty) {
+                            if (translatedSyns
+                                .isNotEmpty) {
                               out.writeln(locSynonyms);
                               out.writeln();
                               // show each synonym on its own line for clarity
-                              out.writeln(translatedSyns.join('\n'));
+                              out.writeln(
+                                  translatedSyns
+                                      .join('\n'));
                             }
 
                             if (!mounted) return;
-                            final formatted = out.toString().trim();
+                            final formatted =
+                                out.toString().trim();
                             if (formatted.isNotEmpty) {
                               showDialog(
                                 context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text(locTranslation),
-                                  content: SingleChildScrollView(
-                                      child: Text(formatted)),
+                                builder: (ctx) =>
+                                    AlertDialog(
+                                  title: Text(
+                                      locTranslation),
+                                  content:
+                                      SingleChildScrollView(
+                                          child: Text(
+                                              formatted)),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.of(ctx).pop(),
-                                      child: Text(locOk),
+                                      onPressed: () =>
+                                          Navigator.of(
+                                                  ctx)
+                                              .pop(),
+                                      child:
+                                          Text(locOk),
                                     ),
                                   ],
                                 ),
@@ -573,33 +721,55 @@ class _HomeScreenState extends State<HomeScreen> {
                               showDialog(
                                 context: context,
                                 builder: (ctx) {
-                                  final TextEditingController srcCtrl =
-                                      TextEditingController(text: combinedStr);
-                                  final TextEditingController tgtCtrl =
+                                  final TextEditingController
+                                      srcCtrl =
+                                      TextEditingController(
+                                          text:
+                                              combinedStr);
+                                  final TextEditingController
+                                      tgtCtrl =
                                       TextEditingController();
                                   return AlertDialog(
-                                    title: Text(locTranslation),
-                                    content: SingleChildScrollView(
+                                    title: Text(
+                                        locTranslation),
+                                    content:
+                                        SingleChildScrollView(
                                       child: Column(
-                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisSize:
+                                            MainAxisSize
+                                                .min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment
+                                                .start,
                                         children: [
-                                          Text(locNotFoundInLocal),
-                                          const SizedBox(height: 12),
+                                          Text(
+                                              locNotFoundInLocal),
+                                          const SizedBox(
+                                              height:
+                                                  12),
                                           TextField(
-                                            controller: srcCtrl,
-                                            maxLines: 3,
-                                            decoration: InputDecoration(
-                                              labelText: locSourceText,
+                                            controller:
+                                                srcCtrl,
+                                            maxLines:
+                                                3,
+                                            decoration:
+                                                InputDecoration(
+                                              labelText:
+                                                  locSourceText,
                                             ),
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(
+                                              height:
+                                                  8),
                                           TextField(
-                                            controller: tgtCtrl,
-                                            maxLines: 3,
-                                            decoration: InputDecoration(
-                                              labelText: locTranslationText,
+                                            controller:
+                                                tgtCtrl,
+                                            maxLines:
+                                                3,
+                                            decoration:
+                                                InputDecoration(
+                                              labelText:
+                                                  locTranslationText,
                                             ),
                                           ),
                                         ],
@@ -608,30 +778,51 @@ class _HomeScreenState extends State<HomeScreen> {
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
-                                            Navigator.of(ctx).pop(),
-                                        child: Text(locOk),
+                                            Navigator.of(
+                                                    ctx)
+                                                .pop(),
+                                        child: Text(
+                                            locOk),
                                       ),
                                       ElevatedButton(
-                                        onPressed: () async {
-                                          final src = srcCtrl.text.trim();
-                                          final tgt = tgtCtrl.text.trim();
+                                        onPressed:
+                                            () async {
+                                          final src =
+                                              srcCtrl
+                                                  .text
+                                                  .trim();
+                                          final tgt =
+                                              tgtCtrl
+                                                  .text
+                                                  .trim();
                                           if (src.isNotEmpty &&
                                               tgt.isNotEmpty) {
                                             // capture a pop callback tied to the dialog context before awaiting
-                                            void popDialog() {
-                                              Navigator.of(ctx).pop();
+                                            void
+                                                popDialog() {
+                                              Navigator.of(
+                                                      ctx)
+                                                  .pop();
                                             }
 
-                                            await TranslationService.instance
-                                                .addMapping(src, tgt, to: 'vi');
-                                            if (!mounted) return;
+                                            await TranslationService
+                                                .instance
+                                                .addMapping(
+                                                    src,
+                                                    tgt,
+                                                    to: 'vi');
+                                            if (!mounted)
+                                              return;
                                             popDialog();
-                                            NotificationService.instance
+                                            NotificationService
+                                                .instance
                                                 .showSnackBarWithoutContext(
                                                     'Saved to local dictionary');
                                           }
                                         },
-                                        child: const Text('Save'),
+                                        child:
+                                            const Text(
+                                                'Save'),
                                       ),
                                     ],
                                   );
@@ -640,8 +831,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           } finally {
                             if (mounted) {
-                              setState(
-                                  () => _translating[meaningIndex] = false);
+                              setState(() =>
+                                  _translating[
+                                          meaningIndex] =
+                                      false);
                             }
                           }
                         },
@@ -652,7 +845,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               '${AppLocalizations.t(context, 'definition')} : ',
               style: TextStyle(
-                color: Theme.of(context).textTheme.bodyMedium?.color ??
+                color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.color ??
                     Colors.white,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -681,15 +877,22 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             "$title : ",
             style: TextStyle(
-              color:
-                  Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white,
+              color: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.color ??
+                  Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            setList!.toSet().toString().replaceAll("{", "").replaceAll("}", ""),
+            setList!
+                .toSet()
+                .toString()
+                .replaceAll("{", "")
+                .replaceAll("}", ""),
           ),
           const SizedBox(height: 10),
         ],
