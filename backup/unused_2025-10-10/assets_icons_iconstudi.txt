@@ -1,3 +1,0 @@
-Ghi chú sao lưu: tệp nhị phân gốc 'assets/icons/iconstudi.png' đã được chuyển vào thư mục sao lưu vào ngày 2025-10-10 bởi quy trình dọn dẹp tự động.
-Nếu bạn cần khôi phục tệp ảnh gốc, hãy lấy lại từ nguồn lưu trữ gốc hoặc liên hệ người phát triển.
-If you need the original image, restore it from source.

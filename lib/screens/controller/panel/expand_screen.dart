@@ -1,9 +1,9 @@
-import 'package:education/constants/icons.dart';
-import 'package:education/models/expand_screen/translation_screen.dart';
-import 'package:education/models/expand_screen/game_screen.dart';
-import 'package:education/models/expand_screen/story_screen.dart';
+import '../../../constants/icons.dart';
+import '../../../models/expand_screen/translation_screen.dart';
+import '../../../models/expand_screen/game_screen.dart';
+import '../../../models/expand_screen/story_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:education/l10n/app_localizations.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 
 class ExpandScreen extends StatelessWidget {
@@ -22,7 +22,7 @@ class ExpandScreen extends StatelessWidget {
     // Thêm các màn hình khác ở đây nếu cần
   ];
 
-  const ExpandScreen({Key? key}) : super(key: key);
+  const ExpandScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +31,24 @@ class ExpandScreen extends StatelessWidget {
       child: Scaffold(
         body: Column(children: [
           Container(
-            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+            padding: const EdgeInsets.only(
+                top: 50, left: 20, right: 20),
             height: 200,
             width: double.infinity,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF98A77C),
-                  Color(0xFFB6C99B),
+                  Theme.of(context)
+                      .colorScheme
+                      .primary,
+                  Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withAlpha((0.7 * 255).round()),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -51,12 +57,17 @@ class ExpandScreen extends StatelessWidget {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
                       children: [
                         Text(
                           AppLocalizations.t(
@@ -65,7 +76,8 @@ class ExpandScreen extends StatelessWidget {
                           ),
                           style: const TextStyle(
                             fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontWeight:
+                                FontWeight.bold,
                           ),
                         ),
                         Text(
@@ -75,12 +87,14 @@ class ExpandScreen extends StatelessWidget {
                           ),
                           style: const TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.normal,
+                            fontWeight:
+                                FontWeight.normal,
                           ),
                         ),
                       ],
                     ),
-                    const Image(image: AssetImage(icStu)),
+                    const Image(
+                        image: AssetImage(icStu)),
                   ],
                 ),
               ],
@@ -101,26 +115,34 @@ class ExpandScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         return ListTile(
           title: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               ),
-              color: Color(0xFF88976C), // Màu của mỗi mục (palette)
+              color: Theme.of(context)
+                  .colorScheme
+                  .primary
+                  .withAlpha((0.8 * 255).round()),
             ),
             child: Padding(
               padding: const EdgeInsets.only(
-                  bottom: 50, top: 50, left: 20, right: 20),
+                  bottom: 50,
+                  top: 50,
+                  left: 20,
+                  right: 20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment:
+                    MainAxisAlignment.start,
                 children: [
                   Text(
                     AppLocalizations.t(
                       context,
                       items[index],
                     ),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(
+                        color: Colors.white),
                   ),
                 ],
               ),

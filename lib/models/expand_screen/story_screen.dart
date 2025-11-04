@@ -1,23 +1,25 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:education/l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class Story {
   final String title;
   final String content;
   Story({required this.title, required this.content});
-  factory Story.fromJson(Map<String, dynamic> j) => Story(
+  factory Story.fromJson(Map<String, dynamic> j) =>
+      Story(
         title: j['title'] ?? '',
         content: j['content'] ?? '',
       );
 }
 
 class StoryScreen extends StatefulWidget {
-  const StoryScreen({Key? key}) : super(key: key);
+  const StoryScreen({super.key});
 
   @override
-  State<StoryScreen> createState() => _StoryScreenState();
+  State<StoryScreen> createState() =>
+      _StoryScreenState();
 }
 
 class _StoryScreenState extends State<StoryScreen> {
@@ -52,7 +54,9 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.t(context, 'story_short'))),
+      appBar: AppBar(
+          title: Text(AppLocalizations.t(
+              context, 'story_short'))),
       body: ListView.builder(
         itemCount: stories.length,
         itemBuilder: (c, i) {
