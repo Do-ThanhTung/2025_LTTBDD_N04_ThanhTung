@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:translator_plus/translator_plus.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TranslationScreen extends StatefulWidget {
   const TranslationScreen({super.key});
@@ -20,21 +21,13 @@ class _TranslationScreenState
   String _result = '';
   String _sourceLang = 'en';
   String _targetLang = 'vi';
-
-  // Quick phrases
-  final Map<String, String> _quickPhrases = {
-    'hello': 'xin chào',
-    'how are you': 'bạn khỏe không',
-    'thank you': 'cảm ơn',
-    'good morning': 'chào buổi sáng',
-    'good night': 'chúc ngủ ngon',
-    'i love you': 'tôi yêu bạn',
-  };
+  List<Map<String, String>> _translationHistory = [];
 
   @override
   void initState() {
     super.initState();
     _initTts();
+    _loadTranslationHistory();
   }
 
   Future<void> _initTts() async {
@@ -60,6 +53,79 @@ class _TranslationScreenState
     );
   }
 
+  Future<void> _loadTranslationHistory() async {
+    final prefs =
+        await SharedPreferences.getInstance();
+    final historyJson =
+        prefs.getStringList('translation_history') ??
+            [];
+    setState(() {
+      _translationHistory = historyJson.map((item) {
+        final parts = item.split('|||');
+        return {
+          'source': parts[0],
+          'target': parts[1],
+          'sourceLang':
+              parts.length > 2 ? parts[2] : 'en',
+          'targetLang':
+              parts.length > 3 ? parts[3] : 'vi',
+        };
+      }).toList();
+    });
+  }
+
+  Future<void> _saveTranslationHistory(
+      String source, String target) async {
+    // Chuẩn hóa text để so sánh
+    final normalizedSource =
+        source.toLowerCase().trim();
+    final normalizedTarget =
+        target.toLowerCase().trim();
+
+    // Xóa mục trùng lặp nếu có
+    _translationHistory.removeWhere((item) =>
+        item['source']!.toLowerCase().trim() == normalizedSource &&
+        item['target']!.toLowerCase().trim() ==
+            normalizedTarget &&
+        item['sourceLang'] == _sourceLang &&
+        item['targetLang'] == _targetLang);
+
+    // Thêm vào đầu danh sách
+    _translationHistory.insert(0, {
+      'source': source,
+      'target': target,
+      'sourceLang': _sourceLang,
+      'targetLang': _targetLang,
+    });
+
+    // Giới hạn 10 mục gần nhất
+    if (_translationHistory.length > 10) {
+      _translationHistory =
+          _translationHistory.sublist(0, 10);
+    }
+
+    // Lưu vào SharedPreferences
+    final prefs =
+        await SharedPreferences.getInstance();
+    final historyJson =
+        _translationHistory.map((item) {
+      return '${item['source']}|||${item['target']}|||${item['sourceLang']}|||${item['targetLang']}';
+    }).toList();
+    await prefs.setStringList(
+        'translation_history', historyJson);
+
+    setState(() {});
+  }
+
+  Future<void> _clearHistory() async {
+    final prefs =
+        await SharedPreferences.getInstance();
+    await prefs.remove('translation_history');
+    setState(() {
+      _translationHistory = [];
+    });
+  }
+
   Future<void> _translate() async {
     final input = _controller.text.trim();
     if (input.isEmpty) {
@@ -80,6 +146,9 @@ class _TranslationScreenState
       setState(() {
         _result = res.text;
       });
+
+      // Lưu vào lịch sử
+      await _saveTranslationHistory(input, res.text);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -95,18 +164,6 @@ class _TranslationScreenState
       _targetLang = temp;
       _controller.text = _result;
       _result = _controller.text;
-    });
-  }
-
-  void _useQuickPhrase(String en, String vi) {
-    setState(() {
-      if (_sourceLang == 'en') {
-        _controller.text = en;
-        _result = vi;
-      } else {
-        _controller.text = vi;
-        _result = en;
-      }
     });
   }
 
@@ -674,74 +731,83 @@ class _TranslationScreenState
 
                     const SizedBox(height: 24),
 
-                    // Quick Phrases
-                    Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 4,
-                              height: 24,
-                              decoration:
-                                  BoxDecoration(
-                                gradient:
-                                    const LinearGradient(
-                                  colors: [
-                                    Color(0xFF0EA5E9),
-                                    Color(0xFF06B6D4)
-                                  ],
-                                  begin: Alignment
-                                      .topCenter,
-                                  end: Alignment
-                                      .bottomCenter,
+                    // Translation History
+                    if (_translationHistory.isNotEmpty)
+                      Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 4,
+                                height: 24,
+                                decoration:
+                                    BoxDecoration(
+                                  gradient:
+                                      const LinearGradient(
+                                    colors: [
+                                      Color(
+                                          0xFF26C6DA),
+                                      Color(
+                                          0xFF00ACC1),
+                                    ],
+                                    begin: Alignment
+                                        .topCenter,
+                                    end: Alignment
+                                        .bottomCenter,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius
+                                          .circular(2),
                                 ),
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(2),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Quick Phrases',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight:
-                                    FontWeight.bold,
-                                color: isDark
-                                    ? Colors.white
-                                    : Colors
-                                        .grey.shade800,
+                              const SizedBox(width: 8),
+                              Text(
+                                'Translation History',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight:
+                                      FontWeight.bold,
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.grey
+                                          .shade800,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics:
-                              const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 2.2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
+                              const Spacer(),
+                              TextButton(
+                                onPressed:
+                                    _clearHistory,
+                                child: Text(
+                                  'Clear',
+                                  style: TextStyle(
+                                    color: Colors
+                                        .grey.shade600,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          itemCount:
-                              _quickPhrases.length,
-                          itemBuilder:
-                              (context, index) {
-                            final entry = _quickPhrases
-                                .entries
-                                .elementAt(index);
-                            return InkWell(
-                              onTap: () =>
-                                  _useQuickPhrase(
-                                      entry.key,
-                                      entry.value),
-                              child: Container(
+                          const SizedBox(height: 12),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics:
+                                const NeverScrollableScrollPhysics(),
+                            itemCount:
+                                _translationHistory
+                                    .length,
+                            itemBuilder:
+                                (context, index) {
+                              final item =
+                                  _translationHistory[
+                                      index];
+                              return Container(
+                                margin:
+                                    const EdgeInsets
+                                        .only(
+                                        bottom: 12),
                                 padding:
                                     const EdgeInsets
                                         .all(12),
@@ -770,48 +836,124 @@ class _TranslationScreenState
                                             .shade200,
                                   ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment
-                                          .start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .center,
-                                  children: [
-                                    Text(
-                                      entry.key,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: isDark
-                                            ? Colors
-                                                .white
-                                            : Colors
-                                                .grey
-                                                .shade800,
-                                        fontWeight:
-                                            FontWeight
-                                                .w500,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _controller
+                                              .text =
+                                          item[
+                                              'source']!;
+                                      _result = item[
+                                          'target']!;
+                                      _sourceLang = item[
+                                          'sourceLang']!;
+                                      _targetLang = item[
+                                          'targetLang']!;
+                                    });
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment
+                                            .start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons
+                                                .access_time,
+                                            size: 14,
+                                            color: const Color(
+                                                0xFF00ACC1),
+                                          ),
+                                          const SizedBox(
+                                              width:
+                                                  4),
+                                          Text(
+                                            item['sourceLang']!
+                                                .toUpperCase(),
+                                            style:
+                                                TextStyle(
+                                              fontSize:
+                                                  11,
+                                              color: Colors
+                                                  .grey
+                                                  .shade600,
+                                              fontWeight:
+                                                  FontWeight
+                                                      .w500,
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons
+                                                .arrow_forward,
+                                            size: 12,
+                                            color: Colors
+                                                .grey,
+                                          ),
+                                          Text(
+                                            item['targetLang']!
+                                                .toUpperCase(),
+                                            style:
+                                                TextStyle(
+                                              fontSize:
+                                                  11,
+                                              color: Colors
+                                                  .grey
+                                                  .shade600,
+                                              fontWeight:
+                                                  FontWeight
+                                                      .w500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(
-                                        height: 4),
-                                    Text(
-                                      entry.value,
-                                      style:
-                                          const TextStyle(
-                                        fontSize: 11,
-                                        color: Color(
-                                            0xFF0EA5E9),
+                                      const SizedBox(
+                                          height: 8),
+                                      Text(
+                                        item[
+                                            'source']!,
+                                        style:
+                                            TextStyle(
+                                          fontSize: 13,
+                                          color: isDark
+                                              ? Colors
+                                                  .white
+                                              : Colors
+                                                  .grey
+                                                  .shade800,
+                                          fontWeight:
+                                              FontWeight
+                                                  .w500,
+                                        ),
+                                        maxLines: 2,
+                                        overflow:
+                                            TextOverflow
+                                                .ellipsis,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(
+                                          height: 4),
+                                      Text(
+                                        item[
+                                            'target']!,
+                                        style:
+                                            const TextStyle(
+                                          fontSize: 11,
+                                          color: Color(
+                                              0xFF00ACC1),
+                                        ),
+                                        maxLines: 2,
+                                        overflow:
+                                            TextOverflow
+                                                .ellipsis,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math' as math;
 import '../../../l10n/app_localizations.dart';
 import '../../../main.dart';
 import '../../../models/expand_screen/story_screen.dart';
@@ -106,49 +107,61 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(
+                      child: Stack(
+                        children: [
+                          // Bong bóng sáng ngẫu nhiên
+                          ..._buildRandomBubbles(),
+                          // Nội dung chính
+                          Padding(
+                            padding: const EdgeInsets
+                                .fromLTRB(
                                 20, 20, 20, 60),
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.t(
-                                  context,
-                                  'study_chill'),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight:
-                                    FontWeight.bold,
-                                shadows: [
-                                  Shadow(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                              children: [
+                                Text(
+                                  AppLocalizations.t(
+                                      context,
+                                      'study_chill'),
+                                  style:
+                                      const TextStyle(
                                     color:
-                                        Colors.black26,
-                                    offset:
-                                        Offset(0, 2),
-                                    blurRadius: 4,
+                                        Colors.white,
+                                    fontSize: 24,
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors
+                                            .black26,
+                                        offset: Offset(
+                                            0, 2),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              AppLocalizations.t(
-                                  context,
-                                  'learn_more_fun'),
-                              style: TextStyle(
-                                color: Colors.white
-                                    .withAlpha(
-                                        (0.95 * 255)
+                                ),
+                                const SizedBox(
+                                    height: 4),
+                                Text(
+                                  AppLocalizations.t(
+                                      context,
+                                      'learn_more_fun'),
+                                  style: TextStyle(
+                                    color: Colors.white
+                                        .withAlpha((0.95 *
+                                                255)
                                             .round()),
-                                fontSize: 14,
-                              ),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -243,11 +256,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           .bottomLeft,
                                       colors: [
                                         Color(
-                                            0xFF64B5F6),
+                                            0xFF26C6DA),
                                         Color(
-                                            0xFF42A5F5),
+                                            0xFF00ACC1),
                                         Color(
-                                            0xFF2196F3),
+                                            0xFF00897B),
                                       ],
                                       stops: [
                                         0.0,
@@ -558,6 +571,47 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  // Tạo bong bóng ngẫu nhiên cho header
+  List<Widget> _buildRandomBubbles() {
+    final random = math.Random();
+    final bubbleCount =
+        3 + random.nextInt(4); // 3-6 bong bóng
+
+    return List.generate(bubbleCount, (index) {
+      final size = 40.0 +
+          random.nextDouble() *
+              100; // Kích thước 40-140
+      final leftPercent =
+          random.nextDouble(); // 0.0 - 1.0
+      final topPercent =
+          random.nextDouble(); // 0.0 - 1.0
+      final opacity = 0.05 +
+          random.nextDouble() *
+              0.10; // Độ trong suốt 0.05-0.15 (nhẹ hơn)
+
+      return Positioned.fill(
+        child: Align(
+          alignment: Alignment(
+            -1 +
+                (leftPercent *
+                    2), // -1 đến 1 (trái sang phải)
+            -1 +
+                (topPercent *
+                    2), // -1 đến 1 (trên xuống dưới)
+          ),
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(opacity),
+            ),
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildFeatureCard(

@@ -286,12 +286,14 @@ class _DictionaryScreenState
   Widget _buildEmptyState() {
     final isDark = Theme.of(context).brightness ==
         Brightness.dark;
-    
+
     // Lấy lịch sử tìm kiếm
-    final searchHistory = SearchHistoryService.instance.getHistory();
+    final searchHistory =
+        SearchHistoryService.instance.getHistory();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -299,70 +301,71 @@ class _DictionaryScreenState
           // Icon và tiêu đề
           Center(
             child: Card(
-            elevation: 0,
-            color: isDark
-                ? Colors.grey.shade800
-                    .withAlpha((0.6 * 255).round())
-                : Colors.white
-                    .withAlpha((0.8 * 255).round()),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFFB39DDB),
-                          Color(0xFF9575CD),
-                          Color(0xFF7E57C2),
-                        ],
+              elevation: 0,
+              color: isDark
+                  ? Colors.grey.shade800
+                      .withAlpha((0.6 * 255).round())
+                  : Colors.white
+                      .withAlpha((0.8 * 255).round()),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(24),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFFB39DDB),
+                            Color(0xFF9575CD),
+                            Color(0xFF7E57C2),
+                          ],
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                      shape: BoxShape.circle,
+                      child: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 36,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 36,
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.t(
+                          context, 'search_word'),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: isDark
+                            ? Colors.white
+                            : Colors.grey.shade800,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.t(
-                        context, 'search_word'),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? Colors.white
-                          : Colors.grey.shade800,
+                    const SizedBox(height: 8),
+                    Text(
+                      'Discover meanings, examples, and more',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Discover meanings, examples, and more',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDark
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-          ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Lịch sử tìm kiếm
           if (searchHistory.isNotEmpty) ...[
             Row(
@@ -387,7 +390,8 @@ class _DictionaryScreenState
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      SearchHistoryService.instance.clearHistory();
+                      SearchHistoryService.instance
+                          .clearHistory();
                     });
                   },
                   child: Text(
@@ -427,8 +431,10 @@ class _DictionaryScreenState
                           BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF9575CD)
-                              .withAlpha((0.2 * 255).round()),
+                          color: const Color(
+                                  0xFF9575CD)
+                              .withAlpha(
+                                  (0.2 * 255).round()),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -448,7 +454,8 @@ class _DictionaryScreenState
                           style: const TextStyle(
                             color: Color(0xFF6A1B9A),
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontWeight:
+                                FontWeight.w600,
                           ),
                         ),
                       ],
