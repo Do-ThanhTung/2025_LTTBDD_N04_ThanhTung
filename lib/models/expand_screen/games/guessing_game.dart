@@ -220,7 +220,8 @@ class _GuessingGameState extends State<GuessingGame> {
         );
         word.vietnameseDefinition = translation.text;
       } catch (e) {
-        print('Lỗi dịch "${word.definition}": $e');
+        debugPrint(
+            'Lỗi dịch "${word.definition}": $e');
         word.vietnameseDefinition = word
             .definition; // Fallback về tiếng Anh nếu lỗi
       }

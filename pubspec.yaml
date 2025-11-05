@@ -32,5 +32,3 @@ flutter:
   assets:
     - assets/icons/
     - assets/data/stories.json
-    - assets/data/local_en_vi.json
-    - assets/data/local_vi_en.json

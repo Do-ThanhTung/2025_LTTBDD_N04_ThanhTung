@@ -288,8 +288,9 @@ class _FlashcardGameState
   Future<void> _translateTextInline(
       String text) async {
     if (text.trim().isEmpty) return;
-    if (_translationCache.containsKey(text))
+    if (_translationCache.containsKey(text)) {
       return; // already translated
+    }
 
     setState(() => _isTranslating = true);
 
@@ -330,8 +331,9 @@ class _FlashcardGameState
         );
       }
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() => _isTranslating = false);
+      }
     }
   }
 
@@ -444,7 +446,8 @@ class _FlashcardGameState
       context: context,
       barrierDismissible: false,
       barrierLabel: 'Kết quả',
-      barrierColor: Colors.black.withOpacity(0.6),
+      barrierColor:
+          Colors.black.withValues(alpha: 0.6),
       transitionDuration:
           const Duration(milliseconds: 300),
       pageBuilder: (context, anim1, anim2) {
@@ -486,7 +489,7 @@ class _FlashcardGameState
                     boxShadow: [
                       BoxShadow(
                         color: const Color(0xFF7B6BE8)
-                            .withOpacity(0.4),
+                            .withValues(alpha: 0.4),
                         blurRadius: 32,
                         offset: const Offset(0, 12),
                       ),
@@ -518,7 +521,8 @@ class _FlashcardGameState
                           subtitle,
                           style: TextStyle(
                             color: Colors.white
-                                .withOpacity(0.85),
+                                .withValues(
+                                    alpha: 0.85),
                             fontSize:
                                 screenWidth * 0.038,
                             height: 1.4,
@@ -540,13 +544,15 @@ class _FlashcardGameState
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white
-                                .withOpacity(0.15),
+                                .withValues(
+                                    alpha: 0.15),
                             borderRadius:
                                 BorderRadius.circular(
                                     20),
                             border: Border.all(
                               color: Colors.white
-                                  .withOpacity(0.3),
+                                  .withValues(
+                                      alpha: 0.3),
                               width: 1.5,
                             ),
                           ),
@@ -564,8 +570,9 @@ class _FlashcardGameState
                                       style: TextStyle(
                                         color: Colors
                                             .white
-                                            .withOpacity(
-                                                0.9),
+                                            .withValues(
+                                                alpha:
+                                                    0.9),
                                         fontSize:
                                             screenWidth *
                                                 0.035,
@@ -600,8 +607,8 @@ class _FlashcardGameState
                                           BoxShadow(
                                             color: const Color(
                                                     0xFF4CAF50)
-                                                .withOpacity(
-                                                    0.4),
+                                                .withValues(
+                                                    alpha: 0.4),
                                             blurRadius:
                                                 12,
                                             offset:
@@ -636,7 +643,8 @@ class _FlashcardGameState
                                 height: screenHeight *
                                     0.07,
                                 color: Colors.white
-                                    .withOpacity(0.3),
+                                    .withValues(
+                                        alpha: 0.3),
                               ),
 
                               // Skipped cards
@@ -648,8 +656,9 @@ class _FlashcardGameState
                                       style: TextStyle(
                                         color: Colors
                                             .white
-                                            .withOpacity(
-                                                0.9),
+                                            .withValues(
+                                                alpha:
+                                                    0.9),
                                         fontSize:
                                             screenWidth *
                                                 0.035,
@@ -684,8 +693,8 @@ class _FlashcardGameState
                                           BoxShadow(
                                             color: const Color(
                                                     0xFFFF9800)
-                                                .withOpacity(
-                                                    0.4),
+                                                .withValues(
+                                                    alpha: 0.4),
                                             blurRadius:
                                                 12,
                                             offset:
@@ -744,8 +753,9 @@ class _FlashcardGameState
                                       Colors.white,
                                   side: BorderSide(
                                     color: Colors.white
-                                        .withOpacity(
-                                            0.6),
+                                        .withValues(
+                                            alpha:
+                                                0.6),
                                     width: 2,
                                   ),
                                   padding: EdgeInsets
@@ -803,8 +813,8 @@ class _FlashcardGameState
                                   elevation: 4,
                                   shadowColor: Colors
                                       .black
-                                      .withOpacity(
-                                          0.3),
+                                      .withValues(
+                                          alpha: 0.3),
                                   shape:
                                       RoundedRectangleBorder(
                                     borderRadius:
@@ -842,7 +852,8 @@ class _FlashcardGameState
                           style: TextButton.styleFrom(
                             foregroundColor: Colors
                                 .white
-                                .withOpacity(0.85),
+                                .withValues(
+                                    alpha: 0.85),
                             padding:
                                 EdgeInsets.symmetric(
                               vertical:
@@ -1565,22 +1576,22 @@ class _FlashcardGameState
                     gradient: LinearGradient(
                       colors: [
                         const Color(0xFF26C6DA)
-                            .withOpacity(0.2),
+                            .withValues(alpha: 0.2),
                         const Color(0xFF26C6DA)
-                            .withOpacity(0.1),
+                            .withValues(alpha: 0.1),
                       ],
                     ),
                     borderRadius:
                         BorderRadius.circular(12),
                     border: Border.all(
                       color: const Color(0xFF26C6DA)
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: const Color(0xFF26C6DA)
-                            .withOpacity(0.2),
+                            .withValues(alpha: 0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -1669,12 +1680,12 @@ class _FlashcardGameState
                                 colors: [
                                   const Color(
                                           0xFF26C6DA)
-                                      .withOpacity(
-                                          0.2),
+                                      .withValues(
+                                          alpha: 0.2),
                                   const Color(
                                           0xFF26C6DA)
-                                      .withOpacity(
-                                          0.15),
+                                      .withValues(
+                                          alpha: 0.15),
                                 ],
                               ),
                               borderRadius:
@@ -1683,7 +1694,8 @@ class _FlashcardGameState
                               border: Border.all(
                                 color: const Color(
                                         0xFF26C6DA)
-                                    .withOpacity(0.4),
+                                    .withValues(
+                                        alpha: 0.4),
                                 width: 1,
                               ),
                             ),

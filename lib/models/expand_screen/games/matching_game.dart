@@ -151,7 +151,9 @@ class _MatchingGameState extends State<MatchingGame> {
     String shortened = '';
     for (var word in words) {
       if ('$shortened $word'.trim().length >
-          maxLength - 3) break;
+          maxLength - 3) {
+        break;
+      }
       shortened += shortened.isEmpty ? word : ' $word';
     }
 
@@ -217,7 +219,7 @@ class _MatchingGameState extends State<MatchingGame> {
         );
         pair.vietnameseMeaning = translation.text;
       } catch (e) {
-        print('Lỗi dịch "${pair.meaning}": $e');
+        debugPrint('Lỗi dịch "${pair.meaning}": $e');
         pair.vietnameseMeaning = pair
             .meaning; // Fallback về tiếng Anh nếu lỗi
       }
@@ -449,8 +451,8 @@ class _MatchingGameState extends State<MatchingGame> {
                     BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color:
-                        Colors.black.withOpacity(0.25),
+                    color: Colors.black
+                        .withValues(alpha: 0.25),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -476,7 +478,7 @@ class _MatchingGameState extends State<MatchingGame> {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.white
-                              .withOpacity(0.6),
+                              .withValues(alpha: 0.6),
                           blurRadius: 18,
                           offset: const Offset(0, 6),
                         )
@@ -517,7 +519,7 @@ class _MatchingGameState extends State<MatchingGame> {
                             horizontal: 12),
                     decoration: BoxDecoration(
                       color: Colors.white
-                          .withOpacity(0.12),
+                          .withValues(alpha: 0.12),
                       borderRadius:
                           BorderRadius.circular(14),
                       border: Border.all(
@@ -525,7 +527,7 @@ class _MatchingGameState extends State<MatchingGame> {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.white
-                              .withOpacity(0.06),
+                              .withValues(alpha: 0.06),
                           blurRadius: 12,
                           offset: const Offset(0, 8),
                         ),
@@ -558,7 +560,8 @@ class _MatchingGameState extends State<MatchingGame> {
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.green
-                                    .withOpacity(0.3),
+                                    .withValues(
+                                        alpha: 0.3),
                                 blurRadius: 8,
                                 offset:
                                     const Offset(0, 6),
