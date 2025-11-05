@@ -402,11 +402,11 @@ class _GameScreenState extends State<GameScreen> {
   void _startFlashcards() {
     setState(() {
       _gameType = 'flashcard';
-      // Chọn ngẫu nhiên 5 thẻ từ danh sách
+      // Chọn ngẫu nhiên 20 thẻ từ danh sách
       final shuffledAll =
           List<FlashCard>.from(flashCards)..shuffle();
       _shuffledFlashCards =
-          shuffledAll.take(5).toList();
+          shuffledAll.take(20).toList();
       _currentCardIndex = 0;
       _showAnswer = false;
       _score = 0;
@@ -643,174 +643,239 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      transitionBuilder:
+          (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.8, end: 1.0)
+                .animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              ),
+            ),
+            child: child,
+          ),
+        );
+      },
+      child: _buildCurrentGame(),
+    );
+  }
+
+  Widget _buildCurrentGame() {
     switch (_gameType) {
       case 'flashcard':
-        return _buildFlashcardGame();
+        return KeyedSubtree(
+          key: const ValueKey('flashcard'),
+          child: _buildFlashcardGame(),
+        );
       case 'matching':
-        return _buildMatchingGame();
+        return KeyedSubtree(
+          key: const ValueKey('matching'),
+          child: _buildMatchingGame(),
+        );
       case 'guessing':
-        return _buildGuessingGame();
+        return KeyedSubtree(
+          key: const ValueKey('guessing'),
+          child: _buildGuessingGame(),
+        );
       default:
-        return _buildGameMenu();
+        return KeyedSubtree(
+          key: const ValueKey('menu'),
+          child: _buildGameMenu(),
+        );
     }
   }
 
   Widget _buildGameMenu() {
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF1a1a2e)
+          : const Color(0xFFFCE4EC),
       body: Hero(
         tag: 'hero_game',
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFFE91E63),
-                Color(0xFF9C27B0)
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 50,
-                    left: 20,
-                    right: 20,
-                    bottom: 30),
-                child: SafeArea(
-                  bottom: false,
-                  child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () =>
-                                Navigator.pop(context),
-                            child: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                                size: 28),
-                          ),
-                          const SizedBox(width: 16),
-                          const Text(
-                            'Trò chơi học tập',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight:
-                                  FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Trophy Display
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.amber
-                              .withOpacity(0.2),
-                          borderRadius:
-                              BorderRadius.circular(
-                                  20),
-                          border: Border.all(
-                              color: Colors.amber,
-                              width: 2),
-                        ),
-                        child: Row(
-                          mainAxisSize:
-                              MainAxisSize.min,
-                          children: [
-                            const Icon(
-                                Icons.emoji_events,
-                                color: Colors.amber,
-                                size: 24),
-                            const SizedBox(width: 8),
-                            Text(
-                              '$_totalTrophies',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight:
-                                    FontWeight.bold,
-                                color: Colors.amber,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+        child: Column(
+          children: [
+            // Header with gradient
+            Container(
+              padding: const EdgeInsets.only(
+                  top: 50,
+                  left: 20,
+                  right: 20,
+                  bottom: 24),
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFEC407A),
+                    Color(0xFFE91E63),
+                    Color(0xFFD81B60),
+                  ],
+                  stops: [0.0, 0.5, 1.0],
                 ),
               ),
-
-              // Game cards
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(20),
+              child: SafeArea(
+                bottom: false,
+                child: Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildGameCard(
-                      title: 'Thẻ ghi nhớ',
-                      subtitle:
-                          'Kiểm tra vốn từ vựng với thẻ ghi nhớ tương tác',
-                      badge:
-                          '${flashCards.length} thẻ',
-                      icon: Icons.star_outline,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF9D8EF5),
-                          Color(0xFF7B6BE8)
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      onTap: _startFlashcards,
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () =>
+                              Navigator.pop(context),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.all(
+                                    8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white
+                                  .withAlpha(
+                                      (0.2 * 255)
+                                          .round()),
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        const Text(
+                          'Trò chơi học tập',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight:
+                                FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    _buildGameCard(
-                      title: 'Ghép đôi',
-                      subtitle:
-                          'Ghép từ tiếng Anh với nghĩa tiếng Việt',
-                      badge: '$_matchingTrophies 🏆',
-                      icon:
-                          Icons.emoji_events_outlined,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF5EC9B4),
-                          Color(0xFF4BB9A5)
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    // Trophy Display
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.amber
+                            .withOpacity(0.2),
+                        borderRadius:
+                            BorderRadius.circular(20),
+                        border: Border.all(
+                            color: Colors.amber,
+                            width: 2),
                       ),
-                      onTap: _startMatching,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildGameCard(
-                      title: 'Đoán từ',
-                      subtitle:
-                          'Đoán từ dựa trên gợi ý và định nghĩa',
-                      badge: '$_guessingTrophies 🏆',
-                      icon: Icons.lightbulb_outline,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF5BA3E8),
-                          Color(0xFF4A8DD4)
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                              Icons.emoji_events,
+                              color: Colors.amber,
+                              size: 20),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$_totalTrophies',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight:
+                                  FontWeight.bold,
+                              color: Colors.amber,
+                            ),
+                          ),
                         ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                       ),
-                      onTap: _startGuessing,
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // Game cards
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  _buildGameCard(
+                    title: 'Thẻ ghi nhớ',
+                    subtitle:
+                        'Kiểm tra vốn từ vựng với thẻ ghi nhớ tương tác',
+                    badge: '20 thẻ',
+                    icon: Icons.star_outline,
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF9D8EF5),
+                        Color(0xFF7B6BE8)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    heroTag: 'game_flashcard',
+                    onTap: () {
+                      _startFlashcards();
+                      // Không cần setState vì _startFlashcards đã gọi
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildGameCard(
+                    title: 'Ghép đôi',
+                    subtitle:
+                        'Ghép từ tiếng Anh với nghĩa tiếng Việt',
+                    badge: '$_matchingTrophies 🏆',
+                    icon: Icons.emoji_events_outlined,
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF5EC9B4),
+                        Color(0xFF4BB9A5)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    heroTag: 'game_matching',
+                    onTap: () {
+                      _startMatching();
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildGameCard(
+                    title: 'Đoán từ',
+                    subtitle:
+                        'Đoán từ dựa trên gợi ý và định nghĩa',
+                    badge: '$_guessingTrophies 🏆',
+                    icon: Icons.lightbulb_outline,
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF5BA3E8),
+                        Color(0xFF4A8DD4)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    heroTag: 'game_guessing',
+                    onTap: () {
+                      _startGuessing();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -822,116 +887,104 @@ class _GameScreenState extends State<GameScreen> {
     required String badge,
     required IconData icon,
     required Gradient gradient,
+    required String heroTag,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: gradient,
+          color: isDark
+              ? Colors.grey.shade800
+                  .withAlpha((0.6 * 255).round())
+              : Colors.white
+                  .withAlpha((0.9 * 255).round()),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: (gradient as LinearGradient)
+                .colors
+                .first
+                .withAlpha((0.3 * 255).round()),
+            width: 2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: (gradient as LinearGradient)
+              color: (gradient)
                   .colors
                   .last
-                  .withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+                  .withAlpha((0.15 * 255).round()),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white
-                        .withValues(alpha: 0.2),
-                    borderRadius:
-                        BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon,
-                      color: Colors.white, size: 32),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white
-                        .withValues(alpha: 0.25),
-                    borderRadius:
-                        BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    badge,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+            // Icon
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius:
+                    BorderRadius.circular(12),
+              ),
+              child: Icon(icon,
+                  color: Colors.white, size: 28),
+            ),
+            const SizedBox(width: 16),
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? Colors.white
+                          : Colors.grey.shade800,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white
-                    .withValues(alpha: 0.9),
-                height: 1.4,
+            // Badge
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius:
+                    BorderRadius.circular(12),
               ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(Icons.flash_on,
-                    color: Colors.white
-                        .withValues(alpha: 0.8),
-                    size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  'Nhanh & Vui',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white
-                        .withValues(alpha: 0.8),
-                    fontWeight: FontWeight.w500,
-                  ),
+              child: Text(
+                badge,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
-                const SizedBox(width: 16),
-                Icon(Icons.star,
-                    color: Colors.white
-                        .withValues(alpha: 0.8),
-                    size: 16),
-                const SizedBox(width: 4),
-                Text(
-                  'Kiểm tra trí nhớ',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white
-                        .withValues(alpha: 0.8),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
