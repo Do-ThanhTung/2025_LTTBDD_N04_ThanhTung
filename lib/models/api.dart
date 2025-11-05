@@ -6,8 +6,7 @@ class API {
   static const String baseUrl =
       "https://api.dictionaryapi.dev/api/v2/entries/en/";
 
-  static Future<ResponseModel> fetchMeaning(
-      String word,
+  static Future<ResponseModel> fetchMeaning(String word,
       {String? language}) async {
     final uri = Uri.parse(language != null
         ? "$baseUrl$word?language=$language"
@@ -15,16 +14,13 @@ class API {
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data is List &&
-          data.isNotEmpty &&
-          data[0] is Map<String, dynamic>) {
+      if (data is List && data.isNotEmpty && data[0] is Map<String, dynamic>) {
         return ResponseModel.fromJson(
             Map<String, dynamic>.from(data[0] as Map));
       }
       throw Exception('Unexpected response format');
     } else {
-      throw Exception(
-          'Failed to load meaning: ${response.statusCode}');
+      throw Exception('Failed to load meaning: ${response.statusCode}');
     }
   }
 }

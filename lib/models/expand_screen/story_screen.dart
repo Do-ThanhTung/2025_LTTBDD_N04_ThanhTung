@@ -7,8 +7,7 @@ class Story {
   final String title;
   final String content;
   Story({required this.title, required this.content});
-  factory Story.fromJson(Map<String, dynamic> j) =>
-      Story(
+  factory Story.fromJson(Map<String, dynamic> j) => Story(
         title: j['title'] ?? '',
         content: j['content'] ?? '',
       );
@@ -18,8 +17,7 @@ class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
 
   @override
-  State<StoryScreen> createState() =>
-      _StoryScreenState();
+  State<StoryScreen> createState() => _StoryScreenState();
 }
 
 class _StoryScreenState extends State<StoryScreen> {
@@ -56,9 +54,7 @@ class _StoryScreenState extends State<StoryScreen> {
     return Hero(
       tag: 'hero_story',
       child: Scaffold(
-        appBar: AppBar(
-            title: Text(AppLocalizations.t(
-                context, 'story_short'))),
+        appBar: AppBar(title: Text(AppLocalizations.t(context, 'story_short'))),
         body: ListView.builder(
           itemCount: stories.length,
           itemBuilder: (c, i) {
@@ -75,8 +71,7 @@ class _StoryScreenState extends State<StoryScreen> {
                           title: Text(st.title),
                         ),
                         body: Padding(
-                          padding:
-                              const EdgeInsets.all(
+                          padding: const EdgeInsets.all(
                             16.0,
                           ),
                           child: SingleChildScrollView(

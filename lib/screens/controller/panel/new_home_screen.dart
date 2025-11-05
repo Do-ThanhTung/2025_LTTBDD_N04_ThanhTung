@@ -11,12 +11,10 @@ class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
 
   @override
-  State<NewHomeScreen> createState() =>
-      _NewHomeScreenState();
+  State<NewHomeScreen> createState() => _NewHomeScreenState();
 }
 
-class _NewHomeScreenState
-    extends State<NewHomeScreen> {
+class _NewHomeScreenState extends State<NewHomeScreen> {
   int _searchCount = 0;
   int _gamesPlayed = 0;
   int _totalTrophies = 0;
@@ -28,13 +26,11 @@ class _NewHomeScreenState
   }
 
   Future<void> _loadStats() async {
-    final prefs =
-        await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
       _searchCount = prefs.getInt('search_count') ?? 0;
       _gamesPlayed = prefs.getInt('games_played') ?? 0;
-      _totalTrophies =
-          prefs.getInt('total_trophies') ?? 0;
+      _totalTrophies = prefs.getInt('total_trophies') ?? 0;
     });
   }
 
@@ -44,9 +40,7 @@ class _NewHomeScreenState
       body: ValueListenableBuilder<Color>(
         valueListenable: AppPrimaryColor.color,
         builder: (context, primaryColor, _) {
-          final isDark =
-              Theme.of(context).brightness ==
-                  Brightness.dark;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
 
           return Container(
             decoration: BoxDecoration(
@@ -69,8 +63,7 @@ class _NewHomeScreenState
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header with gradient background
                     Container(
@@ -86,48 +79,34 @@ class _NewHomeScreenState
                           ],
                           stops: const [0.0, 0.5, 1.0],
                         ),
-                        borderRadius:
-                            const BorderRadius.only(
-                          bottomLeft:
-                              Radius.circular(32),
-                          bottomRight:
-                              Radius.circular(32),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                const Color(0xFF2196F3)
-                                    .withOpacity(0.3),
+                            color: const Color(0xFF2196F3).withOpacity(0.3),
                             blurRadius: 20,
-                            offset:
-                                const Offset(0, 10),
+                            offset: const Offset(0, 10),
                             spreadRadius: -5,
                           ),
                         ],
                       ),
                       child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(
-                                20, 20, 20, 60),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              AppLocalizations.t(
-                                  context,
-                                  'study_chill'),
+                              AppLocalizations.t(context, 'study_chill'),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
-                                fontWeight:
-                                    FontWeight.bold,
+                                fontWeight: FontWeight.bold,
                                 shadows: [
                                   Shadow(
-                                    color:
-                                        Colors.black26,
-                                    offset:
-                                        Offset(0, 2),
+                                    color: Colors.black26,
+                                    offset: Offset(0, 2),
                                     blurRadius: 4,
                                   ),
                                 ],
@@ -135,14 +114,10 @@ class _NewHomeScreenState
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              AppLocalizations.t(
-                                  context,
-                                  'learn_more_fun'),
+                              AppLocalizations.t(context, 'learn_more_fun'),
                               style: TextStyle(
                                 color: Colors.white
-                                    .withAlpha(
-                                        (0.95 * 255)
-                                            .round()),
+                                    .withAlpha((0.95 * 255).round()),
                                 fontSize: 14,
                               ),
                             ),
@@ -153,9 +128,7 @@ class _NewHomeScreenState
 
                     // Feature Cards Grid (2x2)
                     Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(
-                              20, 0, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                       child: Transform.translate(
                         offset: const Offset(0, -40),
                         child: Column(
@@ -163,85 +136,57 @@ class _NewHomeScreenState
                             Row(
                               children: [
                                 Expanded(
-                                  child:
-                                      _buildFeatureCard(
+                                  child: _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context,
-                                        'dictionary'),
+                                        context, 'dictionary'),
                                     icon: Icons.search,
-                                    gradient:
-                                        const LinearGradient(
-                                      begin: Alignment
-                                          .topLeft,
-                                      end: Alignment
-                                          .bottomRight,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                       colors: [
-                                        Color(
-                                            0xFFB39DDB),
-                                        Color(
-                                            0xFF9575CD),
-                                        Color(
-                                            0xFF7E57C2),
+                                        Color(0xFFB39DDB),
+                                        Color(0xFF9575CD),
+                                        Color(0xFF7E57C2),
                                       ],
-                                      stops: [
-                                        0.0,
-                                        0.5,
-                                        1.0
-                                      ],
+                                      stops: [0.0, 0.5, 1.0],
                                     ),
                                     circleCount: 3,
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  const DictionaryScreen(),
+                                          builder: (context) =>
+                                              const DictionaryScreen(),
                                         ),
                                       );
                                     },
                                   ),
                                 ),
-                                const SizedBox(
-                                    width: 12),
+                                const SizedBox(width: 12),
                                 Expanded(
-                                  child:
-                                      _buildFeatureCard(
+                                  child: _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context,
-                                        'translation'),
-                                    icon: Icons
-                                        .translate,
-                                    gradient:
-                                        const LinearGradient(
-                                      begin: Alignment
-                                          .topRight,
-                                      end: Alignment
-                                          .bottomLeft,
+                                        context, 'translation'),
+                                    icon: Icons.translate,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topRight,
+                                      end: Alignment.bottomLeft,
                                       colors: [
-                                        Color(
-                                            0xFF64B5F6),
-                                        Color(
-                                            0xFF42A5F5),
-                                        Color(
-                                            0xFF2196F3),
+                                        Color(0xFF64B5F6),
+                                        Color(0xFF42A5F5),
+                                        Color(0xFF2196F3),
                                       ],
-                                      stops: [
-                                        0.0,
-                                        0.5,
-                                        1.0
-                                      ],
+                                      stops: [0.0, 0.5, 1.0],
                                     ),
                                     circleCount: 4,
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  const TranslationScreen(),
+                                          builder: (context) =>
+                                              const TranslationScreen(),
                                         ),
                                       );
                                     },
@@ -253,84 +198,56 @@ class _NewHomeScreenState
                             Row(
                               children: [
                                 Expanded(
-                                  child:
-                                      _buildFeatureCard(
+                                  child: _buildFeatureCard(
                                     context,
                                     title: 'Game',
-                                    icon: Icons
-                                        .videogame_asset,
-                                    gradient:
-                                        const LinearGradient(
-                                      begin: Alignment
-                                          .bottomLeft,
-                                      end: Alignment
-                                          .topRight,
+                                    icon: Icons.videogame_asset,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.bottomLeft,
+                                      end: Alignment.topRight,
                                       colors: [
-                                        Color(
-                                            0xFFF06292),
-                                        Color(
-                                            0xFFEC407A),
-                                        Color(
-                                            0xFFE91E63),
+                                        Color(0xFFF06292),
+                                        Color(0xFFEC407A),
+                                        Color(0xFFE91E63),
                                       ],
-                                      stops: [
-                                        0.0,
-                                        0.5,
-                                        1.0
-                                      ],
+                                      stops: [0.0, 0.5, 1.0],
                                     ),
                                     circleCount: 5,
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  const GameScreen(),
+                                          builder: (context) =>
+                                              const GameScreen(),
                                         ),
                                       );
                                     },
                                   ),
                                 ),
-                                const SizedBox(
-                                    width: 12),
+                                const SizedBox(width: 12),
                                 Expanded(
-                                  child:
-                                      _buildFeatureCard(
+                                  child: _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context,
-                                        'short_stories'),
-                                    icon: Icons
-                                        .menu_book,
-                                    gradient:
-                                        const LinearGradient(
-                                      begin: Alignment
-                                          .bottomRight,
-                                      end: Alignment
-                                          .topLeft,
+                                        context, 'short_stories'),
+                                    icon: Icons.menu_book,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.bottomRight,
+                                      end: Alignment.topLeft,
                                       colors: [
-                                        Color(
-                                            0xFF4DD0E1),
-                                        Color(
-                                            0xFF26C6DA),
-                                        Color(
-                                            0xFF00BCD4),
+                                        Color(0xFF4DD0E1),
+                                        Color(0xFF26C6DA),
+                                        Color(0xFF00BCD4),
                                       ],
-                                      stops: [
-                                        0.0,
-                                        0.5,
-                                        1.0
-                                      ],
+                                      stops: [0.0, 0.5, 1.0],
                                     ),
                                     circleCount: 6,
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  const StoryScreen(),
+                                          builder: (context) =>
+                                              const StoryScreen(),
                                         ),
                                       );
                                     },
@@ -343,79 +260,52 @@ class _NewHomeScreenState
 
                             // Quick Stats
                             Container(
-                              padding:
-                                  const EdgeInsets.all(
-                                      20),
-                              decoration:
-                                  BoxDecoration(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
                                 color: isDark
-                                    ? Colors
-                                        .grey.shade800
-                                        .withAlpha(
-                                            (0.7 * 255)
-                                                .round())
+                                    ? Colors.grey.shade800
+                                        .withAlpha((0.7 * 255).round())
                                     : Colors.white
-                                        .withAlpha((0.8 *
-                                                255)
-                                            .round()),
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(20),
+                                        .withAlpha((0.8 * 255).round()),
+                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black
-                                        .withAlpha((0.05 *
-                                                255)
-                                            .round()),
+                                        .withAlpha((0.05 * 255).round()),
                                     blurRadius: 10,
-                                    offset:
-                                        const Offset(
-                                            0, 2),
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Thống kê',
                                     style: TextStyle(
                                       fontSize: 18,
-                                      fontWeight:
-                                          FontWeight
-                                              .bold,
+                                      fontWeight: FontWeight.bold,
                                       color: isDark
-                                          ? Colors
-                                              .white
-                                          : Colors.grey
-                                              .shade800,
+                                          ? Colors.white
+                                          : Colors.grey.shade800,
                                     ),
                                   ),
-                                  const SizedBox(
-                                      height: 16),
+                                  const SizedBox(height: 16),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceAround,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
                                       _buildStatItem(
                                         context,
                                         '$_searchCount',
                                         'Từ',
                                         const LinearGradient(
-                                          begin: Alignment
-                                              .topLeft,
-                                          end: Alignment
-                                              .bottomRight,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                           colors: [
-                                            Color(
-                                                0xFFB39DDB),
-                                            Color(
-                                                0xFF9575CD),
-                                            Color(
-                                                0xFF7E57C2),
+                                            Color(0xFFB39DDB),
+                                            Color(0xFF9575CD),
+                                            Color(0xFF7E57C2),
                                           ],
                                         ),
                                       ),
@@ -424,17 +314,12 @@ class _NewHomeScreenState
                                         '$_gamesPlayed',
                                         'Trò chơi',
                                         const LinearGradient(
-                                          begin: Alignment
-                                              .topLeft,
-                                          end: Alignment
-                                              .bottomRight,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                           colors: [
-                                            Color(
-                                                0xFFF06292),
-                                            Color(
-                                                0xFFEC407A),
-                                            Color(
-                                                0xFFE91E63),
+                                            Color(0xFFF06292),
+                                            Color(0xFFEC407A),
+                                            Color(0xFFE91E63),
                                           ],
                                         ),
                                       ),
@@ -443,17 +328,12 @@ class _NewHomeScreenState
                                         '$_totalTrophies',
                                         'Cúp',
                                         const LinearGradient(
-                                          begin: Alignment
-                                              .topLeft,
-                                          end: Alignment
-                                              .bottomRight,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                           colors: [
-                                            Color(
-                                                0xFFFFD54F),
-                                            Color(
-                                                0xFFFFCA28),
-                                            Color(
-                                                0xFFFFC107),
+                                            Color(0xFFFFD54F),
+                                            Color(0xFFFFCA28),
+                                            Color(0xFFFFC107),
                                           ],
                                         ),
                                       ),
@@ -467,104 +347,64 @@ class _NewHomeScreenState
 
                             // Motivational Quote
                             Container(
-                              padding:
-                                  const EdgeInsets.all(
-                                      20),
-                              decoration:
-                                  BoxDecoration(
-                                gradient:
-                                    LinearGradient(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
                                   colors: isDark
                                       ? [
-                                          const Color(
-                                                  0xFF5D4E37)
-                                              .withAlpha((0.4 *
-                                                      255)
-                                                  .round()),
-                                          const Color(
-                                                  0xFF6B5840)
-                                              .withAlpha((0.4 *
-                                                      255)
-                                                  .round()),
+                                          const Color(0xFF5D4E37)
+                                              .withAlpha((0.4 * 255).round()),
+                                          const Color(0xFF6B5840)
+                                              .withAlpha((0.4 * 255).round()),
                                         ]
                                       : [
-                                          const Color(
-                                              0xFFFFF3E0),
-                                          const Color(
-                                              0xFFFFE8CC),
+                                          const Color(0xFFFFF3E0),
+                                          const Color(0xFFFFE8CC),
                                         ],
                                 ),
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(20),
+                                borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black
-                                        .withAlpha((0.05 *
-                                                255)
-                                            .round()),
+                                        .withAlpha((0.05 * 255).round()),
                                     blurRadius: 10,
-                                    offset:
-                                        const Offset(
-                                            0, 2),
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Row(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     '💡',
-                                    style: TextStyle(
-                                        fontSize: 28),
+                                    style: TextStyle(fontSize: 28),
                                   ),
-                                  const SizedBox(
-                                      width: 12),
+                                  const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           AppLocalizations.t(
-                                              context,
-                                              'motivational_quote'),
-                                          style:
-                                              TextStyle(
-                                            fontStyle:
-                                                FontStyle
-                                                    .italic,
-                                            fontSize:
-                                                14,
+                                              context, 'motivational_quote'),
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 14,
                                             color: isDark
-                                                ? Colors
-                                                    .grey
-                                                    .shade200
-                                                : Colors
-                                                    .grey
-                                                    .shade800,
+                                                ? Colors.grey.shade200
+                                                : Colors.grey.shade800,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: 4),
+                                        const SizedBox(height: 4),
                                         Text(
                                           AppLocalizations.t(
-                                              context,
-                                              'quote_author'),
-                                          style:
-                                              TextStyle(
-                                            fontSize:
-                                                12,
+                                              context, 'quote_author'),
+                                          style: TextStyle(
+                                            fontSize: 12,
                                             color: isDark
-                                                ? Colors
-                                                    .grey
-                                                    .shade400
-                                                : Colors
-                                                    .grey
-                                                    .shade600,
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade600,
                                           ),
                                         ),
                                       ],
@@ -844,12 +684,10 @@ class _NewHomeScreenState
               height: 160,
               decoration: BoxDecoration(
                 gradient: gradient,
-                borderRadius:
-                    BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(
-                        (0.1 * 255).round()),
+                    color: Colors.black.withAlpha((0.1 * 255).round()),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -863,26 +701,18 @@ class _NewHomeScreenState
                   // Nội dung chính
                   Center(
                     child: Column(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding:
-                              const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Colors.white
-                                .withAlpha((0.3 * 255)
-                                    .round()),
-                            borderRadius:
-                                BorderRadius.circular(
-                                    16),
+                            color: Colors.white.withAlpha((0.3 * 255).round()),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black
-                                    .withOpacity(0.1),
+                                color: Colors.black.withOpacity(0.1),
                                 blurRadius: 8,
-                                offset:
-                                    const Offset(0, 2),
+                                offset: const Offset(0, 2),
                               ),
                             ],
                           ),
@@ -898,8 +728,7 @@ class _NewHomeScreenState
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 17,
-                            fontWeight:
-                                FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -921,8 +750,7 @@ class _NewHomeScreenState
     String label,
     Gradient gradient,
   ) {
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
@@ -934,15 +762,13 @@ class _NewHomeScreenState
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: gradient.colors.first
-                    .withOpacity(0.3),
+                color: gradient.colors.first.withOpacity(0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
                 spreadRadius: 0,
               ),
               BoxShadow(
-                color: gradient.colors.last
-                    .withOpacity(0.2),
+                color: gradient.colors.last.withOpacity(0.2),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
                 spreadRadius: -5,
@@ -960,8 +786,7 @@ class _NewHomeScreenState
                   height: 45,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        Colors.white.withOpacity(0.15),
+                    color: Colors.white.withOpacity(0.15),
                   ),
                 ),
               ),
@@ -973,8 +798,7 @@ class _NewHomeScreenState
                   height: 35,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        Colors.white.withOpacity(0.1),
+                    color: Colors.white.withOpacity(0.1),
                   ),
                 ),
               ),
@@ -986,8 +810,7 @@ class _NewHomeScreenState
                   height: 25,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        Colors.white.withOpacity(0.08),
+                    color: Colors.white.withOpacity(0.08),
                   ),
                 ),
               ),
@@ -999,8 +822,7 @@ class _NewHomeScreenState
                   height: 20,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        Colors.white.withOpacity(0.12),
+                    color: Colors.white.withOpacity(0.12),
                   ),
                 ),
               ),
@@ -1031,9 +853,7 @@ class _NewHomeScreenState
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: isDark
-                ? Colors.grey.shade300
-                : Colors.grey.shade700,
+            color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
           ),
         ),
       ],

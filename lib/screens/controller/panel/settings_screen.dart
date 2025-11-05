@@ -6,17 +6,14 @@ class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() =>
-      _SettingsScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState
-    extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -25,9 +22,7 @@ class _SettingsScreenState
           children: [
             Icon(
               Icons.settings,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             const SizedBox(width: 8),
             Text(
@@ -35,9 +30,7 @@ class _SettingsScreenState
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -50,21 +43,15 @@ class _SettingsScreenState
           _buildSectionHeader(
             context,
             icon: Icons.language,
-            title: AppLocalizations.t(
-                context, 'language'),
+            title: AppLocalizations.t(context, 'language'),
           ),
           const SizedBox(height: 8),
           ValueListenableBuilder<Locale>(
             valueListenable: AppLocale.locale,
             builder: (context, currentLocale, _) {
               return Text(
-                currentLocale.languageCode == 'en'
-                    ? 'English'
-                    : 'Tiếng Việt',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(
+                currentLocale.languageCode == 'en' ? 'English' : 'Tiếng Việt',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
@@ -82,27 +69,20 @@ class _SettingsScreenState
           _buildSectionHeader(
             context,
             icon: Icons.brightness_6,
-            title:
-                AppLocalizations.t(context, 'theme'),
+            title: AppLocalizations.t(context, 'theme'),
           ),
           const SizedBox(height: 8),
           ValueListenableBuilder<ThemeMode>(
             valueListenable: AppTheme.mode,
             builder: (context, currentMode, _) {
-              final modeName = currentMode ==
-                      ThemeMode.dark
+              final modeName = currentMode == ThemeMode.dark
                   ? AppLocalizations.t(context, 'dark')
                   : currentMode == ThemeMode.light
-                      ? AppLocalizations.t(
-                          context, 'light')
-                      : AppLocalizations.t(
-                          context, 'system_default');
+                      ? AppLocalizations.t(context, 'light')
+                      : AppLocalizations.t(context, 'system_default');
               return Text(
                 modeName,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
@@ -120,17 +100,12 @@ class _SettingsScreenState
           _buildSectionHeader(
             context,
             icon: Icons.palette,
-            title: AppLocalizations.t(
-                context, 'primary_color'),
+            title: AppLocalizations.t(context, 'primary_color'),
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.t(
-                context, 'choose_a_color'),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(
+            AppLocalizations.t(context, 'choose_a_color'),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
@@ -145,15 +120,13 @@ class _SettingsScreenState
   }
 
   Widget _buildSectionHeader(BuildContext context,
-      {required IconData icon,
-      required String title}) {
+      {required IconData icon, required String title}) {
     return Row(
       children: [
         Icon(
           icon,
           size: 24,
-          color:
-              Theme.of(context).colorScheme.onSurface,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
         const SizedBox(width: 12),
         Text(
@@ -179,16 +152,14 @@ class _SettingsScreenState
               label: 'English',
               locale: const Locale('en'),
               icon: Icons.language,
-              isSelected:
-                  currentLocale.languageCode == 'en',
+              isSelected: currentLocale.languageCode == 'en',
             ),
             _buildLanguageChip(
               context,
               label: 'Tiếng Việt',
               locale: const Locale('vi'),
               icon: Icons.translate,
-              isSelected:
-                  currentLocale.languageCode == 'vi',
+              isSelected: currentLocale.languageCode == 'vi',
             ),
           ],
         );
@@ -215,33 +186,23 @@ class _SettingsScreenState
       selected: isSelected,
       onSelected: (_) {
         AppLocale.save(locale);
-        ScaffoldMessenger.of(context)
-            .hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                '${AppLocalizations.t(context, 'language')}: $label'),
+            content: Text('${AppLocalizations.t(context, 'language')}: $label'),
             duration: const Duration(seconds: 2),
           ),
         );
       },
-      selectedColor: Theme.of(context)
-          .colorScheme
-          .primaryContainer,
-      checkmarkColor: Theme.of(context)
-          .colorScheme
-          .onPrimaryContainer,
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
+      selectedColor: Theme.of(context).colorScheme.primaryContainer,
+      checkmarkColor: Theme.of(context).colorScheme.onPrimaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
           color: isSelected
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context)
-                  .colorScheme
-                  .outline
-                  .withValues(alpha: 0.5),
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
         ),
       ),
     );
@@ -251,41 +212,30 @@ class _SettingsScreenState
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: AppTheme.mode,
       builder: (context, currentMode, _) {
-        final isDarkMode =
-            currentMode == ThemeMode.dark;
+        final isDarkMode = currentMode == ThemeMode.dark;
         return Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-              color: Theme.of(context)
-                  .colorScheme
-                  .outline
-                  .withValues(alpha: 0.2),
+              color:
+                  Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
           child: SwitchListTile(
             secondary: Icon(
-              isDarkMode
-                  ? Icons.dark_mode
-                  : Icons.light_mode,
-              color: Theme.of(context)
-                  .colorScheme
-                  .primary,
+              isDarkMode ? Icons.dark_mode : Icons.light_mode,
+              color: Theme.of(context).colorScheme.primary,
             ),
             title: Text(
               isDarkMode
                   ? AppLocalizations.t(context, 'dark')
-                  : AppLocalizations.t(
-                      context, 'light'),
-              style: const TextStyle(
-                  fontWeight: FontWeight.w500),
+                  : AppLocalizations.t(context, 'light'),
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
             value: isDarkMode,
             onChanged: (bool value) {
-              final newMode = value
-                  ? ThemeMode.dark
-                  : ThemeMode.light;
+              final newMode = value ? ThemeMode.dark : ThemeMode.light;
               AppTheme.save(newMode);
 
               // Auto-suggest appropriate color for the theme
@@ -294,10 +244,8 @@ class _SettingsScreenState
                   : AppPrimaryColor.lightThemeDefault;
               AppPrimaryColor.save(suggestedColor);
 
-              ScaffoldMessenger.of(context)
-                  .hideCurrentSnackBar();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     '${AppLocalizations.t(context, 'theme')}: ${value ? AppLocalizations.t(context, 'dark') : AppLocalizations.t(context, 'light')}',
@@ -319,22 +267,17 @@ class _SettingsScreenState
         return Wrap(
           spacing: 16,
           runSpacing: 16,
-          children:
-              AppPrimaryColor.colors.map((color) {
-            final isSelected =
-                currentColor.value == color.value;
+          children: AppPrimaryColor.colors.map((color) {
+            final isSelected = currentColor.value == color.value;
 
             return GestureDetector(
               onTap: () {
                 AppPrimaryColor.save(color);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.t(
-                        context,
-                        'primary_color_updated')),
-                    duration:
-                        const Duration(seconds: 1),
+                    content: Text(
+                        AppLocalizations.t(context, 'primary_color_updated')),
+                    duration: const Duration(seconds: 1),
                   ),
                 );
               },
@@ -346,16 +289,13 @@ class _SettingsScreenState
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: isSelected
-                        ? Theme.of(context)
-                            .colorScheme
-                            .onSurface
+                        ? Theme.of(context).colorScheme.onSurface
                         : Colors.transparent,
                     width: 3,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color:
-                          color.withValues(alpha: 0.4),
+                      color: color.withValues(alpha: 0.4),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),

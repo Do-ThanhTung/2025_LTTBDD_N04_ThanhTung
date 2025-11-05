@@ -6,8 +6,7 @@ import 'panel/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
-  static Map<String, WidgetBuilder> getRoutes(
-      BuildContext context) {
+  static Map<String, WidgetBuilder> getRoutes(BuildContext context) {
     return {
       '/home': (context) => const HomeScreen(),
       '/my_learning': (context) => MyLearningScreen(),

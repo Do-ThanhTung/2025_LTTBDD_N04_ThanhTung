@@ -14,8 +14,7 @@ class SearchHistoryService {
   List<String> _history = [];
 
   // Get singleton instance
-  static SearchHistoryService get instance =>
-      _instance;
+  static SearchHistoryService get instance => _instance;
 
   // Load history from SharedPreferences
   Future<void> loadHistory() async {

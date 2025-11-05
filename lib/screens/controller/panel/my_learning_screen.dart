@@ -1,15 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class MyLearningScreen extends StatefulWidget {
   const MyLearningScreen({super.key});
 
   @override
-  State<MyLearningScreen> createState() =>
-      _MyLearningScreenState();
+  State<MyLearningScreen> createState() => _MyLearningScreenState();
 }
 
-class _MyLearningScreenState
-    extends State<MyLearningScreen> {
+class _MyLearningScreenState extends State<MyLearningScreen> {
   int wordsLearned = 142;
   int dailyGoal = 10;
   int todayProgress = 7;
@@ -20,18 +18,14 @@ class _MyLearningScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: isDark
               ? const LinearGradient(
-                  colors: [
-                    Color(0xFF111827),
-                    Color(0xFF1F2937)
-                  ],
+                  colors: [Color(0xFF111827), Color(0xFF1F2937)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
@@ -49,8 +43,7 @@ class _MyLearningScreenState
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
                   padding: const EdgeInsets.all(24),
@@ -62,8 +55,7 @@ class _MyLearningScreenState
                         Color(0xFFEC4899)
                       ],
                     ),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
                     'Quá trình học tập',
@@ -78,19 +70,13 @@ class _MyLearningScreenState
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF9333EA),
-                        Color(0xFFEC4899)
-                      ],
+                      colors: [Color(0xFF9333EA), Color(0xFFEC4899)],
                     ),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     'Khóa học: $coursesInProgress',
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white),
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -104,34 +90,25 @@ class _MyLearningScreenState
                         Color(0xFF14B8A6)
                       ],
                     ),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Mục tiêu hôm nay',
                           style: TextStyle(
                               fontSize: 20,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white)),
                       const SizedBox(height: 12),
-                      Text(
-                          '$todayProgress / $dailyGoal từ',
+                      Text('$todayProgress / $dailyGoal từ',
                           style: const TextStyle(
-                              fontSize: 32,
-                              color: Colors.white)),
+                              fontSize: 32, color: Colors.white)),
                       const SizedBox(height: 12),
                       LinearProgressIndicator(
-                        value:
-                            todayProgress / dailyGoal,
-                        backgroundColor:
-                            Colors.white30,
-                        valueColor:
-                            const AlwaysStoppedAnimation(
-                                Colors.white),
+                        value: todayProgress / dailyGoal,
+                        backgroundColor: Colors.white30,
+                        valueColor: const AlwaysStoppedAnimation(Colors.white),
                       ),
                     ],
                   ),
@@ -147,24 +124,20 @@ class _MyLearningScreenState
                         Color(0xFFEC4899)
                       ],
                     ),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Chuỗi học',
                           style: TextStyle(
                               fontSize: 20,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white)),
                       Text('$currentStreak ngày ',
                           style: const TextStyle(
                               fontSize: 48,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ],
                   ),
@@ -174,37 +147,24 @@ class _MyLearningScreenState
                   children: [
                     Expanded(
                       child: Container(
-                        padding:
-                            const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient:
-                              const LinearGradient(
-                                  colors: [
-                                Color(0xFF9333EA),
-                                Color(0xFF7C3AED)
-                              ]),
-                          borderRadius:
-                              BorderRadius.circular(
-                                  20),
+                          gradient: const LinearGradient(
+                              colors: [Color(0xFF9333EA), Color(0xFF7C3AED)]),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
                           children: [
                             const Icon(Icons.book,
-                                color: Colors.white,
-                                size: 32),
+                                color: Colors.white, size: 32),
                             const SizedBox(height: 12),
                             Text('$wordsLearned',
                                 style: const TextStyle(
                                     fontSize: 28,
-                                    fontWeight:
-                                        FontWeight
-                                            .bold,
-                                    color:
-                                        Colors.white)),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
                             const Text('Từ đã học',
-                                style: TextStyle(
-                                    color: Colors
-                                        .white70)),
+                                style: TextStyle(color: Colors.white70)),
                           ],
                         ),
                       ),
@@ -212,38 +172,24 @@ class _MyLearningScreenState
                     const SizedBox(width: 16),
                     Expanded(
                       child: Container(
-                        padding:
-                            const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient:
-                              const LinearGradient(
-                                  colors: [
-                                Color(0xFFFB923C),
-                                Color(0xFFF97316)
-                              ]),
-                          borderRadius:
-                              BorderRadius.circular(
-                                  20),
+                          gradient: const LinearGradient(
+                              colors: [Color(0xFFFB923C), Color(0xFFF97316)]),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
                           children: [
-                            const Icon(
-                                Icons.emoji_events,
-                                color: Colors.white,
-                                size: 32),
+                            const Icon(Icons.emoji_events,
+                                color: Colors.white, size: 32),
                             const SizedBox(height: 12),
                             Text('$gamesPlayed',
                                 style: const TextStyle(
                                     fontSize: 28,
-                                    fontWeight:
-                                        FontWeight
-                                            .bold,
-                                    color:
-                                        Colors.white)),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
                             const Text('Trò chơi',
-                                style: TextStyle(
-                                    color: Colors
-                                        .white70)),
+                                style: TextStyle(color: Colors.white70)),
                           ],
                         ),
                       ),
@@ -255,28 +201,21 @@ class _MyLearningScreenState
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF10B981),
-                          Color(0xFF14B8A6)
-                        ]),
-                    borderRadius:
-                        BorderRadius.circular(20),
+                        colors: [Color(0xFF10B981), Color(0xFF14B8A6)]),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Truyện đã đọc',
                           style: TextStyle(
                               fontSize: 20,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white)),
                       Text('$totalStories ',
                           style: const TextStyle(
                               fontSize: 48,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ],
                   ),
