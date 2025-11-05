@@ -210,7 +210,7 @@ class _GameScreenState extends State<GameScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.2),
+                        color: Colors.amber.withAlpha((0.2 * 255).round()),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: Colors.amber,

@@ -8,7 +8,6 @@ import '../../../models/api.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:translator_plus/translator_plus.dart';
 import '../../../services/translation_service.dart';
-import '../../../services/notification_service.dart';
 import '../../../services/search_history_service.dart';
 import '../../../services/vocabulary_service.dart';
 
@@ -16,33 +15,28 @@ class DictionaryScreen extends StatefulWidget {
   const DictionaryScreen({super.key});
 
   @override
-  State<DictionaryScreen> createState() => _DictionaryScreenState();
+  State<DictionaryScreen> createState() =>
+      _DictionaryScreenState();
 }
 
-class _DictionaryScreenState extends State<DictionaryScreen> {
+class _DictionaryScreenState
+    extends State<DictionaryScreen> {
   bool inProgress = false;
   ResponseModel? responseModel;
   String noDataText = "";
-  final GoogleTranslator translator = GoogleTranslator();
-  final Map<int, bool> _translating = {};
-  final TextEditingController _searchController = TextEditingController();
+  final GoogleTranslator translator =
+      GoogleTranslator();
+  final TextEditingController _searchController =
+      TextEditingController();
   late final FocusNode _searchFocusNode = FocusNode();
-  Map<String, String> _suggestionMap = {};
   final FlutterTts _flutterTts = FlutterTts();
-  Set<String> _savedWords = {};
+  final Set<String> _savedWords = {};
 
   @override
   void initState() {
     super.initState();
     // Load search history
     SearchHistoryService.instance.loadHistory();
-    // Load local suggestion words (original -> translation)
-    TranslationService.instance.getEnglishMap().then((map) {
-      if (!mounted) return;
-      setState(() {
-        _suggestionMap = map;
-      });
-    });
     _initTts();
   }
 
@@ -77,15 +71,17 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     return Hero(
       tag: 'hero_dictionary',
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
-          backgroundColor:
-              isDark ? const Color(0xFF1a1a2e) : const Color(0xFFF3E5F5),
+          backgroundColor: isDark
+              ? const Color(0xFF1a1a2e)
+              : const Color(0xFFF3E5F5),
           body: Column(
             children: [
               // Header with gradient
@@ -98,7 +94,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 ),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
+                  borderRadius:
+                      const BorderRadius.only(
                     bottomLeft: Radius.circular(32),
                     bottomRight: Radius.circular(32),
                   ),
@@ -117,16 +114,24 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   children: [
                     // Top bar with back button
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.of(context).maybePop(),
+                          onTap: () =>
+                              Navigator.of(context)
+                                  .maybePop(),
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding:
+                                const EdgeInsets.all(
+                                    8),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color:
-                                  Colors.white.withAlpha((0.2 * 255).round()),
+                              color: Colors.white
+                                  .withAlpha(
+                                      (0.2 * 255)
+                                          .round()),
                             ),
                             child: const Icon(
                               Icons.arrow_back,
@@ -136,11 +141,13 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                           ),
                         ),
                         Text(
-                          AppLocalizations.t(context, 'practice_dictionary'),
+                          AppLocalizations.t(context,
+                              'practice_dictionary'),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            fontWeight:
+                                FontWeight.w600,
                           ),
                         ),
                         const Icon(
@@ -161,7 +168,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
               const SizedBox(height: 12),
               if (inProgress)
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20),
                   child: LinearProgressIndicator(),
                 )
               else if (responseModel != null)
@@ -175,22 +183,17 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
     );
   }
 
-  OverlayEntry? _overlayEntry;
-
-  void _closeSuggestionsOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
   Widget _buildSearchWidget() {
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha((0.95 * 255).round()),
+        color: Colors.white
+            .withAlpha((0.95 * 255).round()),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.1 * 255).round()),
+            color: Colors.black
+                .withAlpha((0.1 * 255).round()),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -213,18 +216,26 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   margin: const EdgeInsets.all(4),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_searchController.text.isNotEmpty) {
-                        _getMeaningFromApi(_searchController.text);
+                      if (_searchController
+                          .text.isNotEmpty) {
+                        _getMeaningFromApi(
+                            _searchController.text);
                         _searchFocusNode.unfocus();
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor:
+                          Theme.of(context)
+                              .colorScheme
+                              .primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius:
+                            BorderRadius.circular(16),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding:
+                          const EdgeInsets.symmetric(
+                              horizontal: 20),
                       elevation: 0,
                     ),
                     child: const Text(
@@ -238,10 +249,12 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 )
               : null,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 18),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 18),
         ),
         onChanged: (value) {
-          setState(() {}); // To show/hide search button
+          setState(
+              () {}); // To show/hide search button
         },
         onSubmitted: (value) {
           if (value.isNotEmpty) {
@@ -253,13 +266,16 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   }
 
   Widget _buildEmptyState() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     // Lấy lịch sử tìm kiếm
-    final searchHistory = SearchHistoryService.instance.getHistory();
+    final searchHistory =
+        SearchHistoryService.instance.getHistory();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -269,10 +285,13 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
             child: Card(
               elevation: 0,
               color: isDark
-                  ? Colors.grey.shade800.withAlpha((0.6 * 255).round())
-                  : Colors.white.withAlpha((0.8 * 255).round()),
+                  ? Colors.grey.shade800
+                      .withAlpha((0.6 * 255).round())
+                  : Colors.white
+                      .withAlpha((0.8 * 255).round()),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius:
+                    BorderRadius.circular(24),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(32),
@@ -300,11 +319,14 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      AppLocalizations.t(context, 'search_word'),
+                      AppLocalizations.t(
+                          context, 'search_word'),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.grey.shade800,
+                        color: isDark
+                            ? Colors.white
+                            : Colors.grey.shade800,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -341,14 +363,17 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.grey.shade800,
+                    color: isDark
+                        ? Colors.white
+                        : Colors.grey.shade800,
                   ),
                 ),
                 const Spacer(),
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      SearchHistoryService.instance.clearHistory();
+                      SearchHistoryService.instance
+                          .clearHistory();
                     });
                   },
                   child: Text(
@@ -372,7 +397,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     _getMeaningFromApi(word);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding:
+                        const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
                     ),
@@ -383,11 +409,14 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                           Color(0xFFCE93D8),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius:
+                          BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF9575CD)
-                              .withAlpha((0.2 * 255).round()),
+                          color: const Color(
+                                  0xFF9575CD)
+                              .withAlpha(
+                                  (0.2 * 255).round()),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -407,7 +436,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                           style: const TextStyle(
                             color: Color(0xFF6A1B9A),
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontWeight:
+                                FontWeight.w600,
                           ),
                         ),
                       ],
@@ -423,7 +453,9 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.grey.shade800,
+                color: isDark
+                    ? Colors.white
+                    : Colors.grey.shade800,
               ),
             ),
             const SizedBox(height: 12),
@@ -444,7 +476,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     _getMeaningFromApi(word);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding:
+                        const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
                     ),
@@ -455,7 +488,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                           Color(0xFFCE93D8),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius:
+                          BorderRadius.circular(20),
                     ),
                     child: Text(
                       word,
@@ -475,91 +509,10 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
     );
   }
 
-  Widget _buildSuggestionList() {
-    final input = _searchController.text.toLowerCase();
-
-    List<String> suggestions;
-
-    if (input.isEmpty) {
-      // Khi search box trống, hiển thị 10 từ đầu tiên
-      suggestions = _suggestionMap.keys.take(10).toList();
-    } else {
-      // Khi có text, tìm kiếm từ khớp
-      suggestions = _suggestionMap.keys
-          .where((k) => k.toLowerCase().contains(input))
-          .take(10)
-          .toList();
-    }
-
-    if (suggestions.isEmpty) {
-      print('❌ No suggestions found');
-      return const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Text(
-          'No suggestions found',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-
-    print('✅ Building suggestions list with ${suggestions.length} items');
-
-    return SingleChildScrollView(
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: suggestions.length,
-        itemBuilder: (context, index) {
-          final option = suggestions[index];
-          final vi = _suggestionMap[option] ?? '';
-          return InkWell(
-            onTap: () {
-              _searchController.text = option;
-              _closeSuggestionsOverlay();
-              _searchFocusNode.unfocus();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(option,
-                        style: const TextStyle(
-                            fontSize: 16, color: Colors.black87)),
-                  ),
-                  const SizedBox(width: 12),
-                  if (vi.isNotEmpty)
-                    Text(vi,
-                        style:
-                            TextStyle(fontSize: 14, color: Colors.grey[700])),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // Trigger a new dictionary lookup for a tapped word (e.g., from synonyms chips)
-  void _searchWord(String word) {
-    if (word.trim().isEmpty) return;
-    // Fill the search field for visibility and reuse
-    _searchController.text = word;
-    // Close any suggestion overlay if present and remove focus
-    try {
-      _closeSuggestionsOverlay();
-    } catch (_) {}
-    _searchFocusNode.unfocus();
-    // Execute the lookup
-    _getMeaningFromApi(word);
-  }
-
   Future<void> _getMeaningFromApi(String word) async {
     // Add to search history
-    await SearchHistoryService.instance.addSearch(word);
+    await SearchHistoryService.instance
+        .addSearch(word);
 
     setState(() {
       inProgress = true;
@@ -570,29 +523,40 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
 
       // Cập nhật số từ đã tra (chỉ khi tra thành công và chưa tra từ này bao giờ)
       if (responseModel != null) {
-        final prefs = await SharedPreferences.getInstance();
+        final prefs =
+            await SharedPreferences.getInstance();
         // Lấy danh sách các từ đã tra
         List<String> searchedWords =
-            prefs.getStringList('searched_words') ?? [];
-        String normalizedWord = word.toLowerCase().trim();
+            prefs.getStringList('searched_words') ??
+                [];
+        String normalizedWord =
+            word.toLowerCase().trim();
 
         // Chỉ tăng count nếu từ chưa được tra bao giờ
         if (!searchedWords.contains(normalizedWord)) {
           searchedWords.add(normalizedWord);
-          await prefs.setStringList('searched_words', searchedWords);
-          await prefs.setInt('search_count', searchedWords.length);
+          await prefs.setStringList(
+              'searched_words', searchedWords);
+          await prefs.setInt(
+              'search_count', searchedWords.length);
         }
 
         // Lưu từ vựng kèm nghĩa và ví dụ cho game
         if (responseModel!.meanings != null &&
             responseModel!.meanings!.isNotEmpty) {
-          final meaning = responseModel!.meanings!.first;
-          if (meaning.definitions != null && meaning.definitions!.isNotEmpty) {
-            final definition = meaning.definitions!.first.definition ?? '';
+          final meaning =
+              responseModel!.meanings!.first;
+          if (meaning.definitions != null &&
+              meaning.definitions!.isNotEmpty) {
+            final definition = meaning
+                    .definitions!.first.definition ??
+                '';
             final example =
-                meaning.definitions!.first.example ?? 'No example available';
+                meaning.definitions!.first.example ??
+                    'No example available';
 
-            await VocabularyService.instance.saveVocabularyItem(
+            await VocabularyService.instance
+                .saveVocabularyItem(
               normalizedWord,
               definition,
               example,
@@ -601,103 +565,136 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         }
       }
 
+      if (!mounted) return;
       setState(() {});
     } catch (e) {
       responseModel = null;
-      // capture localized string safely (avoid using context after await if disposed)
+      if (!mounted) return;
       final msg = AppLocalizations.t(
         context,
         'meaning_cannot_be_fetched',
       );
       noDataText = msg;
-      if (!mounted) return;
       setState(() {});
     } finally {
-      setState(() {
-        inProgress = false;
-      });
+      if (mounted) {
+        setState(() {
+          inProgress = false;
+        });
+      }
     }
   }
 
   Widget _buildResponseWidget() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Card(
         elevation: 0,
         color: isDark
-            ? Colors.grey.shade800.withAlpha((0.6 * 255).round())
-            : Colors.white.withAlpha((0.9 * 255).round()),
+            ? Colors.grey.shade800
+                .withAlpha((0.6 * 255).round())
+            : Colors.white
+                .withAlpha((0.9 * 255).round()),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               // Word header with actions
               Row(
                 children: [
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             Text(
-                              responseModel!.word!.toUpperCase(),
+                              responseModel!.word!
+                                  .toUpperCase(),
                               style: TextStyle(
                                 fontSize: 26,
-                                fontWeight: FontWeight.bold,
+                                fontWeight:
+                                    FontWeight.bold,
                                 color: isDark
                                     ? Colors.white
-                                    : Colors.grey.shade900,
+                                    : Colors
+                                        .grey.shade900,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(Icons.auto_awesome,
-                                color: Colors.amber, size: 24),
+                            const Icon(
+                                Icons.auto_awesome,
+                                color: Colors.amber,
+                                size: 24),
                           ],
                         ),
-                        if (responseModel!.phonetic?.isNotEmpty ?? false)
+                        if (responseModel!.phonetic
+                                ?.isNotEmpty ??
+                            false)
                           Padding(
-                            padding: const EdgeInsets.only(top: 4),
+                            padding:
+                                const EdgeInsets.only(
+                                    top: 4),
                             child: Text(
                               responseModel!.phonetic!,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w500,
+                                color:
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                fontWeight:
+                                    FontWeight.w500,
                               ),
                             ),
                           ),
                         const SizedBox(height: 8),
-                        if (responseModel!.meanings?.isNotEmpty ?? false)
+                        if (responseModel!.meanings
+                                ?.isNotEmpty ??
+                            false)
                           Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: const EdgeInsets
+                                .symmetric(
                               horizontal: 12,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Theme.of(context).colorScheme.primary,
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary,
                                   Theme.of(context)
                                       .colorScheme
                                       .primary
-                                      .withAlpha((0.7 * 255).round()),
+                                      .withAlpha((0.7 *
+                                              255)
+                                          .round()),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(20),
                             ),
                             child: Text(
-                              responseModel!.meanings![0].partOfSpeech ?? '',
+                              responseModel!
+                                      .meanings![0]
+                                      .partOfSpeech ??
+                                  '',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontWeight:
+                                    FontWeight.w600,
                               ),
                             ),
                           ),
@@ -712,23 +709,34 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
+                          gradient:
+                              const LinearGradient(
+                            colors: [
+                              Color(0xFF5BA3E8),
+                              Color(0xFF4A8DD4)
+                            ],
                           ),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF5BA3E8)
-                                  .withAlpha((0.3 * 255).round()),
+                              color: const Color(
+                                      0xFF5BA3E8)
+                                  .withAlpha(
+                                      (0.3 * 255)
+                                          .round()),
                               blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              offset:
+                                  const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: IconButton(
-                          onPressed: () => _speak(responseModel!.word!),
-                          icon: const Icon(Icons.volume_up,
-                              color: Colors.white, size: 22),
+                          onPressed: () => _speak(
+                              responseModel!.word!),
+                          icon: const Icon(
+                              Icons.volume_up,
+                              color: Colors.white,
+                              size: 22),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -736,7 +744,10 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          gradient: _savedWords.contains(responseModel!.word!)
+                          gradient: _savedWords
+                                  .contains(
+                                      responseModel!
+                                          .word!)
                               ? const LinearGradient(
                                   colors: [
                                     Color(0xFFFF7B9C),
@@ -745,27 +756,37 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                                 )
                               : LinearGradient(
                                   colors: [
-                                    Colors.grey.shade400,
-                                    Colors.grey.shade500
+                                    Colors
+                                        .grey.shade400,
+                                    Colors
+                                        .grey.shade500
                                   ],
                                 ),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  Colors.black.withAlpha((0.2 * 255).round()),
+                              color: Colors.black
+                                  .withAlpha(
+                                      (0.2 * 255)
+                                          .round()),
                               blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              offset:
+                                  const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: IconButton(
                           onPressed: () =>
-                              _toggleSaveWord(responseModel!.word!),
+                              _toggleSaveWord(
+                                  responseModel!
+                                      .word!),
                           icon: Icon(
-                            _savedWords.contains(responseModel!.word!)
+                            _savedWords.contains(
+                                    responseModel!
+                                        .word!)
                                 ? Icons.bookmark
-                                : Icons.bookmark_border,
+                                : Icons
+                                    .bookmark_border,
                             color: Colors.white,
                             size: 22,
                           ),
@@ -779,17 +800,25 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
               const SizedBox(height: 24),
 
               // Meanings list
-              ...responseModel!.meanings!.asMap().entries.map((entry) {
+              ...responseModel!.meanings!
+                  .asMap()
+                  .entries
+                  .map((entry) {
                 final meaning = entry.value;
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
-                    _buildMeaningSection(meaning, isDark),
-                    if (entry.key < responseModel!.meanings!.length - 1)
+                    _buildMeaningSection(
+                        meaning, isDark),
+                    if (entry.key <
+                        responseModel!
+                                .meanings!.length -
+                            1)
                       const SizedBox(height: 20),
                   ],
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
@@ -797,7 +826,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
     );
   }
 
-  Widget _buildMeaningSection(Meanings meaning, bool isDark) {
+  Widget _buildMeaningSection(
+      Meanings meaning, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -807,25 +837,29 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isDark
-                ? Colors.white.withAlpha((0.05 * 255).round())
+                ? Colors.white
+                    .withAlpha((0.05 * 255).round())
                 : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withAlpha((0.1 * 255).round())
+                  ? Colors.white
+                      .withAlpha((0.1 * 255).round())
                   : Colors.grey.shade200,
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha((0.05 * 255).round()),
+                color: Colors.black
+                    .withAlpha((0.05 * 255).round()),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -835,11 +869,14 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context)
+                              .colorScheme
+                              .primary,
                           Theme.of(context)
                               .colorScheme
                               .primary
-                              .withAlpha((0.7 * 255).round()),
+                              .withAlpha(
+                                  (0.7 * 255).round()),
                         ],
                       ),
                       shape: BoxShape.circle,
@@ -851,7 +888,9 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : Colors.grey.shade800,
+                      color: isDark
+                          ? Colors.white
+                          : Colors.grey.shade800,
                     ),
                   ),
                   const Spacer(),
@@ -860,7 +899,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     onPressed: () => _translateSection(
                       context,
                       meaning.definitions
-                              ?.map((d) => d.definition ?? '')
+                              ?.map((d) =>
+                                  d.definition ?? '')
                               .join('\n') ??
                           '',
                       'Definition',
@@ -868,33 +908,39 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     icon: Icon(
                       Icons.translate,
                       size: 20,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary,
                     ),
                     tooltip: 'Translate to Vietnamese',
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              ...?meaning.definitions?.map((def) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      '• ${def.definition}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: isDark
-                            ? Colors.grey.shade300
-                            : Colors.grey.shade700,
-                      ),
-                    ),
-                  )),
+              ...?meaning.definitions
+                  ?.map((def) => Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 8),
+                        child: Text(
+                          '• ${def.definition}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            height: 1.5,
+                            color: isDark
+                                ? Colors.grey.shade300
+                                : Colors.grey.shade700,
+                          ),
+                        ),
+                      )),
             ],
           ),
         ),
 
         // Example Card with border (if available)
         if (meaning.definitions?.isNotEmpty ?? false)
-          if (meaning.definitions!.first.example?.isNotEmpty ?? false) ...[
+          if (meaning.definitions!.first.example
+                  ?.isNotEmpty ??
+              false) ...[
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
@@ -904,30 +950,36 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   colors: isDark
                       ? [
                           const Color(0xFF5D4E37)
-                              .withAlpha((0.3 * 255).round()),
+                              .withAlpha(
+                                  (0.3 * 255).round()),
                           const Color(0xFF6B5840)
-                              .withAlpha((0.3 * 255).round()),
+                              .withAlpha(
+                                  (0.3 * 255).round()),
                         ]
                       : [
                           const Color(0xFFFFF3E0),
                           const Color(0xFFFFE8CC),
                         ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius:
+                    BorderRadius.circular(16),
                 border: Border.all(
-                  color: const Color(0xFFFFB74D).withAlpha((0.4 * 255).round()),
+                  color: const Color(0xFFFFB74D)
+                      .withAlpha((0.4 * 255).round()),
                   width: 2,
                 ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
+                        decoration:
+                            const BoxDecoration(
                           color: Color(0xFFFFB74D),
                           shape: BoxShape.circle,
                         ),
@@ -938,15 +990,20 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.grey.shade800,
+                          color: isDark
+                              ? Colors.white
+                              : Colors.grey.shade800,
                         ),
                       ),
                       const Spacer(),
                       // Translate button for example
                       IconButton(
-                        onPressed: () => _translateSection(
+                        onPressed: () =>
+                            _translateSection(
                           context,
-                          meaning.definitions!.first.example ?? '',
+                          meaning.definitions!.first
+                                  .example ??
+                              '',
                           'Example',
                         ),
                         icon: const Icon(
@@ -954,7 +1011,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                           size: 20,
                           color: Color(0xFFFFB74D),
                         ),
-                        tooltip: 'Translate to Vietnamese',
+                        tooltip:
+                            'Translate to Vietnamese',
                       ),
                     ],
                   ),
@@ -965,8 +1023,9 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
                       height: 1.5,
-                      color:
-                          isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                      color: isDark
+                          ? Colors.grey.shade300
+                          : Colors.grey.shade700,
                     ),
                   ),
                 ],
@@ -982,25 +1041,29 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isDark
-                  ? Colors.white.withAlpha((0.05 * 255).round())
+                  ? Colors.white
+                      .withAlpha((0.05 * 255).round())
                   : Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isDark
-                    ? Colors.white.withAlpha((0.1 * 255).round())
+                    ? Colors.white
+                        .withAlpha((0.1 * 255).round())
                     : Colors.grey.shade200,
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha((0.05 * 255).round()),
+                  color: Colors.black
+                      .withAlpha((0.05 * 255).round()),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -1009,7 +1072,10 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                       height: 8,
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+                          colors: [
+                            Color(0xFF5EC9B4),
+                            Color(0xFF4BB9A5)
+                          ],
                         ),
                         shape: BoxShape.circle,
                       ),
@@ -1020,7 +1086,9 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.grey.shade800,
+                        color: isDark
+                            ? Colors.white
+                            : Colors.grey.shade800,
                       ),
                     ),
                   ],
@@ -1029,41 +1097,57 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: meaning.synonyms!.take(6).map((synonym) {
+                  children: meaning.synonyms!
+                      .take(6)
+                      .map((synonym) {
                     return InkWell(
                       onTap: () {
                         // Search for the synonym when tapped
-                        _searchController.text = synonym;
+                        _searchController.text =
+                            synonym;
                         _getMeaningFromApi(synonym);
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
+                        padding:
+                            const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+                          gradient:
+                              const LinearGradient(
+                            colors: [
+                              Color(0xFF5EC9B4),
+                              Color(0xFF4BB9A5)
+                            ],
                           ),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius:
+                              BorderRadius.circular(
+                                  20),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF5EC9B4)
-                                  .withAlpha((0.3 * 255).round()),
+                              color: const Color(
+                                      0xFF5EC9B4)
+                                  .withAlpha(
+                                      (0.3 * 255)
+                                          .round()),
                               blurRadius: 4,
-                              offset: const Offset(0, 2),
+                              offset:
+                                  const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize:
+                              MainAxisSize.min,
                           children: [
                             Text(
                               synonym,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                                fontWeight:
+                                    FontWeight.w600,
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -1087,16 +1171,20 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   }
 
   // Function to translate a section
-  Future<void> _translateSection(
-      BuildContext context, String text, String title) async {
+  Future<void> _translateSection(BuildContext context,
+      String text, String title) async {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     if (text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nothing to translate')),
+      messenger.showSnackBar(
+        const SnackBar(
+            content: Text('Nothing to translate')),
       );
       return;
     }
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     showDialog(
       context: context,
@@ -1104,7 +1192,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       builder: (ctx) => AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.translate, color: Color(0xFF5BA3E8)),
+            const Icon(Icons.translate,
+                color: Color(0xFF5BA3E8)),
             const SizedBox(width: 8),
             Text('$title Translation'),
           ],
@@ -1122,24 +1211,29 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
 
     try {
       // Try local translation first
-      final tgt = TranslationService.instance.targetLang;
-      String? translated =
-          await TranslationService.instance.translateLocal(text, to: tgt);
+      final tgt =
+          TranslationService.instance.targetLang;
+      String? translated = await TranslationService
+          .instance
+          .translateLocal(text, to: tgt);
 
       // If local fails, use Google Translate
       if (translated == null || translated == text) {
-        final translation =
-            await translator.translate(text, from: 'en', to: 'vi');
+        final translation = await translator
+            .translate(text, from: 'en', to: 'vi');
         translated = translation.text;
       }
 
       if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
+      navigator.pop(); // Close loading dialog
 
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
+          backgroundColor: isDark
+              ? Colors.grey.shade900
+              : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -1149,19 +1243,24 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
+                    colors: [
+                      Color(0xFF5BA3E8),
+                      Color(0xFF4A8DD4)
+                    ],
                   ),
                   shape: BoxShape.circle,
                 ),
-                child:
-                    const Icon(Icons.translate, color: Colors.white, size: 20),
+                child: const Icon(Icons.translate,
+                    color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: isDark ? Colors.white : Colors.grey.shade800,
+                    color: isDark
+                        ? Colors.white
+                        : Colors.grey.shade800,
                     fontSize: 18,
                   ),
                 ),
@@ -1170,17 +1269,22 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           ),
           content: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
+                    color: isDark
+                        ? Colors.grey.shade800
+                        : Colors.grey.shade100,
+                    borderRadius:
+                        BorderRadius.circular(12),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       Text(
                         'English',
@@ -1204,18 +1308,24 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Icon(Icons.arrow_downward, color: Color(0xFF5BA3E8)),
+                const Icon(Icons.arrow_downward,
+                    color: Color(0xFF5BA3E8)),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
+                      colors: [
+                        Color(0xFF5BA3E8),
+                        Color(0xFF4A8DD4)
+                      ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius:
+                        BorderRadius.circular(12),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'Tiếng Việt',
@@ -1250,384 +1360,12 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.of(context).pop(); // Close loading dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Translation failed: $e')),
+      navigator.pop(); // Close loading dialog
+      if (!context.mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+            content: Text('Translation failed: $e')),
       );
-    }
-  }
-
-  Widget _buildMeaningWidget(Meanings meanings, int meaningIndex) {
-    String definitionList = "";
-    meanings.definitions?.forEach((element) {
-      int index = meanings.definitions!.indexOf(
-        element,
-      );
-      definitionList += "\n${index + 1}. ${element.definition}\n";
-    });
-    return Card(
-      elevation: 1,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Chip(
-                  avatar: Icon(
-                    Icons.category,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  label: Text(
-                    meanings.partOfSpeech!,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                ),
-                const Spacer(),
-                _translating[meaningIndex] == true
-                    ? const SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Padding(
-                          padding: EdgeInsets.all(6.0),
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
-                    : IconButton(
-                        tooltip:
-                            '${AppLocalizations.t(context, 'translation')} (${TranslationService.instance.targetLang})',
-                        icon: const Icon(Icons.translate),
-                        onPressed: () async {
-                          setState(() => _translating[meaningIndex] = true);
-                          // Capture all localized strings needed by this async handler
-                          // before any `await` to avoid use_build_context_synchronously.
-                          final locDefinition =
-                              AppLocalizations.t(context, 'definition');
-                          final locSynonyms =
-                              AppLocalizations.t(context, 'synonyms');
-                          final locAntonyms =
-                              AppLocalizations.t(context, 'antonyms');
-                          final locTranslation =
-                              AppLocalizations.t(context, 'translation');
-                          final locNothingToTranslate = AppLocalizations.t(
-                              context, 'nothing_to_translate');
-                          final locOk = AppLocalizations.t(context, 'ok');
-                          final locNotFoundInLocal =
-                              AppLocalizations.t(context, 'not_found_in_local');
-                          final locSourceText =
-                              AppLocalizations.t(context, 'source_text');
-                          final locTranslationText =
-                              AppLocalizations.t(context, 'translation_text');
-                          try {
-                            // Build the text to translate
-                            final synonymsText = (meanings.synonyms
-                                        ?.toSet()
-                                        .toList()
-                                        .join(', ') ??
-                                    '')
-                                .trim();
-                            final antonymsText = (meanings.antonyms
-                                        ?.toSet()
-                                        .toList()
-                                        .join(', ') ??
-                                    '')
-                                .trim();
-                            final combined = StringBuffer();
-                            // Include the header (part of speech) and labels so the
-                            // translation covers the entire visible card content.
-                            combined.writeln(meanings.partOfSpeech ?? '');
-                            combined.writeln('$locDefinition :');
-                            combined.writeln(definitionList);
-                            if (synonymsText.isNotEmpty) {
-                              combined.writeln('$locSynonyms: $synonymsText');
-                            }
-                            if (antonymsText.isNotEmpty) {
-                              combined.writeln('$locAntonyms: $antonymsText');
-                            }
-
-                            final combinedStr = combined.toString().trim();
-                            if (combinedStr.isEmpty) {
-                              if (!mounted) return;
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text(locTranslation),
-                                  content: Text(locNothingToTranslate),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(ctx).pop(),
-                                      child: Text(locOk),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              return;
-                            }
-
-                            // limit input size to avoid heavy work
-                            // component-based translation (no global length limit)
-                            // Translate components individually using local dictionary
-                            final part = meanings.partOfSpeech ?? '';
-                            final tgt = TranslationService.instance.targetLang;
-                            final translatedPart = await TranslationService
-                                    .instance
-                                    .translateLocal(part, to: tgt) ??
-                                part;
-
-                            // Translate each definition separately
-                            final List<String> translatedDefs = [];
-                            for (var def in meanings.definitions ?? []) {
-                              final d = def.definition ?? '';
-                              final td = await TranslationService.instance
-                                      .translateLocal(d, to: tgt) ??
-                                  d;
-                              translatedDefs.add(td);
-                            }
-
-                            // Translate synonyms list items
-                            final List<String> translatedSyns = [];
-                            for (var s in meanings.synonyms ?? []) {
-                              final ts = await TranslationService.instance
-                                      .translateLocal(s, to: tgt) ??
-                                  s;
-                              translatedSyns.add(ts);
-                            }
-
-                            // localized strings already captured at the top of the handler
-
-                            // Build formatted output to match requested Vietnamese layout.
-                            // - Show 'Definition' label, blank line, then each definition as its own
-                            //   paragraph wrapped in smart quotes.
-                            // - Then show 'Synonyms' label, blank line, then each synonym on its own line.
-                            final out = StringBuffer();
-                            // include the part-of-speech header (e.g., 'noun')
-                            out.writeln(translatedPart);
-                            out.writeln();
-                            // Definition section
-                            out.writeln(locDefinition);
-                            out.writeln();
-                            for (int i = 0; i < translatedDefs.length; i++) {
-                              var d = translatedDefs[i].trim();
-                              // Add smart quotes if the translation doesn't already include quotes
-                              if (!(d.startsWith('“') ||
-                                  d.startsWith('"') ||
-                                  d.startsWith('\u201c'))) {
-                                d = '“$d”';
-                              }
-                              out.writeln(d);
-                              // blank line after each definition paragraph
-                              out.writeln();
-                            }
-
-                            // Synonyms section (if any)
-                            if (translatedSyns.isNotEmpty) {
-                              out.writeln(locSynonyms);
-                              out.writeln();
-                              // show each synonym on its own line for clarity
-                              out.writeln(translatedSyns.join('\n'));
-                            }
-
-                            if (!mounted) return;
-                            final formatted = out.toString().trim();
-                            if (formatted.isNotEmpty) {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text(locTranslation),
-                                  content: SingleChildScrollView(
-                                      child: Text(formatted)),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(ctx).pop(),
-                                      child: Text(locOk),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) {
-                                  final TextEditingController srcCtrl =
-                                      TextEditingController(text: combinedStr);
-                                  final TextEditingController tgtCtrl =
-                                      TextEditingController();
-                                  return AlertDialog(
-                                    title: Text(locTranslation),
-                                    content: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(locNotFoundInLocal),
-                                          const SizedBox(height: 12),
-                                          TextField(
-                                            controller: srcCtrl,
-                                            maxLines: 3,
-                                            decoration: InputDecoration(
-                                              labelText: locSourceText,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          TextField(
-                                            controller: tgtCtrl,
-                                            maxLines: 3,
-                                            decoration: InputDecoration(
-                                              labelText: locTranslationText,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(ctx).pop(),
-                                        child: Text(locOk),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          final src = srcCtrl.text.trim();
-                                          final tgt = tgtCtrl.text.trim();
-                                          if (src.isNotEmpty &&
-                                              tgt.isNotEmpty) {
-                                            // capture a pop callback tied to the dialog context before awaiting
-                                            void popDialog() {
-                                              Navigator.of(ctx).pop();
-                                            }
-
-                                            await TranslationService.instance
-                                                .addMapping(src, tgt, to: 'vi');
-                                            if (!mounted) {
-                                              return;
-                                            }
-                                            popDialog();
-                                            NotificationService.instance
-                                                .showSnackBarWithoutContext(
-                                                    'Saved to local dictionary');
-                                          }
-                                        },
-                                        child: const Text('Save'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          } finally {
-                            if (mounted) {
-                              setState(
-                                  () => _translating[meaningIndex] = false);
-                            }
-                          }
-                        },
-                      ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(
-                  Icons.menu_book,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '${AppLocalizations.t(context, 'definition')} : ',
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyMedium?.color ??
-                        Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              definitionList,
-              style: TextStyle(height: 1.5),
-            ),
-            _buildSet(
-              AppLocalizations.t(context, 'synonyms'),
-              meanings.synonyms,
-            ),
-            _buildSet(
-              AppLocalizations.t(context, 'antonyms'),
-              meanings.antonyms,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSet(String title, List<String>? setList) {
-    if (setList?.isNotEmpty ?? false) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(
-                title.toLowerCase().contains('synonym')
-                    ? Icons.arrow_forward
-                    : Icons.swap_horiz,
-                size: 18,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                "$title : ",
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyMedium?.color ??
-                      Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: setList!
-                .toSet()
-                .map(
-                  (word) => ActionChip(
-                    avatar: const Icon(
-                      Icons.search,
-                      size: 16,
-                    ),
-                    label: Text(
-                      word,
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
-                    onPressed: () => _searchWord(word),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
     }
   }
 }

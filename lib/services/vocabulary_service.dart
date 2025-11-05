@@ -1,5 +1,8 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/api.dart';
 import '../models/response_model.dart';
 
@@ -21,7 +24,9 @@ class VocabularyItem {
         'example': example,
       };
 
-  factory VocabularyItem.fromJson(Map<String, dynamic> json) => VocabularyItem(
+  factory VocabularyItem.fromJson(
+          Map<String, dynamic> json) =>
+      VocabularyItem(
         word: json['word'] ?? '',
         definition: json['definition'] ?? '',
         example: json['example'] ?? '',
@@ -31,20 +36,24 @@ class VocabularyItem {
 /// Service để quản lý từ vựng từ lịch sử tra từ
 class VocabularyService {
   VocabularyService._();
-  static final VocabularyService instance = VocabularyService._();
+  static final VocabularyService instance =
+      VocabularyService._();
 
-  static const String _vocabularyKey = 'saved_vocabulary_items';
+  static const String _vocabularyKey =
+      'saved_vocabulary_items';
 
   /// Lưu từ vựng kèm nghĩa và ví dụ
-  Future<void> saveVocabularyItem(
-      String word, String definition, String example) async {
+  Future<void> saveVocabularyItem(String word,
+      String definition, String example) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs =
+          await SharedPreferences.getInstance();
       final items = await getSavedVocabulary();
 
       // Kiểm tra xem từ đã tồn tại chưa
-      items
-          .removeWhere((item) => item.word.toLowerCase() == word.toLowerCase());
+      items.removeWhere((item) =>
+          item.word.toLowerCase() ==
+          word.toLowerCase());
 
       // Thêm từ mới vào đầu danh sách
       items.insert(
@@ -61,29 +70,36 @@ class VocabularyService {
       }
 
       // Lưu vào SharedPreferences
-      final jsonList = items.map((item) => item.toJson()).toList();
-      await prefs.setString(_vocabularyKey, json.encode(jsonList));
+      final jsonList =
+          items.map((item) => item.toJson()).toList();
+      await prefs.setString(
+          _vocabularyKey, json.encode(jsonList));
     } catch (e) {
-      print('Error saving vocabulary: $e');
+      debugPrint('Error saving vocabulary: $e');
     }
   }
 
   /// Lấy danh sách từ vựng đã lưu kèm nghĩa
-  Future<List<VocabularyItem>> getSavedVocabulary() async {
+  Future<List<VocabularyItem>>
+      getSavedVocabulary() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final jsonString = prefs.getString(_vocabularyKey);
+      final prefs =
+          await SharedPreferences.getInstance();
+      final jsonString =
+          prefs.getString(_vocabularyKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
       }
 
-      final List<dynamic> jsonList = json.decode(jsonString);
+      final List<dynamic> jsonList =
+          json.decode(jsonString);
       return jsonList
-          .map((json) => VocabularyItem.fromJson(json as Map<String, dynamic>))
+          .map((json) => VocabularyItem.fromJson(
+              json as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Error loading vocabulary: $e');
+      debugPrint('Error loading vocabulary: $e');
       return [];
     }
   }
@@ -91,8 +107,10 @@ class VocabularyService {
   /// Lấy danh sách tất cả các từ đã tra (chỉ từ, không có nghĩa)
   Future<List<String>> getSearchedWords() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final searchedWords = prefs.getStringList('searched_words') ?? [];
+      final prefs =
+          await SharedPreferences.getInstance();
+      final searchedWords =
+          prefs.getStringList('searched_words') ?? [];
       return searchedWords;
     } catch (e) {
       return [];
@@ -102,8 +120,10 @@ class VocabularyService {
   /// Lấy danh sách từ yêu thích (người dùng chủ động nhấn "Lưu từ")
   Future<List<String>> getFavoriteWords() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final favoriteWords = prefs.getStringList('recent_searches') ?? [];
+      final prefs =
+          await SharedPreferences.getInstance();
+      final favoriteWords =
+          prefs.getStringList('recent_searches') ?? [];
       return favoriteWords;
     } catch (e) {
       return [];
@@ -111,7 +131,8 @@ class VocabularyService {
   }
 
   /// Lấy từ vựng cho game: Lấy từ "Từ đã tra", ghép với nghĩa đã lưu
-  Future<List<VocabularyItem>> getVocabularyForGame() async {
+  Future<List<VocabularyItem>>
+      getVocabularyForGame() async {
     final items = <VocabularyItem>[];
 
     // 1. Lấy tất cả từ đã lưu kèm nghĩa
@@ -123,8 +144,11 @@ class VocabularyService {
     // 3. Ghép từ đã tra với nghĩa đã lưu
     for (var word in searchedWords) {
       final found = savedVocab.firstWhere(
-        (item) => item.word.toLowerCase() == word.toLowerCase(),
-        orElse: () => VocabularyItem(word: '', definition: '', example: ''),
+        (item) =>
+            item.word.toLowerCase() ==
+            word.toLowerCase(),
+        orElse: () => VocabularyItem(
+            word: '', definition: '', example: ''),
       );
       if (found.word.isNotEmpty) {
         items.add(found);
@@ -135,10 +159,13 @@ class VocabularyService {
   }
 
   /// Lấy danh sách từ gần đây
-  Future<List<String>> getRecentWords({int limit = 20}) async {
+  Future<List<String>> getRecentWords(
+      {int limit = 20}) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recentSearches = prefs.getStringList('recent_searches') ?? [];
+      final prefs =
+          await SharedPreferences.getInstance();
+      final recentSearches =
+          prefs.getStringList('recent_searches') ?? [];
       return recentSearches.take(limit).toList();
     } catch (e) {
       return [];
@@ -146,7 +173,8 @@ class VocabularyService {
   }
 
   /// Lấy nghĩa của từ từ API
-  Future<ResponseModel?> getWordMeaning(String word) async {
+  Future<ResponseModel?> getWordMeaning(
+      String word) async {
     try {
       return await API.fetchMeaning(word);
     } catch (e) {
@@ -155,13 +183,17 @@ class VocabularyService {
   }
 
   /// Lấy định nghĩa đơn giản của từ
-  Future<String> getSimpleDefinition(String word) async {
+  Future<String> getSimpleDefinition(
+      String word) async {
     try {
       final response = await API.fetchMeaning(word);
-      if (response.meanings != null && response.meanings!.isNotEmpty) {
+      if (response.meanings != null &&
+          response.meanings!.isNotEmpty) {
         final meaning = response.meanings!.first;
-        if (meaning.definitions != null && meaning.definitions!.isNotEmpty) {
-          return meaning.definitions!.first.definition ??
+        if (meaning.definitions != null &&
+            meaning.definitions!.isNotEmpty) {
+          return meaning
+                  .definitions!.first.definition ??
               'No definition available';
         }
       }
@@ -175,10 +207,13 @@ class VocabularyService {
   Future<String> getExample(String word) async {
     try {
       final response = await API.fetchMeaning(word);
-      if (response.meanings != null && response.meanings!.isNotEmpty) {
+      if (response.meanings != null &&
+          response.meanings!.isNotEmpty) {
         final meaning = response.meanings!.first;
-        if (meaning.definitions != null && meaning.definitions!.isNotEmpty) {
-          final example = meaning.definitions!.first.example;
+        if (meaning.definitions != null &&
+            meaning.definitions!.isNotEmpty) {
+          final example =
+              meaning.definitions!.first.example;
           if (example != null && example.isNotEmpty) {
             return example;
           }
@@ -199,7 +234,9 @@ class VocabularyService {
 
     for (int i = 0; i < letters.length; i++) {
       // Hiển thị chữ cái đầu, cuối và một số chữ cái ngẫu nhiên
-      if (i == 0 || i == letters.length - 1 || i % 3 == 0) {
+      if (i == 0 ||
+          i == letters.length - 1 ||
+          i % 3 == 0) {
         result.add(letters[i]);
       } else {
         result.add('_');
@@ -210,7 +247,8 @@ class VocabularyService {
   }
 
   /// Kiểm tra xem có đủ từ để chơi game không
-  Future<bool> hasEnoughWords({int minWords = 5}) async {
+  Future<bool> hasEnoughWords(
+      {int minWords = 5}) async {
     final words = await getSearchedWords();
     return words.length >= minWords;
   }

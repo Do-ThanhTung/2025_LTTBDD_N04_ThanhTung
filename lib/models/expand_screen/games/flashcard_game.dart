@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:confetti/confetti.dart';
-import '../../../services/translation_service.dart';
 import '../../../services/vocabulary_service.dart';
 
 class FlashCard {
@@ -62,7 +61,8 @@ final List<FlashCard> flashCards = [
   FlashCard(
     word: 'Humble',
     meaning: 'Khiêm tốn, khiêm nhường',
-    example: 'Despite his success, he remained humble.',
+    example:
+        'Despite his success, he remained humble.',
   ),
   FlashCard(
     word: 'Impressive',
@@ -132,10 +132,12 @@ class FlashcardGame extends StatefulWidget {
   });
 
   @override
-  State<FlashcardGame> createState() => _FlashcardGameState();
+  State<FlashcardGame> createState() =>
+      _FlashcardGameState();
 }
 
-class _FlashcardGameState extends State<FlashcardGame> {
+class _FlashcardGameState
+    extends State<FlashcardGame> {
   int _currentCardIndex = 0;
   bool _showAnswer = false;
   int _knownCards = 0;
@@ -147,8 +149,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
   @override
   void initState() {
     super.initState();
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController = ConfettiController(
+        duration: const Duration(seconds: 3));
     _startGame();
   }
 
@@ -166,7 +168,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
     final random = Random();
 
     // 1. Lấy từ đã tra từ VocabularyService
-    final vocabItems = await VocabularyService.instance.getVocabularyForGame();
+    final vocabItems = await VocabularyService.instance
+        .getVocabularyForGame();
 
     final cards = <FlashCard>[];
 
@@ -181,7 +184,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
 
     // 3. Nếu không đủ từ, bổ sung từ dữ liệu mẫu
     if (cards.length < 20) {
-      final sampleCards = List<FlashCard>.from(flashCards)..shuffle(random);
+      final sampleCards =
+          List<FlashCard>.from(flashCards)
+            ..shuffle(random);
       final needed = 20 - cards.length;
       cards.addAll(sampleCards.take(needed));
     }
@@ -189,6 +194,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
     // 4. Shuffle và lấy 20 từ
     cards.shuffle(random);
     final finalCards = cards.take(20).toList();
+
+    if (!mounted) return;
 
     setState(() {
       _shuffledFlashCards = finalCards;
@@ -201,7 +208,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
   }
 
   void _handleNextCard() {
-    if (_currentCardIndex < _shuffledFlashCards.length - 1) {
+    if (_currentCardIndex <
+        _shuffledFlashCards.length - 1) {
       setState(() {
         _currentCardIndex++;
         _showAnswer = false;
@@ -212,7 +220,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
   }
 
   void _handleSkipCard() {
-    final currentCard = _shuffledFlashCards[_currentCardIndex];
+    final currentCard =
+        _shuffledFlashCards[_currentCardIndex];
     if (!_skippedCards.contains(currentCard)) {
       _skippedCards.add(currentCard);
     }
@@ -226,9 +235,12 @@ class _FlashcardGameState extends State<FlashcardGame> {
     _handleNextCard();
   }
 
-  Future<void> _saveWordToDictionary(String word) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> recentSearches = prefs.getStringList('recent_searches') ?? [];
+  Future<void> _saveWordToDictionary(
+      String word) async {
+    final prefs =
+        await SharedPreferences.getInstance();
+    List<String> recentSearches =
+        prefs.getStringList('recent_searches') ?? [];
 
     recentSearches.remove(word);
     recentSearches.insert(0, word);
@@ -236,92 +248,18 @@ class _FlashcardGameState extends State<FlashcardGame> {
       recentSearches = recentSearches.sublist(0, 20);
     }
 
-    await prefs.setStringList('recent_searches', recentSearches);
+    await prefs.setStringList(
+        'recent_searches', recentSearches);
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã lưu "$word" vào từ điển'),
-          duration: const Duration(seconds: 2),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
-  }
+    if (!mounted) return;
 
-  Future<void> _translateDefinition(String text) async {
-    try {
-      final translatedText = await TranslationService.instance.translateLocal(
-        text,
-        to: 'vi',
-      );
-
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Row(
-              children: [
-                Icon(Icons.translate, color: Color(0xFF26C6DA)),
-                SizedBox(width: 8),
-                Text('Bản dịch'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Tiếng Anh:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: const TextStyle(fontSize: 14),
-                ),
-                if (translatedText != null) ...[
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Tiếng Việt:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    translatedText,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF26C6DA),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Đóng'),
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Không thể dịch. Vui lòng thử lại.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã lưu "$word" vào từ điển'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void _showSelectWordsDialog(List<FlashCard> cards) {
@@ -330,10 +268,12 @@ class _FlashcardGameState extends State<FlashcardGame> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
+        builder: (context, setDialogState) =>
+            AlertDialog(
           title: const Row(
             children: [
-              Icon(Icons.bookmark_add, color: Colors.purple),
+              Icon(Icons.bookmark_add,
+                  color: Colors.purple),
               SizedBox(width: 8),
               Text('Chọn từ cần lưu'),
             ],
@@ -345,7 +285,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
               itemCount: cards.length,
               itemBuilder: (context, index) {
                 final card = cards[index];
-                final isSelected = selectedWords.contains(card.word);
+                final isSelected =
+                    selectedWords.contains(card.word);
 
                 return CheckboxListTile(
                   value: isSelected,
@@ -354,7 +295,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
                       if (value == true) {
                         selectedWords.add(card.word);
                       } else {
-                        selectedWords.remove(card.word);
+                        selectedWords
+                            .remove(card.word);
                       }
                     });
                   },
@@ -386,18 +328,22 @@ class _FlashcardGameState extends State<FlashcardGame> {
               onPressed: selectedWords.isEmpty
                   ? null
                   : () async {
+                      final navigator =
+                          Navigator.of(context);
                       for (var word in selectedWords) {
-                        await _saveWordToDictionary(word);
+                        await _saveWordToDictionary(
+                            word);
                       }
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
+                      if (!mounted) return;
+                      navigator.pop();
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple,
-                disabledBackgroundColor: Colors.grey[300],
+                disabledBackgroundColor:
+                    Colors.grey[300],
               ),
-              child: Text('Lưu (${selectedWords.length})'),
+              child: Text(
+                  'Lưu (${selectedWords.length})'),
             ),
           ],
         ),
@@ -413,7 +359,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
 
     if (_knownCards == 20) {
       title = '🎉 Tuyệt vời!';
-      message = 'Bạn đã biết tất cả 20/20 từ!\nBạn có muốn tiếp tục không?';
+      message =
+          'Bạn đã biết tất cả 20/20 từ!\nBạn có muốn tiếp tục không?';
     } else if (_knownCards == 0) {
       title = '💪 Cố gắng lên!';
       message =
@@ -428,7 +375,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(title, textAlign: TextAlign.center),
+        title:
+            Text(title, textAlign: TextAlign.center),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -442,14 +390,18 @@ class _FlashcardGameState extends State<FlashcardGame> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.purple.shade50,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(12),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceAround,
                 children: [
                   Column(
                     children: [
-                      const Text('✅ Đã biết', style: TextStyle(fontSize: 12)),
+                      const Text('✅ Đã biết',
+                          style:
+                              TextStyle(fontSize: 12)),
                       Text(
                         '$_knownCards',
                         style: const TextStyle(
@@ -462,7 +414,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
                   ),
                   Column(
                     children: [
-                      const Text('⏭️ Bỏ qua', style: TextStyle(fontSize: 12)),
+                      const Text('⏭️ Bỏ qua',
+                          style:
+                              TextStyle(fontSize: 12)),
                       Text(
                         '${_skippedCards.length}',
                         style: const TextStyle(
@@ -479,24 +433,31 @@ class _FlashcardGameState extends State<FlashcardGame> {
           ],
         ),
         actions: [
-          if (_skippedCards.isNotEmpty || _knownCards == 0)
+          if (_skippedCards.isNotEmpty ||
+              _knownCards == 0)
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 if (_knownCards == 0) {
-                  _showSelectWordsDialog(_shuffledFlashCards);
+                  _showSelectWordsDialog(
+                      _shuffledFlashCards);
                 } else {
-                  _showSelectWordsDialog(_skippedCards);
+                  _showSelectWordsDialog(
+                      _skippedCards);
                 }
               },
-              child: Text(_knownCards == 20 ? 'Không' : 'Lưu từ'),
+              child: Text(_knownCards == 20
+                  ? 'Không'
+                  : 'Lưu từ'),
             ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               widget.onBack();
             },
-            child: Text(_knownCards == 20 ? 'Về menu' : 'Bỏ qua'),
+            child: Text(_knownCards == 20
+                ? 'Về menu'
+                : 'Bỏ qua'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -516,7 +477,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
   @override
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     // Hiển thị loading khi đang tải dữ liệu
     if (_isLoading) {
@@ -524,16 +486,21 @@ class _FlashcardGameState extends State<FlashcardGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
+              colors: [
+                Color(0xFF9D8EF5),
+                Color(0xFF7B6BE8)
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: const Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment:
+                  MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(color: Colors.white),
+                CircularProgressIndicator(
+                    color: Colors.white),
                 SizedBox(height: 20),
                 Text(
                   'Đang tải từ vựng...',
@@ -556,7 +523,10 @@ class _FlashcardGameState extends State<FlashcardGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
+              colors: [
+                Color(0xFF9D8EF5),
+                Color(0xFF7B6BE8)
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -565,7 +535,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.info_outline,
@@ -589,13 +560,16 @@ class _FlashcardGameState extends State<FlashcardGame> {
                     label: const Text('Quay lại'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF7B6BE8),
-                      padding: const EdgeInsets.symmetric(
+                      foregroundColor:
+                          const Color(0xFF7B6BE8),
+                      padding:
+                          const EdgeInsets.symmetric(
                         horizontal: 32,
                         vertical: 16,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius:
+                            BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -607,8 +581,10 @@ class _FlashcardGameState extends State<FlashcardGame> {
       );
     }
 
-    final currentCard = _shuffledFlashCards[_currentCardIndex];
-    final progress = (_currentCardIndex + 1) / _shuffledFlashCards.length;
+    final currentCard =
+        _shuffledFlashCards[_currentCardIndex];
+    final progress = (_currentCardIndex + 1) /
+        _shuffledFlashCards.length;
 
     return Scaffold(
       body: Stack(
@@ -629,7 +605,10 @@ class _FlashcardGameState extends State<FlashcardGame> {
                     bottomRight: Radius.circular(40),
                   ),
                   gradient: LinearGradient(
-                    colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
+                    colors: [
+                      Color(0xFF9D8EF5),
+                      Color(0xFF7B6BE8)
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -639,7 +618,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceBetween,
                         children: [
                           GestureDetector(
                             onTap: widget.onBack,
@@ -653,18 +634,24 @@ class _FlashcardGameState extends State<FlashcardGame> {
                             'Thẻ ghi nhớ',
                             style: TextStyle(
                               fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: const EdgeInsets
+                                .symmetric(
                               horizontal: 12,
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white
+                                  .withValues(
+                                      alpha: 0.2),
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(20),
                             ),
                             child: Row(
                               children: [
@@ -673,12 +660,17 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                   color: Colors.amber,
                                   size: 18,
                                 ),
-                                const SizedBox(width: 4),
+                                const SizedBox(
+                                    width: 4),
                                 Text(
                                   '$_knownCards/${_shuffledFlashCards.length}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                  style:
+                                      const TextStyle(
+                                    color:
+                                        Colors.white,
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
                                   ),
                                 ),
                               ],
@@ -689,17 +681,21 @@ class _FlashcardGameState extends State<FlashcardGame> {
                       const SizedBox(height: 16),
                       LinearProgressIndicator(
                         value: progress,
-                        backgroundColor: Colors.white.withValues(alpha: 0.3),
+                        backgroundColor: Colors.white
+                            .withValues(alpha: 0.3),
                         valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.white),
+                            const AlwaysStoppedAnimation<
+                                Color>(Colors.white),
                         minHeight: 6,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius:
+                            BorderRadius.circular(3),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Thẻ ${_currentCardIndex + 1} trong số ${_shuffledFlashCards.length}',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: Colors.white
+                              .withValues(alpha: 0.8),
                           fontSize: 14,
                         ),
                       ),
@@ -713,51 +709,77 @@ class _FlashcardGameState extends State<FlashcardGame> {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
                     children: [
                       LayoutBuilder(
-                        builder: (context, constraints) {
+                        builder:
+                            (context, constraints) {
                           // Tính toán kích thước 1 lần cho cả 2 mặt thẻ
-                          final screenWidth = MediaQuery.of(context).size.width;
+                          final screenWidth =
+                              MediaQuery.of(context)
+                                  .size
+                                  .width;
                           final screenHeight =
-                              MediaQuery.of(context).size.height;
+                              MediaQuery.of(context)
+                                  .size
+                                  .height;
 
                           // Thẻ co dãn theo cả chiều ngang và cao
                           // Chiều cao: 45-50% màn hình
                           final cardHeight =
-                              (screenHeight * 0.45).clamp(250.0, 500.0);
+                              (screenHeight * 0.45)
+                                  .clamp(250.0, 500.0);
 
                           // Chiều rộng: 85-90% màn hình (tùy kích thước)
                           final cardWidth =
-                              (screenWidth * 0.88).clamp(280.0, 600.0);
+                              (screenWidth * 0.88)
+                                  .clamp(280.0, 600.0);
 
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                _showAnswer = !_showAnswer;
+                                _showAnswer =
+                                    !_showAnswer;
                               });
                             },
-                            child: TweenAnimationBuilder<double>(
+                            child:
+                                TweenAnimationBuilder<
+                                    double>(
                               tween: Tween<double>(
                                 begin: 0,
-                                end: _showAnswer ? 180 : 0,
+                                end: _showAnswer
+                                    ? 180
+                                    : 0,
                               ),
-                              duration: const Duration(milliseconds: 400),
-                              builder: (context, value, child) {
-                                final angle = value * (3.14159 / 180);
-                                final showBack = value > 90;
+                              duration: const Duration(
+                                  milliseconds: 400),
+                              builder: (context, value,
+                                  child) {
+                                final angle = value *
+                                    (3.14159 / 180);
+                                final showBack =
+                                    value > 90;
 
                                 return Transform(
-                                  transform: Matrix4.identity()
-                                    ..setEntry(3, 2, 0.001)
+                                  transform: Matrix4
+                                      .identity()
+                                    ..setEntry(
+                                        3, 2, 0.001)
                                     ..rotateY(angle),
-                                  alignment: Alignment.center,
+                                  alignment:
+                                      Alignment.center,
                                   child: showBack
                                       ? Transform(
-                                          transform: Matrix4.identity()
-                                            ..rotateY(3.14159),
-                                          alignment: Alignment.center,
-                                          child: _buildCardBack(
+                                          transform: Matrix4
+                                              .identity()
+                                            ..rotateY(
+                                                3.14159),
+                                          alignment:
+                                              Alignment
+                                                  .center,
+                                          child:
+                                              _buildCardBack(
                                             currentCard,
                                             isDark,
                                             cardHeight,
@@ -785,25 +807,36 @@ class _FlashcardGameState extends State<FlashcardGame> {
                         children: [
                           Expanded(
                             child: OutlinedButton(
-                              onPressed: _handleSkipCard,
-                              style: OutlinedButton.styleFrom(
+                              onPressed:
+                                  _handleSkipCard,
+                              style: OutlinedButton
+                                  .styleFrom(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                    const EdgeInsets
+                                        .symmetric(
+                                        vertical: 16),
                                 side: BorderSide(
                                   color: isDark
                                       ? Colors.white30
-                                      : Colors.grey.shade300,
+                                      : Colors.grey
+                                          .shade300,
                                   width: 2,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                shape:
+                                    RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                              16),
                                 ),
                               ),
                               child: Text(
                                 'Bỏ qua',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: isDark ? Colors.white : Colors.black87,
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.black87,
                                 ),
                               ),
                             ),
@@ -812,19 +845,33 @@ class _FlashcardGameState extends State<FlashcardGame> {
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: () =>
-                                  _saveWordToDictionary(currentCard.word),
-                              icon: const Icon(Icons.bookmark_add, size: 20),
+                                  _saveWordToDictionary(
+                                      currentCard
+                                          .word),
+                              icon: const Icon(
+                                  Icons.bookmark_add,
+                                  size: 20),
                               label: const Text('Lưu'),
-                              style: OutlinedButton.styleFrom(
+                              style: OutlinedButton
+                                  .styleFrom(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                    const EdgeInsets
+                                        .symmetric(
+                                        vertical: 16),
                                 side: const BorderSide(
-                                  color: Color(0xFF9D8EF5),
+                                  color: Color(
+                                      0xFF9D8EF5),
                                   width: 2,
                                 ),
-                                foregroundColor: const Color(0xFF9D8EF5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                foregroundColor:
+                                    const Color(
+                                        0xFF9D8EF5),
+                                shape:
+                                    RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                              16),
                                 ),
                               ),
                             ),
@@ -833,27 +880,47 @@ class _FlashcardGameState extends State<FlashcardGame> {
                           Expanded(
                             flex: 2,
                             child: ElevatedButton(
-                              onPressed: _showAnswer ? _handleKnowCard : null,
-                              style: ElevatedButton.styleFrom(
+                              onPressed: _showAnswer
+                                  ? _handleKnowCard
+                                  : null,
+                              style: ElevatedButton
+                                  .styleFrom(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                backgroundColor: const Color(0xFF4CAF50),
-                                disabledBackgroundColor: Colors.grey.shade300,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                    const EdgeInsets
+                                        .symmetric(
+                                        vertical: 16),
+                                backgroundColor:
+                                    const Color(
+                                        0xFF4CAF50),
+                                disabledBackgroundColor:
+                                    Colors
+                                        .grey.shade300,
+                                shape:
+                                    RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                              16),
                                 ),
                                 elevation: 0,
                               ),
                               child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center,
                                 children: [
-                                  Icon(Icons.check_circle, size: 20),
+                                  Icon(
+                                      Icons
+                                          .check_circle,
+                                      size: 20),
                                   SizedBox(width: 8),
                                   Text(
                                     'Tôi biết từ này',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight:
+                                          FontWeight
+                                              .bold,
                                     ),
                                   ),
                                 ],
@@ -902,9 +969,12 @@ class _FlashcardGameState extends State<FlashcardGame> {
     double screenHeight,
   ) {
     // Kích thước icon và font responsive
-    final iconSize = (screenWidth * 0.15).clamp(48.0, 72.0);
-    final wordFontSize = (screenWidth * 0.08).clamp(28.0, 42.0);
-    final hintFontSize = (screenWidth * 0.035).clamp(14.0, 18.0);
+    final iconSize =
+        (screenWidth * 0.15).clamp(48.0, 72.0);
+    final wordFontSize =
+        (screenWidth * 0.08).clamp(28.0, 42.0);
+    final hintFontSize =
+        (screenWidth * 0.035).clamp(14.0, 18.0);
 
     return Container(
       width: cardWidth,
@@ -916,15 +986,22 @@ class _FlashcardGameState extends State<FlashcardGame> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDark
-              ? [const Color(0xFF2D2D2D), const Color(0xFF1A1A1A)]
-              : [Colors.white, const Color(0xFFF8F5FF)],
+              ? [
+                  const Color(0xFF2D2D2D),
+                  const Color(0xFF1A1A1A)
+                ]
+              : [
+                  Colors.white,
+                  const Color(0xFFF8F5FF)
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9D8EF5).withValues(alpha: 0.3),
+            color: const Color(0xFF9D8EF5)
+                .withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -938,9 +1015,13 @@ class _FlashcardGameState extends State<FlashcardGame> {
             height: iconSize,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
+                colors: [
+                  Color(0xFF9D8EF5),
+                  Color(0xFF7B6BE8)
+                ],
               ),
-              borderRadius: BorderRadius.circular(iconSize / 2),
+              borderRadius:
+                  BorderRadius.circular(iconSize / 2),
             ),
             child: Icon(
               Icons.star,
@@ -955,7 +1036,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
               style: TextStyle(
                 fontSize: wordFontSize,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
+                color: isDark
+                    ? Colors.white
+                    : Colors.black87,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -984,9 +1067,12 @@ class _FlashcardGameState extends State<FlashcardGame> {
     double screenHeight,
   ) {
     // Kích thước font responsive
-    final emojiSize = (screenWidth * 0.12).clamp(40.0, 56.0);
-    final meaningFontSize = (screenWidth * 0.065).clamp(22.0, 32.0);
-    final exampleFontSize = (screenWidth * 0.032).clamp(13.0, 16.0);
+    final emojiSize =
+        (screenWidth * 0.12).clamp(40.0, 56.0);
+    final meaningFontSize =
+        (screenWidth * 0.065).clamp(22.0, 32.0);
+    final exampleFontSize =
+        (screenWidth * 0.032).clamp(13.0, 16.0);
 
     return Container(
       width: cardWidth,
@@ -998,15 +1084,22 @@ class _FlashcardGameState extends State<FlashcardGame> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDark
-              ? [const Color(0xFF2D2D2D), const Color(0xFF1A1A1A)]
-              : [Colors.white, const Color(0xFFF8F5FF)],
+              ? [
+                  const Color(0xFF2D2D2D),
+                  const Color(0xFF1A1A1A)
+                ]
+              : [
+                  Colors.white,
+                  const Color(0xFFF8F5FF)
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9D8EF5).withValues(alpha: 0.3),
+            color: const Color(0xFF9D8EF5)
+                .withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -1026,7 +1119,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
               style: TextStyle(
                 fontSize: meaningFontSize,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
+                color: isDark
+                    ? Colors.white
+                    : Colors.black87,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -1036,20 +1131,22 @@ class _FlashcardGameState extends State<FlashcardGame> {
           SizedBox(height: screenHeight * 0.015),
           Flexible(
             child: Container(
-              padding: EdgeInsets.all(screenWidth * 0.035),
+              padding:
+                  EdgeInsets.all(screenWidth * 0.035),
               constraints: BoxConstraints(
                 maxHeight: cardHeight * 0.35,
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFFFF3E0)
-                        .withValues(alpha: isDark ? 0.2 : 1.0),
-                    const Color(0xFFFFE0B2)
-                        .withValues(alpha: isDark ? 0.2 : 1.0),
+                    const Color(0xFFFFF3E0).withValues(
+                        alpha: isDark ? 0.2 : 1.0),
+                    const Color(0xFFFFE0B2).withValues(
+                        alpha: isDark ? 0.2 : 1.0),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(12),
               ),
               child: SingleChildScrollView(
                 child: Text(
@@ -1058,7 +1155,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
                     fontSize: exampleFontSize,
                     fontStyle: FontStyle.italic,
                     color: isDark
-                        ? Colors.white.withValues(alpha: 0.9)
+                        ? Colors.white
+                            .withValues(alpha: 0.9)
                         : const Color(0xFF5D4037),
                   ),
                   textAlign: TextAlign.center,
