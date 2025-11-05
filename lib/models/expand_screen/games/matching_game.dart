@@ -1,44 +1,112 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translator_plus/translator_plus.dart';
 import '../../../services/vocabulary_service.dart';
 
 class MatchingPair {
   final int id;
   final String word;
   final String meaning;
+  String?
+      vietnameseMeaning; // Nghĩa tiếng Việt đã dịch
 
   MatchingPair({
     required this.id,
     required this.word,
     required this.meaning,
+    this.vietnameseMeaning,
   });
 }
 
 final List<MatchingPair> allMatchingWords = [
-  MatchingPair(id: 1, word: 'Happy', meaning: 'Vui vẻ'),
-  MatchingPair(id: 2, word: 'Sad', meaning: 'Buồn'),
-  MatchingPair(id: 3, word: 'Angry', meaning: 'Tức giận'),
-  MatchingPair(id: 4, word: 'Excited', meaning: 'Phấn khích'),
-  MatchingPair(id: 5, word: 'Tired', meaning: 'Mệt mỏi'),
-  MatchingPair(id: 6, word: 'Hungry', meaning: 'Đói'),
-  MatchingPair(id: 7, word: 'Brave', meaning: 'Dũng cảm'),
-  MatchingPair(id: 8, word: 'Clever', meaning: 'Thông minh'),
-  MatchingPair(id: 9, word: 'Friendly', meaning: 'Thân thiện'),
-  MatchingPair(id: 10, word: 'Gentle', meaning: 'Hiền lành'),
-  MatchingPair(id: 11, word: 'Honest', meaning: 'Trung thực'),
-  MatchingPair(id: 12, word: 'Kind', meaning: 'Tốt bụng'),
-  MatchingPair(id: 13, word: 'Lazy', meaning: 'Lười biếng'),
-  MatchingPair(id: 14, word: 'Nervous', meaning: 'Lo lắng'),
-  MatchingPair(id: 15, word: 'Proud', meaning: 'Tự hào'),
-  MatchingPair(id: 16, word: 'Quiet', meaning: 'Yên tĩnh'),
-  MatchingPair(id: 17, word: 'Rude', meaning: 'Thô lỗ'),
-  MatchingPair(id: 18, word: 'Shy', meaning: 'Ngại ngùng'),
+  MatchingPair(
+      id: 1,
+      word: 'Happy',
+      meaning:
+          'Feeling or showing pleasure or contentment'),
+  MatchingPair(
+      id: 2,
+      word: 'Sad',
+      meaning: 'Feeling or showing sorrow; unhappy'),
+  MatchingPair(
+      id: 3,
+      word: 'Angry',
+      meaning:
+          'Having a strong feeling of displeasure'),
+  MatchingPair(
+      id: 4,
+      word: 'Excited',
+      meaning: 'Very enthusiastic and eager'),
+  MatchingPair(
+      id: 5,
+      word: 'Tired',
+      meaning: 'In need of sleep or rest; weary'),
+  MatchingPair(
+      id: 6,
+      word: 'Hungry',
+      meaning: 'Feeling a need or desire to eat food'),
+  MatchingPair(
+      id: 7,
+      word: 'Brave',
+      meaning:
+          'Ready to face danger or pain; showing courage'),
+  MatchingPair(
+      id: 8,
+      word: 'Clever',
+      meaning: 'Quick to understand and learn things'),
+  MatchingPair(
+      id: 9,
+      word: 'Friendly',
+      meaning:
+          'Kind and pleasant; showing friendship'),
+  MatchingPair(
+      id: 10,
+      word: 'Gentle',
+      meaning:
+          'Having a mild, kind, or tender temperament'),
+  MatchingPair(
+      id: 11,
+      word: 'Honest',
+      meaning:
+          'Free of deceit and untruthfulness; sincere'),
+  MatchingPair(
+      id: 12,
+      word: 'Kind',
+      meaning:
+          'Having a friendly, generous, or considerate nature'),
+  MatchingPair(
+      id: 13,
+      word: 'Lazy',
+      meaning: 'Unwilling to work or use energy'),
+  MatchingPair(
+      id: 14,
+      word: 'Nervous',
+      meaning: 'Easily agitated or alarmed; anxious'),
+  MatchingPair(
+      id: 15,
+      word: 'Proud',
+      meaning:
+          'Feeling deep pleasure from achievements'),
+  MatchingPair(
+      id: 16,
+      word: 'Quiet',
+      meaning: 'Making little or no noise; silent'),
+  MatchingPair(
+      id: 17,
+      word: 'Rude',
+      meaning: 'Offensively impolite or bad-mannered'),
+  MatchingPair(
+      id: 18,
+      word: 'Shy',
+      meaning:
+          'Nervous or timid in company of other people'),
 ];
 
 class MatchingGame extends StatefulWidget {
   final VoidCallback onBack;
-  final Function(int, {String? gameType}) onUpdateTrophies;
+  final Function(int, {String? gameType})
+      onUpdateTrophies;
 
   const MatchingGame({
     super.key,
@@ -47,7 +115,8 @@ class MatchingGame extends StatefulWidget {
   });
 
   @override
-  State<MatchingGame> createState() => _MatchingGameState();
+  State<MatchingGame> createState() =>
+      _MatchingGameState();
 }
 
 class _MatchingGameState extends State<MatchingGame> {
@@ -66,6 +135,30 @@ class _MatchingGameState extends State<MatchingGame> {
     _startGame();
   }
 
+  // Helper function to shorten long definitions
+  String _shortenText(String text, int maxLength) {
+    if (text.length <= maxLength) return text;
+
+    // Try to break at sentence boundaries first
+    final sentences = text.split(RegExp(r'[.;]'));
+    if (sentences.isNotEmpty &&
+        sentences[0].trim().length <= maxLength) {
+      return sentences[0].trim();
+    }
+
+    // Try to break at word boundaries
+    final words = text.split(' ');
+    String shortened = '';
+    for (var word in words) {
+      if ('$shortened $word'.trim().length >
+          maxLength - 3) break;
+      shortened += shortened.isEmpty ? word : ' $word';
+    }
+
+    return shortened.trim() +
+        (shortened.length < text.length ? '...' : '');
+  }
+
   Future<void> _startGame() async {
     setState(() {
       _isLoading = true;
@@ -79,7 +172,8 @@ class _MatchingGameState extends State<MatchingGame> {
     final random = Random();
 
     // 1. Lấy từ đã tra từ VocabularyService
-    final vocabItems = await VocabularyService.instance.getVocabularyForGame();
+    final vocabItems = await VocabularyService.instance
+        .getVocabularyForGame();
 
     final pairs = <MatchingPair>[];
 
@@ -94,8 +188,9 @@ class _MatchingGameState extends State<MatchingGame> {
 
     // 3. Nếu không đủ từ, bổ sung từ dữ liệu mẫu
     if (pairs.length < 6) {
-      final samplePairs = List<MatchingPair>.from(allMatchingWords)
-        ..shuffle(random);
+      final samplePairs =
+          List<MatchingPair>.from(allMatchingWords)
+            ..shuffle(random);
       final needed = 6 - pairs.length;
       int nextId = pairs.length + 1;
       for (var sample in samplePairs.take(needed)) {
@@ -111,16 +206,36 @@ class _MatchingGameState extends State<MatchingGame> {
     pairs.shuffle(random);
     final selectedPairs = pairs.take(6).toList();
 
+    // 5. Dịch tất cả nghĩa sang tiếng Việt
+    final translator = GoogleTranslator();
+    for (var pair in selectedPairs) {
+      try {
+        final translation = await translator.translate(
+          pair.meaning,
+          from: 'en',
+          to: 'vi',
+        );
+        pair.vietnameseMeaning = translation.text;
+      } catch (e) {
+        print('Lỗi dịch "${pair.meaning}": $e');
+        pair.vietnameseMeaning = pair
+            .meaning; // Fallback về tiếng Anh nếu lỗi
+      }
+    }
+
     setState(() {
-      _shuffledEnglishWords = List<MatchingPair>.from(selectedPairs)
-        ..shuffle(random);
-      _shuffledMeanings = List<MatchingPair>.from(selectedPairs)
-        ..shuffle(random);
+      _shuffledEnglishWords =
+          List<MatchingPair>.from(selectedPairs)
+            ..shuffle(random);
+      _shuffledMeanings =
+          List<MatchingPair>.from(selectedPairs)
+            ..shuffle(random);
       _isLoading = false;
     });
   }
 
-  void _handleWordClick(int wordId, bool isEnglishSide) {
+  void _handleWordClick(
+      int wordId, bool isEnglishSide) {
     if (_matchedPairs.contains(wordId)) return;
 
     setState(() {
@@ -137,9 +252,11 @@ class _MatchingGameState extends State<MatchingGame> {
       } else {
         if (_selectedEnglishId == null) {
           _wrongVietnameseId = wordId;
-          Future.delayed(const Duration(milliseconds: 500), () {
+          Future.delayed(
+              const Duration(milliseconds: 500), () {
             if (mounted) {
-              setState(() => _wrongVietnameseId = null);
+              setState(
+                  () => _wrongVietnameseId = null);
             }
           });
           return;
@@ -148,13 +265,16 @@ class _MatchingGameState extends State<MatchingGame> {
         if (_selectedEnglishId == wordId) {
           _matchedPairs.add(wordId);
           _score++;
-          widget.onUpdateTrophies(1, gameType: 'matching');
+          widget.onUpdateTrophies(1,
+              gameType: 'matching');
           _selectedEnglishId = null;
           _wrongEnglishId = null;
           _wrongVietnameseId = null;
 
-          if (_matchedPairs.length == _shuffledEnglishWords.length) {
-            Future.delayed(const Duration(milliseconds: 500), () {
+          if (_matchedPairs.length ==
+              _shuffledEnglishWords.length) {
+            Future.delayed(
+                const Duration(milliseconds: 500), () {
               if (mounted) {
                 _showCompleteDialog();
               }
@@ -163,7 +283,8 @@ class _MatchingGameState extends State<MatchingGame> {
         } else {
           _wrongEnglishId = _selectedEnglishId;
           _wrongVietnameseId = wordId;
-          Future.delayed(const Duration(milliseconds: 800), () {
+          Future.delayed(
+              const Duration(milliseconds: 800), () {
             if (mounted) {
               setState(() {
                 _wrongEnglishId = null;
@@ -177,9 +298,12 @@ class _MatchingGameState extends State<MatchingGame> {
     });
   }
 
-  Future<void> _saveWordToDictionary(String word) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> recentSearches = prefs.getStringList('recent_searches') ?? [];
+  Future<void> _saveWordToDictionary(
+      String word) async {
+    final prefs =
+        await SharedPreferences.getInstance();
+    List<String> recentSearches =
+        prefs.getStringList('recent_searches') ?? [];
 
     recentSearches.remove(word);
     recentSearches.insert(0, word);
@@ -187,7 +311,8 @@ class _MatchingGameState extends State<MatchingGame> {
       recentSearches = recentSearches.sublist(0, 20);
     }
 
-    await prefs.setStringList('recent_searches', recentSearches);
+    await prefs.setStringList(
+        'recent_searches', recentSearches);
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -206,10 +331,12 @@ class _MatchingGameState extends State<MatchingGame> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
+        builder: (context, setDialogState) =>
+            AlertDialog(
           title: const Row(
             children: [
-              Icon(Icons.bookmark_add, color: Color(0xFF5EC9B4)),
+              Icon(Icons.bookmark_add,
+                  color: Color(0xFF5EC9B4)),
               SizedBox(width: 8),
               Text('Chọn từ cần lưu'),
             ],
@@ -220,9 +347,15 @@ class _MatchingGameState extends State<MatchingGame> {
               shrinkWrap: true,
               itemCount: _shuffledEnglishWords.length,
               itemBuilder: (context, index) {
-                final word = _shuffledEnglishWords[index].word;
-                final meaning = _shuffledEnglishWords[index].meaning;
-                final isSelected = selectedWords.contains(word);
+                final word =
+                    _shuffledEnglishWords[index].word;
+                final viMeaning =
+                    _shuffledEnglishWords[index]
+                            .vietnameseMeaning ??
+                        _shuffledEnglishWords[index]
+                            .meaning;
+                final isSelected =
+                    selectedWords.contains(word);
 
                 return CheckboxListTile(
                   value: isSelected,
@@ -243,7 +376,7 @@ class _MatchingGameState extends State<MatchingGame> {
                     ),
                   ),
                   subtitle: Text(
-                    meaning,
+                    viMeaning,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
@@ -263,18 +396,23 @@ class _MatchingGameState extends State<MatchingGame> {
               onPressed: selectedWords.isEmpty
                   ? null
                   : () async {
-                      final navigator = Navigator.of(context);
+                      final navigator =
+                          Navigator.of(context);
                       for (var word in selectedWords) {
-                        await _saveWordToDictionary(word);
+                        await _saveWordToDictionary(
+                            word);
                       }
                       if (!mounted) return;
                       navigator.pop();
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5EC9B4),
-                disabledBackgroundColor: Colors.grey[300],
+                backgroundColor:
+                    const Color(0xFF5EC9B4),
+                disabledBackgroundColor:
+                    Colors.grey[300],
               ),
-              child: Text('Lưu (${selectedWords.length})'),
+              child: Text(
+                  'Lưu (${selectedWords.length})'),
             ),
           ],
         ),
@@ -283,83 +421,239 @@ class _MatchingGameState extends State<MatchingGame> {
   }
 
   void _showCompleteDialog() {
-    showDialog(
+    showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('🎉 Chúc mừng!', textAlign: TextAlign.center),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Bạn đã ghép đúng tất cả!',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      barrierLabel: 'Kết quả',
+      barrierColor: Colors.black54,
+      pageBuilder: (context, anim1, anim2) {
+        final screenWidth =
+            MediaQuery.of(context).size.width;
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: screenWidth * 0.9,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 18),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+                  colors: [
+                    Color(0xFF4BB9A5),
+                    Color(0xFF5EC9B4)
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius:
+                    BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF5EC9B4).withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+                    color:
+                        Colors.black.withOpacity(0.25),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
-              child: Text(
-                '$_score điểm',
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // bright header bubble
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      gradient: const RadialGradient(
+                        colors: [
+                          Color(0xFFFFF59D),
+                          Color(0xFFFFF176)
+                        ],
+                        center: Alignment(-0.2, -0.4),
+                      ),
+                      borderRadius:
+                          BorderRadius.circular(40),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white
+                              .withOpacity(0.6),
+                          blurRadius: 18,
+                          offset: const Offset(0, 6),
+                        )
+                      ],
+                    ),
+                    child: const Center(
+                      child: Text(
+                        '🎉',
+                        style: TextStyle(fontSize: 36),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    '💪 Cố gắng lên!',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Bạn đã ghép đúng tất cả!',
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 18),
+
+                  // score display with inner glow block
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white
+                          .withOpacity(0.12),
+                      borderRadius:
+                          BorderRadius.circular(14),
+                      border: Border.all(
+                          color: Colors.white24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white
+                              .withOpacity(0.06),
+                          blurRadius: 12,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.emoji_events,
+                            color: Colors.amber,
+                            size: 28),
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets
+                              .symmetric(
+                              horizontal: 16,
+                              vertical: 8),
+                          decoration: BoxDecoration(
+                            gradient:
+                                const LinearGradient(
+                              colors: [
+                                Color(0xFF66BB6A),
+                                Color(0xFF43A047)
+                              ],
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(
+                                    10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.green
+                                    .withOpacity(0.3),
+                                blurRadius: 8,
+                                offset:
+                                    const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            '$_score điểm',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showSelectWordsDialog();
+                        },
+                        child: const Text('Lưu từ',
+                            style: TextStyle(
+                                color: Colors.white)),
+                      ),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop();
+                              widget.onBack();
+                            },
+                            child: const Text('Bỏ qua',
+                                style: TextStyle(
+                                    color:
+                                        Colors.white)),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop();
+                              _startGame();
+                            },
+                            style: ElevatedButton
+                                .styleFrom(
+                              backgroundColor:
+                                  Colors.white,
+                              foregroundColor:
+                                  const Color(
+                                      0xFF4BB9A5),
+                              shape:
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                                  12)),
+                            ),
+                            child:
+                                const Text('Chơi lại'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showSelectWordsDialog();
-            },
-            child: const Text('Lưu từ'),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              widget.onBack();
-            },
-            child: const Text('Về menu'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _startGame();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF5EC9B4),
-            ),
-            child: const Text('Chơi lại'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   @override
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth =
+        MediaQuery.of(context).size.width;
+    final screenHeight =
+        MediaQuery.of(context).size.height;
 
     // Hiển thị loading khi đang tải dữ liệu
     if (_isLoading) {
@@ -367,22 +661,28 @@ class _MatchingGameState extends State<MatchingGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+              colors: [
+                Color(0xFF5EC9B4),
+                Color(0xFF4BB9A5)
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment:
+                  MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(color: Colors.white),
+                CircularProgressIndicator(
+                    color: Colors.white),
                 SizedBox(height: screenHeight * 0.025),
                 Text(
                   'Đang tải từ vựng...',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: (screenWidth * 0.043).clamp(16.0, 20.0),
+                    fontSize: (screenWidth * 0.043)
+                        .clamp(16.0, 20.0),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -399,49 +699,63 @@ class _MatchingGameState extends State<MatchingGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+              colors: [
+                Color(0xFF5EC9B4),
+                Color(0xFF4BB9A5)
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: Center(
             child: Padding(
-              padding: EdgeInsets.all(screenWidth * 0.08),
+              padding:
+                  EdgeInsets.all(screenWidth * 0.08),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.info_outline,
-                    size: (screenWidth * 0.2).clamp(70.0, 100.0),
+                    size: (screenWidth * 0.2)
+                        .clamp(70.0, 100.0),
                     color: Colors.white,
                   ),
-                  SizedBox(height: screenHeight * 0.025),
+                  SizedBox(
+                      height: screenHeight * 0.025),
                   Text(
                     'Bạn chưa tra từ nào trong từ điển.\nHãy tra từ trước khi chơi game!',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: (screenWidth * 0.043).clamp(16.0, 20.0),
+                      fontSize: (screenWidth * 0.043)
+                          .clamp(16.0, 20.0),
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: screenHeight * 0.04),
+                  SizedBox(
+                      height: screenHeight * 0.04),
                   ElevatedButton.icon(
                     onPressed: widget.onBack,
                     icon: Icon(Icons.arrow_back,
-                        size: (screenWidth * 0.048).clamp(18.0, 24.0)),
+                        size: (screenWidth * 0.048)
+                            .clamp(18.0, 24.0)),
                     label: Text('Quay lại',
                         style: TextStyle(
-                            fontSize: (screenWidth * 0.04).clamp(15.0, 19.0))),
+                            fontSize: (screenWidth *
+                                    0.04)
+                                .clamp(15.0, 19.0))),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF4BB9A5),
+                      foregroundColor:
+                          const Color(0xFF4BB9A5),
                       padding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.08,
                         vertical: screenHeight * 0.02,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius:
+                            BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -453,13 +767,17 @@ class _MatchingGameState extends State<MatchingGame> {
       );
     }
 
-    final isComplete = _matchedPairs.length == _shuffledEnglishWords.length;
+    final isComplete = _matchedPairs.length ==
+        _shuffledEnglishWords.length;
 
     // Responsive sizes for header
     final headerPadding = screenWidth * 0.05;
-    final iconSize = (screenWidth * 0.065).clamp(24.0, 32.0);
-    final titleFontSize = (screenWidth * 0.048).clamp(18.0, 24.0);
-    final scoreFontSize = (screenWidth * 0.037).clamp(14.0, 18.0);
+    final iconSize =
+        (screenWidth * 0.065).clamp(24.0, 32.0);
+    final titleFontSize =
+        (screenWidth * 0.048).clamp(18.0, 24.0);
+    final scoreFontSize =
+        (screenWidth * 0.037).clamp(14.0, 18.0);
 
     return Scaffold(
       body: Column(
@@ -478,7 +796,10 @@ class _MatchingGameState extends State<MatchingGame> {
                 bottomRight: Radius.circular(40),
               ),
               gradient: LinearGradient(
-                colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+                colors: [
+                  Color(0xFF5EC9B4),
+                  Color(0xFF4BB9A5)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -486,7 +807,8 @@ class _MatchingGameState extends State<MatchingGame> {
             child: SafeArea(
               bottom: false,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: widget.onBack,
@@ -510,8 +832,10 @@ class _MatchingGameState extends State<MatchingGame> {
                       vertical: screenHeight * 0.008,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white
+                          .withValues(alpha: 0.2),
+                      borderRadius:
+                          BorderRadius.circular(20),
                     ),
                     child: Row(
                       children: [
@@ -520,12 +844,14 @@ class _MatchingGameState extends State<MatchingGame> {
                           color: Colors.amber,
                           size: iconSize * 0.7,
                         ),
-                        SizedBox(width: screenWidth * 0.01),
+                        SizedBox(
+                            width: screenWidth * 0.01),
                         Text(
                           '$_score',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            fontWeight:
+                                FontWeight.bold,
                             fontSize: scoreFontSize,
                           ),
                         ),
@@ -543,38 +869,50 @@ class _MatchingGameState extends State<MatchingGame> {
           else
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(screenWidth * 0.05),
+                padding:
+                    EdgeInsets.all(screenWidth * 0.05),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _shuffledEnglishWords
-                            .map((pair) => _buildMatchingCard(
-                                  pair.word,
-                                  pair.id,
-                                  true,
-                                  isDark,
-                                  screenWidth,
-                                  screenHeight,
-                                ))
-                            .toList(),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
+                          children:
+                              _shuffledEnglishWords
+                                  .map((pair) =>
+                                      _buildMatchingCard(
+                                        pair.word,
+                                        pair.id,
+                                        true,
+                                        isDark,
+                                        screenWidth,
+                                        screenHeight,
+                                      ))
+                                  .toList(),
+                        ),
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.05),
+                    SizedBox(
+                        width: screenWidth * 0.05),
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _shuffledMeanings
-                            .map((pair) => _buildMatchingCard(
-                                  pair.meaning,
-                                  pair.id,
-                                  false,
-                                  isDark,
-                                  screenWidth,
-                                  screenHeight,
-                                ))
-                            .toList(),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
+                          children: _shuffledMeanings
+                              .map((pair) =>
+                                  _buildMatchingCard(
+                                    pair.vietnameseMeaning ??
+                                        pair.meaning, // Hiển thị tiếng Việt
+                                    pair.id,
+                                    false,
+                                    isDark,
+                                    screenWidth,
+                                    screenHeight,
+                                  ))
+                              .toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -586,17 +924,26 @@ class _MatchingGameState extends State<MatchingGame> {
     );
   }
 
-  Widget _buildMatchingCard(String text, int id, bool isEnglish, bool isDark,
-      double screenWidth, double screenHeight) {
+  Widget _buildMatchingCard(
+      String text,
+      int id,
+      bool isEnglish,
+      bool isDark,
+      double screenWidth,
+      double screenHeight) {
     final isMatched = _matchedPairs.contains(id);
-    final isSelected = _selectedEnglishId == id && isEnglish;
-    final isWrong = (isEnglish && _wrongEnglishId == id) ||
-        (!isEnglish && _wrongVietnameseId == id);
+    final isSelected =
+        _selectedEnglishId == id && isEnglish;
+    final isWrong =
+        (isEnglish && _wrongEnglishId == id) ||
+            (!isEnglish && _wrongVietnameseId == id);
 
     // Responsive sizes for cards
     final cardPadding = screenHeight * 0.018;
-    final fontSize = (screenWidth * 0.036).clamp(14.0, 18.0);
-    final borderRadius = (screenWidth * 0.03).clamp(10.0, 15.0);
+    final fontSize =
+        (screenWidth * 0.036).clamp(14.0, 18.0);
+    final borderRadius =
+        (screenWidth * 0.03).clamp(10.0, 15.0);
 
     LinearGradient? gradient;
     if (isMatched) {
@@ -614,18 +961,33 @@ class _MatchingGameState extends State<MatchingGame> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(bottom: screenHeight * 0.015),
+      padding: EdgeInsets.only(
+          bottom: screenHeight * 0.015),
       child: GestureDetector(
         onTap: () => _handleWordClick(id, isEnglish),
         child: Container(
           padding: EdgeInsets.symmetric(
-              vertical: cardPadding, horizontal: cardPadding * 0.75),
+              vertical: cardPadding,
+              horizontal: cardPadding * 0.75),
+          constraints: BoxConstraints(
+            // prevent individual cards from growing too tall and causing overflow
+            maxHeight: isEnglish
+                ? screenHeight * 0.12
+                : screenHeight * 0.18,
+          ),
           decoration: BoxDecoration(
-            gradient: isMatched || isSelected || isWrong ? gradient : null,
-            color: !isMatched && !isSelected && !isWrong
-                ? (isDark ? const Color(0xFF2D2D2D) : Colors.white)
-                : null,
-            borderRadius: BorderRadius.circular(borderRadius),
+            gradient:
+                isMatched || isSelected || isWrong
+                    ? gradient
+                    : null,
+            color:
+                !isMatched && !isSelected && !isWrong
+                    ? (isDark
+                        ? const Color(0xFF2D2D2D)
+                        : Colors.white)
+                    : null,
+            borderRadius:
+                BorderRadius.circular(borderRadius),
             border: Border.all(
               color: isMatched
                   ? Colors.transparent
@@ -633,36 +995,47 @@ class _MatchingGameState extends State<MatchingGame> {
                       ? Colors.transparent
                       : isSelected
                           ? Colors.transparent
-                          : (isDark ? Colors.white24 : Colors.grey.shade300),
+                          : (isDark
+                              ? Colors.white24
+                              : Colors.grey.shade300),
               width: 2,
             ),
-            boxShadow: isSelected || isMatched || isWrong
-                ? [
-                    BoxShadow(
-                      color: (isMatched
-                              ? Colors.green
-                              : isWrong
-                                  ? Colors.red
-                                  : (gradient as LinearGradient).colors.first)
-                          .withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
+            boxShadow:
+                isSelected || isMatched || isWrong
+                    ? [
+                        BoxShadow(
+                          color: (isMatched
+                                  ? Colors.green
+                                  : isWrong
+                                      ? Colors.red
+                                      : (gradient
+                                              as LinearGradient)
+                                          .colors
+                                          .first)
+                              .withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
           ),
           child: Text(
-            text,
+            isEnglish ? text : _shortenText(text, 80),
             style: TextStyle(
               fontSize: fontSize,
-              fontWeight: isSelected || isMatched || isWrong
-                  ? FontWeight.bold
-                  : FontWeight.w500,
+              fontWeight:
+                  isSelected || isMatched || isWrong
+                      ? FontWeight.bold
+                      : FontWeight.w500,
               color: isMatched || isSelected || isWrong
                   ? Colors.white
-                  : (isDark ? Colors.white : Colors.black87),
+                  : (isDark
+                      ? Colors.white
+                      : Colors.black87),
             ),
             textAlign: TextAlign.center,
+            maxLines: isEnglish ? 2 : 5,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
@@ -670,14 +1043,20 @@ class _MatchingGameState extends State<MatchingGame> {
   }
 
   Widget _buildMatchingComplete(bool isDark) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth =
+        MediaQuery.of(context).size.width;
+    final screenHeight =
+        MediaQuery.of(context).size.height;
 
     // Responsive sizes
-    final iconSize = (screenWidth * 0.2).clamp(80.0, 120.0);
-    final titleFontSize = (screenWidth * 0.07).clamp(24.0, 36.0);
-    final subtitleFontSize = (screenWidth * 0.04).clamp(16.0, 20.0);
-    final scoreFontSize = (screenWidth * 0.06).clamp(22.0, 32.0);
+    final iconSize =
+        (screenWidth * 0.2).clamp(80.0, 120.0);
+    final titleFontSize =
+        (screenWidth * 0.07).clamp(24.0, 36.0);
+    final subtitleFontSize =
+        (screenWidth * 0.04).clamp(16.0, 20.0);
+    final scoreFontSize =
+        (screenWidth * 0.06).clamp(22.0, 32.0);
 
     return Center(
       child: Padding(
@@ -690,12 +1069,17 @@ class _MatchingGameState extends State<MatchingGame> {
               height: iconSize,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFFC107), Color(0xFFFF9800)],
+                  colors: [
+                    Color(0xFFFFC107),
+                    Color(0xFFFF9800)
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(iconSize / 2),
+                borderRadius: BorderRadius.circular(
+                    iconSize / 2),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFFC107).withValues(alpha: 0.4),
+                    color: const Color(0xFFFFC107)
+                        .withValues(alpha: 0.4),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -713,7 +1097,9 @@ class _MatchingGameState extends State<MatchingGame> {
               style: TextStyle(
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
+                color: isDark
+                    ? Colors.white
+                    : Colors.black87,
               ),
             ),
             SizedBox(height: screenHeight * 0.015),
@@ -721,7 +1107,9 @@ class _MatchingGameState extends State<MatchingGame> {
               'Bạn đã ghép đúng tất cả!',
               style: TextStyle(
                 fontSize: subtitleFontSize,
-                color: isDark ? Colors.white70 : Colors.black54,
+                color: isDark
+                    ? Colors.white70
+                    : Colors.black54,
               ),
             ),
             SizedBox(height: screenHeight * 0.03),
@@ -731,12 +1119,17 @@ class _MatchingGameState extends State<MatchingGame> {
                   vertical: screenHeight * 0.02),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
+                  colors: [
+                    Color(0xFF5EC9B4),
+                    Color(0xFF4BB9A5)
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius:
+                    BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF5EC9B4).withValues(alpha: 0.3),
+                    color: const Color(0xFF5EC9B4)
+                        .withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -754,7 +1147,8 @@ class _MatchingGameState extends State<MatchingGame> {
             SizedBox(height: screenHeight * 0.04),
             OutlinedButton.icon(
               onPressed: _showSelectWordsDialog,
-              icon: Icon(Icons.bookmark_add, size: subtitleFontSize),
+              icon: Icon(Icons.bookmark_add,
+                  size: subtitleFontSize),
               label: const Text('Lưu từ'),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(
@@ -765,9 +1159,11 @@ class _MatchingGameState extends State<MatchingGame> {
                   color: Color(0xFF5EC9B4),
                   width: 2,
                 ),
-                foregroundColor: const Color(0xFF5EC9B4),
+                foregroundColor:
+                    const Color(0xFF5EC9B4),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius:
+                      BorderRadius.circular(16),
                 ),
               ),
             ),
@@ -787,9 +1183,11 @@ class _MatchingGameState extends State<MatchingGame> {
                   horizontal: 32,
                   vertical: 16,
                 ),
-                backgroundColor: const Color(0xFF5EC9B4),
+                backgroundColor:
+                    const Color(0xFF5EC9B4),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius:
+                      BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),
