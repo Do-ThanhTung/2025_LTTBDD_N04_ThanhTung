@@ -1,4 +1,20 @@
 {
   "dart.flutterSdkPath": null,
-  "dart.projectSearchDepth": 5
+  "dart.projectSearchDepth": 5,
+  
+  // Tự động format khi save
+  "editor.formatOnSave": true,
+  
+  // Cấu hình Dart formatter
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  },
+  
+  // Tự động organize imports và fix lỗi khi save
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  }
 }
