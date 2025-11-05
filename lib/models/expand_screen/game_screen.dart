@@ -369,6 +369,15 @@ class _GameScreenState extends State<GameScreen> {
         'guessing_trophies', _guessingTrophies);
   }
 
+  Future<void> _incrementGamesPlayed() async {
+    final prefs =
+        await SharedPreferences.getInstance();
+    int currentCount =
+        prefs.getInt('games_played') ?? 0;
+    await prefs.setInt(
+        'games_played', currentCount + 1);
+  }
+
   void _updateTrophies(int change,
       {String? gameType}) {
     setState(() {
@@ -455,6 +464,8 @@ class _GameScreenState extends State<GameScreen> {
         _showAnswer = false;
       });
     } else {
+      // Flashcard game hoàn thành
+      _incrementGamesPlayed();
       setState(() => _gameType = 'menu');
     }
   }
@@ -508,6 +519,12 @@ class _GameScreenState extends State<GameScreen> {
           _selectedEnglishId = null;
           _wrongEnglishId = null;
           _wrongVietnameseId = null;
+
+          // Kiểm tra nếu hoàn thành tất cả
+          if (_matchedPairs.length ==
+              _shuffledEnglishWords.length) {
+            _incrementGamesPlayed();
+          }
         } else {
           // Wrong match
           if (_score > 0) _score--;
@@ -578,6 +595,8 @@ class _GameScreenState extends State<GameScreen> {
         _guessController.clear();
       });
     } else {
+      // Guessing game hoàn thành
+      _incrementGamesPlayed();
       setState(() => _gameType = 'menu');
     }
   }

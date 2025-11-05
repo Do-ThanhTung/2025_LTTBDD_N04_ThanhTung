@@ -113,33 +113,19 @@ class AppPrimaryColor {
     await p.setInt(_key, c.value);
     color.value = c;
   }
-
-  // Auto-adjust color when theme changes
-  static void onThemeChanged(ThemeMode newThemeMode) {
-    // Only auto-adjust if using first time (not persisted)
-    // This is optional - remove this if you want to keep user's choice
-  }
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppLocale.load();
   await AppTheme.load();
-  await AppPrimaryColor
-      .load(); // Load saved primary color
-  // preload local translation dictionaries if available
+  await AppPrimaryColor.load();
+
+  // Preload local translation dictionaries if available
   try {
-    await Future.wait([
-      // these calls ignore errors if assets are missing
-      // TranslationService is a lightweight local mapping loader
-      // (file: lib/services/translation_service.dart)
-      // We call it here so translations are ready when user taps translate.
-      // Note: if you run on web and don't bundle these assets, loadAssets will silently fail.
-      // No harm in calling it.
-      // ignore: unawaited_futures
-      TranslationService.instance.loadAssets(),
-    ]);
+    await TranslationService.instance.loadAssets();
   } catch (_) {}
+
   runApp(const MyApp());
 }
 

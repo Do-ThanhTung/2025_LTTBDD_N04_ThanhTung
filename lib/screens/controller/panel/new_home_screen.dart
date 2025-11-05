@@ -5,7 +5,7 @@ import '../../../main.dart';
 import '../../../models/expand_screen/story_screen.dart';
 import '../../../models/expand_screen/game_screen.dart';
 import '../../../models/expand_screen/translation_screen.dart';
-import 'home_screen.dart';
+import 'dictionary_screen.dart';
 
 class NewHomeScreen extends StatefulWidget {
   const NewHomeScreen({super.key});
@@ -1040,6 +1040,3 @@ class _NewHomeScreenState
     );
   }
 }
-
-// Alias cho HomeScreen (Dictionary Screen)
-typedef DictionaryScreen = HomeScreen;

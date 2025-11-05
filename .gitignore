@@ -41,3 +41,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android Gradle and Kotlin cache
+/android/.gradle/
+/android/.kotlin/
+/android/local.properties
+
+# Chrome device cache
+.dart_tool/chrome-device/
