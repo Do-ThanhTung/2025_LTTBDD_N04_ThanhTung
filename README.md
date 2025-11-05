@@ -1,0 +1,6 @@
+![Screenshot (106)](https://github.com/NgocAn24/English_app/assets/147326923/e6683694-4014-4f0c-a780-85c83c3249b5)
+![Screenshot (107)](https://github.com/NgocAn24/English_app/assets/147326923/acce357f-b039-4eb2-8cc7-4385c3fed0aa)
+![Screenshot (108)](https://github.com/NgocAn24/English_app/assets/147326923/67d246d4-bd0e-4e8f-bc03-f030f4585378)
+![Screenshot (150)](https://github.com/NgocAn24/English_app/assets/147326923/5329aef9-6b80-47f3-90bf-adf3f36f578f)
+![Screenshot (109)](https://github.com/NgocAn24/English_app/assets/147326923/da11df92-a56b-46f1-8980-f29136e00b61)
+![Screenshot (110)](https://github.com/NgocAn24/English_app/assets/147326923/8264728c-92d2-48a4-bba1-f1d68ec8c631)
