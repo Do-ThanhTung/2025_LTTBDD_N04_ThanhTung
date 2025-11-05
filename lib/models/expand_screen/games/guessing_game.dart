@@ -9,8 +9,7 @@ class GuessingWord {
   final String hint;
   final String definition;
   final String difficulty;
-  String?
-      vietnameseDefinition; // Nghĩa tiếng Việt đã dịch
+  String? vietnameseDefinition; // Nghĩa tiếng Việt đã dịch
 
   GuessingWord({
     required this.word,
@@ -25,8 +24,7 @@ final List<GuessingWord> allGuessingWords = [
   GuessingWord(
     word: 'beautiful',
     hint: 'b _ _ _ _ _ f _ _',
-    definition:
-        'Pleasing the senses or mind aesthetically',
+    definition: 'Pleasing the senses or mind aesthetically',
     difficulty: 'easy',
   ),
   GuessingWord(
@@ -56,8 +54,7 @@ final List<GuessingWord> allGuessingWords = [
   GuessingWord(
     word: 'wonderful',
     hint: 'w _ _ d _ _ f _ _',
-    definition:
-        'Inspiring delight, pleasure, or admiration',
+    definition: 'Inspiring delight, pleasure, or admiration',
     difficulty: 'easy',
   ),
   GuessingWord(
@@ -129,16 +126,14 @@ final List<GuessingWord> allGuessingWords = [
   GuessingWord(
     word: 'optimistic',
     hint: 'o _ _ i _ _ s t _ c',
-    definition:
-        'Hopeful and confident about the future',
+    definition: 'Hopeful and confident about the future',
     difficulty: 'hard',
   ),
 ];
 
 class GuessingGame extends StatefulWidget {
   final VoidCallback onBack;
-  final Function(int, {String? gameType})
-      onUpdateTrophies;
+  final Function(int, {String? gameType}) onUpdateTrophies;
 
   const GuessingGame({
     super.key,
@@ -147,8 +142,7 @@ class GuessingGame extends StatefulWidget {
   });
 
   @override
-  State<GuessingGame> createState() =>
-      _GuessingGameState();
+  State<GuessingGame> createState() => _GuessingGameState();
 }
 
 class _GuessingGameState extends State<GuessingGame> {
@@ -182,8 +176,7 @@ class _GuessingGameState extends State<GuessingGame> {
     final random = Random();
 
     // 1. Lấy từ đã tra từ VocabularyService
-    final vocabItems = await VocabularyService.instance
-        .getVocabularyForGame();
+    final vocabItems = await VocabularyService.instance.getVocabularyForGame();
 
     final words = <GuessingWord>[];
 
@@ -199,9 +192,8 @@ class _GuessingGameState extends State<GuessingGame> {
 
     // 3. Nếu không đủ từ, bổ sung từ dữ liệu mẫu
     if (words.length < 10) {
-      final sampleWords =
-          List<GuessingWord>.from(allGuessingWords)
-            ..shuffle(random);
+      final sampleWords = List<GuessingWord>.from(allGuessingWords)
+        ..shuffle(random);
       final needed = 10 - words.length;
       words.addAll(sampleWords.take(needed));
     }
@@ -220,10 +212,9 @@ class _GuessingGameState extends State<GuessingGame> {
         );
         word.vietnameseDefinition = translation.text;
       } catch (e) {
-        debugPrint(
-            'Lỗi dịch "${word.definition}": $e');
-        word.vietnameseDefinition = word
-            .definition; // Fallback về tiếng Anh nếu lỗi
+        debugPrint('Lỗi dịch "${word.definition}": $e');
+        word.vietnameseDefinition =
+            word.definition; // Fallback về tiếng Anh nếu lỗi
       }
     }
 
@@ -238,8 +229,7 @@ class _GuessingGameState extends State<GuessingGame> {
         // Initialize with first and last positions (matching the initial hint)
         _revealedPositions.add(0);
         if (_currentWord.word.length > 1) {
-          _revealedPositions
-              .add(_currentWord.word.length - 1);
+          _revealedPositions.add(_currentWord.word.length - 1);
         }
         _guessController.clear();
       }
@@ -263,8 +253,7 @@ class _GuessingGameState extends State<GuessingGame> {
 
   void _handleGuessSubmit() {
     final isCorrect =
-        _userGuess.trim().toLowerCase() ==
-            _currentWord.word.toLowerCase();
+        _userGuess.trim().toLowerCase() == _currentWord.word.toLowerCase();
 
     setState(() {
       _isCorrect = isCorrect;
@@ -278,15 +267,12 @@ class _GuessingGameState extends State<GuessingGame> {
 
       // Trừ điểm dựa trên % chữ đã hiện
       if (_hintsUsed > 0) {
-        final percentRevealed =
-            _revealedPositions.length / wordLength;
-        final pointsLost = (percentRevealed * 9)
-            .ceil(); // Tối đa trừ 9 điểm
+        final percentRevealed = _revealedPositions.length / wordLength;
+        final pointsLost = (percentRevealed * 9).ceil(); // Tối đa trừ 9 điểm
         trophies = max(1, trophies - pointsLost);
       }
 
-      widget.onUpdateTrophies(trophies,
-          gameType: 'guessing');
+      widget.onUpdateTrophies(trophies, gameType: 'guessing');
     }
   }
 
@@ -300,9 +286,8 @@ class _GuessingGameState extends State<GuessingGame> {
 
       // Tính số chữ cần hiện: 90% sau 3 gợi ý
       // ensure we never reveal the entire word - leave at least one character hidden
-      final totalToReveal = min(
-          (wordLength * 0.9).ceil(),
-          max(0, wordLength - 1));
+      final totalToReveal =
+          min((wordLength * 0.9).ceil(), max(0, wordLength - 1));
       final random = Random();
 
       // Tính số chữ mới cần hiện cho gợi ý này
@@ -324,16 +309,13 @@ class _GuessingGameState extends State<GuessingGame> {
       }
 
       // Add new positions without removing previously revealed ones
-      final positions = List.generate(
-              wordLength, (i) => i)
-          .where(
-              (i) => !_revealedPositions.contains(i))
+      final positions = List.generate(wordLength, (i) => i)
+          .where((i) => !_revealedPositions.contains(i))
           .toList();
       positions.shuffle(random);
 
       for (var pos in positions) {
-        if (_revealedPositions.length >=
-            targetReveal) {
+        if (_revealedPositions.length >= targetReveal) {
           break;
         }
         _revealedPositions.add(pos);
@@ -349,18 +331,13 @@ class _GuessingGameState extends State<GuessingGame> {
         .split('')
         .asMap()
         .entries
-        .map((e) => _revealedPositions.contains(e.key)
-            ? e.value
-            : '_')
+        .map((e) => _revealedPositions.contains(e.key) ? e.value : '_')
         .join(' ');
   }
 
-  Future<void> _saveWordToDictionary(
-      String word) async {
-    final prefs =
-        await SharedPreferences.getInstance();
-    List<String> recentSearches =
-        prefs.getStringList('recent_searches') ?? [];
+  Future<void> _saveWordToDictionary(String word) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> recentSearches = prefs.getStringList('recent_searches') ?? [];
 
     recentSearches.remove(word);
     recentSearches.insert(0, word);
@@ -368,8 +345,7 @@ class _GuessingGameState extends State<GuessingGame> {
       recentSearches = recentSearches.sublist(0, 20);
     }
 
-    await prefs.setStringList(
-        'recent_searches', recentSearches);
+    await prefs.setStringList('recent_searches', recentSearches);
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -382,13 +358,12 @@ class _GuessingGameState extends State<GuessingGame> {
     }
   }
 
-  Future<void> _translateDefinition(
-      String text) async {
+  Future<void> _translateDefinition(String text) async {
     try {
       // Use Google Translator API
       final translator = GoogleTranslator();
-      final translation = await translator
-          .translate(text, from: 'en', to: 'vi');
+      final translation =
+          await translator.translate(text, from: 'en', to: 'vi');
 
       if (mounted) {
         showDialog(
@@ -396,16 +371,14 @@ class _GuessingGameState extends State<GuessingGame> {
           builder: (context) => AlertDialog(
             title: const Row(
               children: [
-                Icon(Icons.translate,
-                    color: Color(0xFF26C6DA)),
+                Icon(Icons.translate, color: Color(0xFF26C6DA)),
                 SizedBox(width: 8),
                 Text('Bản dịch'),
               ],
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Tiếng Anh:',
@@ -441,8 +414,7 @@ class _GuessingGameState extends State<GuessingGame> {
             ),
             actions: [
               TextButton(
-                onPressed: () =>
-                    Navigator.pop(context),
+                onPressed: () => Navigator.pop(context),
                 child: const Text('Đóng'),
               ),
             ],
@@ -453,8 +425,7 @@ class _GuessingGameState extends State<GuessingGame> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-                'Không thể dịch. Vui lòng thử lại.'),
+            content: Text('Không thể dịch. Vui lòng thử lại.'),
             backgroundColor: Colors.red,
           ),
         );
@@ -468,13 +439,10 @@ class _GuessingGameState extends State<GuessingGame> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final screenWidth =
-        MediaQuery.of(context).size.width;
-    final screenHeight =
-        MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     // Hiển thị loading khi đang tải dữ liệu
     if (_isLoading) {
@@ -482,28 +450,22 @@ class _GuessingGameState extends State<GuessingGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF5BA3E8),
-                Color(0xFF4A8DD4)
-              ],
+              colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: Center(
             child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(
-                    color: Colors.white),
+                CircularProgressIndicator(color: Colors.white),
                 SizedBox(height: screenHeight * 0.025),
                 Text(
                   'Đang tải từ vựng...',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: (screenWidth * 0.043)
-                        .clamp(16.0, 20.0),
+                    fontSize: (screenWidth * 0.043).clamp(16.0, 20.0),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -520,63 +482,49 @@ class _GuessingGameState extends State<GuessingGame> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF5BA3E8),
-                Color(0xFF4A8DD4)
-              ],
+              colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: Center(
             child: Padding(
-              padding:
-                  EdgeInsets.all(screenWidth * 0.08),
+              padding: EdgeInsets.all(screenWidth * 0.08),
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.info_outline,
-                    size: (screenWidth * 0.2)
-                        .clamp(70.0, 100.0),
+                    size: (screenWidth * 0.2).clamp(70.0, 100.0),
                     color: Colors.white,
                   ),
-                  SizedBox(
-                      height: screenHeight * 0.025),
+                  SizedBox(height: screenHeight * 0.025),
                   Text(
                     'Bạn chưa tra từ nào trong từ điển.\nHãy tra từ trước khi chơi game!',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: (screenWidth * 0.043)
-                          .clamp(16.0, 20.0),
+                      fontSize: (screenWidth * 0.043).clamp(16.0, 20.0),
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(
-                      height: screenHeight * 0.04),
+                  SizedBox(height: screenHeight * 0.04),
                   ElevatedButton.icon(
                     onPressed: widget.onBack,
                     icon: Icon(Icons.arrow_back,
-                        size: (screenWidth * 0.048)
-                            .clamp(18.0, 24.0)),
+                        size: (screenWidth * 0.048).clamp(18.0, 24.0)),
                     label: Text('Quay lại',
                         style: TextStyle(
-                            fontSize: (screenWidth *
-                                    0.04)
-                                .clamp(15.0, 19.0))),
+                            fontSize: (screenWidth * 0.04).clamp(15.0, 19.0))),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor:
-                          const Color(0xFF5BA3E8),
+                      foregroundColor: const Color(0xFF5BA3E8),
                       padding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.08,
                         vertical: screenHeight * 0.02,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -590,10 +538,8 @@ class _GuessingGameState extends State<GuessingGame> {
 
     // Responsive sizes for header
     final headerPadding = screenWidth * 0.05;
-    final iconSize =
-        (screenWidth * 0.065).clamp(24.0, 32.0);
-    final titleFontSize =
-        (screenWidth * 0.048).clamp(18.0, 24.0);
+    final iconSize = (screenWidth * 0.065).clamp(24.0, 32.0);
+    final titleFontSize = (screenWidth * 0.048).clamp(18.0, 24.0);
 
     return Scaffold(
       body: Column(
@@ -612,10 +558,7 @@ class _GuessingGameState extends State<GuessingGame> {
                 bottomRight: Radius.circular(40),
               ),
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF5BA3E8),
-                  Color(0xFF4A8DD4)
-                ],
+                colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -623,8 +566,7 @@ class _GuessingGameState extends State<GuessingGame> {
             child: SafeArea(
               bottom: false,
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: widget.onBack,
@@ -651,31 +593,24 @@ class _GuessingGameState extends State<GuessingGame> {
           // Game content
           Expanded(
             child: !_showResult
-                ? _buildGuessingInput(
-                    isDark, screenWidth, screenHeight)
-                : _buildGuessingResult(
-                    isDark, screenWidth, screenHeight),
+                ? _buildGuessingInput(isDark, screenWidth, screenHeight)
+                : _buildGuessingResult(isDark, screenWidth, screenHeight),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildGuessingInput(bool isDark,
-      double screenWidth, double screenHeight) {
+  Widget _buildGuessingInput(
+      bool isDark, double screenWidth, double screenHeight) {
     // Responsive sizes
     final contentPadding = screenWidth * 0.05;
     final cardPadding = screenWidth * 0.06;
-    final hintFontSize =
-        (screenWidth * 0.065).clamp(24.0, 32.0);
-    final definitionFontSize =
-        (screenWidth * 0.038).clamp(15.0, 19.0);
-    final inputFontSize =
-        (screenWidth * 0.043).clamp(16.0, 20.0);
-    final smallFontSize =
-        (screenWidth * 0.03).clamp(11.0, 14.0);
-    final iconSize =
-        (screenWidth * 0.048).clamp(18.0, 24.0);
+    final hintFontSize = (screenWidth * 0.065).clamp(24.0, 32.0);
+    final definitionFontSize = (screenWidth * 0.038).clamp(15.0, 19.0);
+    final inputFontSize = (screenWidth * 0.043).clamp(16.0, 20.0);
+    final smallFontSize = (screenWidth * 0.03).clamp(11.0, 14.0);
+    final iconSize = (screenWidth * 0.048).clamp(18.0, 24.0);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(contentPadding),
@@ -687,19 +622,12 @@ class _GuessingGameState extends State<GuessingGame> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: isDark
-                    ? [
-                        const Color(0xFF2D2D2D),
-                        const Color(0xFF1A1A1A)
-                      ]
-                    : [
-                        const Color(0xFFE3F2FD),
-                        const Color(0xFFBBDEFB)
-                      ],
+                    ? [const Color(0xFF2D2D2D), const Color(0xFF1A1A1A)]
+                    : [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB)],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFF5BA3E8)
-                    .withValues(alpha: 0.3),
+                color: const Color(0xFF5BA3E8).withValues(alpha: 0.3),
                 width: 2,
               ),
             ),
@@ -711,21 +639,16 @@ class _GuessingGameState extends State<GuessingGame> {
                     fontSize: hintFontSize,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 4,
-                    color: isDark
-                        ? Colors.white
-                        : const Color(0xFF1565C0),
+                    color: isDark ? Colors.white : const Color(0xFF1565C0),
                   ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Text(
-                  _currentWord.vietnameseDefinition ??
-                      _currentWord.definition,
+                  _currentWord.vietnameseDefinition ?? _currentWord.definition,
                   style: TextStyle(
                     fontSize: definitionFontSize,
-                    color: isDark
-                        ? Colors.white70
-                        : Colors.black87,
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -743,17 +666,15 @@ class _GuessingGameState extends State<GuessingGame> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFE3F2FD).withValues(
-                        alpha: isDark ? 0.2 : 1.0),
-                    const Color(0xFFBBDEFB).withValues(
-                        alpha: isDark ? 0.2 : 1.0),
+                    const Color(0xFFE3F2FD)
+                        .withValues(alpha: isDark ? 0.2 : 1.0),
+                    const Color(0xFFBBDEFB)
+                        .withValues(alpha: isDark ? 0.2 : 1.0),
                   ],
                 ),
-                borderRadius:
-                    BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFF5BA3E8)
-                      .withValues(alpha: 0.3),
+                  color: const Color(0xFF5BA3E8).withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -763,8 +684,7 @@ class _GuessingGameState extends State<GuessingGame> {
                     Icons.lightbulb,
                     size: iconSize,
                     color: const Color(0xFF5BA3E8)
-                        .withValues(
-                            alpha: isDark ? 0.8 : 1.0),
+                        .withValues(alpha: isDark ? 0.8 : 1.0),
                   ),
                   SizedBox(width: screenWidth * 0.02),
                   Expanded(
@@ -776,9 +696,8 @@ class _GuessingGameState extends State<GuessingGame> {
                               : 'Đã dùng 3 gợi ý: Hiện 90% chữ',
                       style: TextStyle(
                         fontSize: smallFontSize,
-                        color: isDark
-                            ? Colors.white70
-                            : const Color(0xFF1565C0),
+                        color:
+                            isDark ? Colors.white70 : const Color(0xFF1565C0),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -792,35 +711,26 @@ class _GuessingGameState extends State<GuessingGame> {
           // Input
           TextField(
             controller: _guessController,
-            onChanged: (value) =>
-                setState(() => _userGuess = value),
-            onSubmitted: _userGuess.isNotEmpty
-                ? (_) => _handleGuessSubmit()
-                : null,
+            onChanged: (value) => setState(() => _userGuess = value),
+            onSubmitted:
+                _userGuess.isNotEmpty ? (_) => _handleGuessSubmit() : null,
             style: TextStyle(
               fontSize: inputFontSize,
-              color: isDark
-                  ? Colors.white
-                  : Colors.black87,
+              color: isDark ? Colors.white : Colors.black87,
             ),
             decoration: InputDecoration(
               hintText: 'Nhập đáp án của bạn...',
               hintStyle: TextStyle(
-                color: isDark
-                    ? Colors.white38
-                    : Colors.black38,
+                color: isDark ? Colors.white38 : Colors.black38,
               ),
               filled: true,
-              fillColor: isDark
-                  ? const Color(0xFF1A1A1A)
-                  : const Color(0xFFF5F5F5),
+              fillColor:
+                  isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF5F5F5),
               border: OutlineInputBorder(
-                borderRadius:
-                    BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
-              contentPadding:
-                  EdgeInsets.all(screenWidth * 0.04),
+              contentPadding: EdgeInsets.all(screenWidth * 0.04),
             ),
           ),
           SizedBox(height: screenHeight * 0.02),
@@ -830,29 +740,19 @@ class _GuessingGameState extends State<GuessingGame> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: _hintsUsed >= 3
-                      ? null
-                      : _useHint,
-                  icon: const Icon(
-                      Icons.lightbulb_outline,
-                      size: 20),
-                  label: Text(
-                      'Gợi ý (${3 - _hintsUsed})'),
+                  onPressed: _hintsUsed >= 3 ? null : _useHint,
+                  icon: const Icon(Icons.lightbulb_outline, size: 20),
+                  label: Text('Gợi ý (${3 - _hintsUsed})'),
                   style: OutlinedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(
-                            vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     side: BorderSide(
                       color: _hintsUsed >= 3
-                          ? (isDark
-                              ? Colors.white12
-                              : Colors.grey.shade200)
+                          ? (isDark ? Colors.white12 : Colors.grey.shade200)
                           : const Color(0xFF5BA3E8),
                       width: 2,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -860,21 +760,14 @@ class _GuessingGameState extends State<GuessingGame> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _userGuess.isEmpty
-                      ? null
-                      : _handleGuessSubmit,
+                  onPressed: _userGuess.isEmpty ? null : _handleGuessSubmit,
                   style: ElevatedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(
-                            vertical: 14),
-                    backgroundColor:
-                        const Color(0xFF5BA3E8),
-                    disabledBackgroundColor: isDark
-                        ? Colors.white12
-                        : Colors.grey.shade300,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: const Color(0xFF5BA3E8),
+                    disabledBackgroundColor:
+                        isDark ? Colors.white12 : Colors.grey.shade300,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 0,
                   ),
@@ -894,21 +787,16 @@ class _GuessingGameState extends State<GuessingGame> {
     );
   }
 
-  Widget _buildGuessingResult(bool isDark,
-      double screenWidth, double screenHeight) {
+  Widget _buildGuessingResult(
+      bool isDark, double screenWidth, double screenHeight) {
     // Responsive sizes
     final contentPadding = screenWidth * 0.08;
     final cardPadding = screenWidth * 0.08;
-    final emojiSize =
-        (screenWidth * 0.15).clamp(50.0, 70.0);
-    final titleFontSize =
-        (screenWidth * 0.075).clamp(28.0, 36.0);
-    final answerFontSize =
-        (screenWidth * 0.048).clamp(18.0, 24.0);
-    final definitionFontSize =
-        (screenWidth * 0.038).clamp(15.0, 19.0);
-    final iconSize =
-        (screenWidth * 0.048).clamp(18.0, 24.0);
+    final emojiSize = (screenWidth * 0.15).clamp(50.0, 70.0);
+    final titleFontSize = (screenWidth * 0.075).clamp(28.0, 36.0);
+    final answerFontSize = (screenWidth * 0.048).clamp(18.0, 24.0);
+    final definitionFontSize = (screenWidth * 0.038).clamp(15.0, 19.0);
+    final iconSize = (screenWidth * 0.048).clamp(18.0, 24.0);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(contentPadding),
@@ -918,16 +806,16 @@ class _GuessingGameState extends State<GuessingGame> {
           gradient: LinearGradient(
             colors: _isCorrect
                 ? [
-                    const Color(0xFF4CAF50).withValues(
-                        alpha: isDark ? 0.3 : 0.2),
-                    const Color(0xFF45A049).withValues(
-                        alpha: isDark ? 0.3 : 0.2),
+                    const Color(0xFF4CAF50)
+                        .withValues(alpha: isDark ? 0.3 : 0.2),
+                    const Color(0xFF45A049)
+                        .withValues(alpha: isDark ? 0.3 : 0.2),
                   ]
                 : [
-                    const Color(0xFFE91E63).withValues(
-                        alpha: isDark ? 0.3 : 0.2),
-                    const Color(0xFFD81B60).withValues(
-                        alpha: isDark ? 0.3 : 0.2),
+                    const Color(0xFFE91E63)
+                        .withValues(alpha: isDark ? 0.3 : 0.2),
+                    const Color(0xFFD81B60)
+                        .withValues(alpha: isDark ? 0.3 : 0.2),
                   ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -935,10 +823,8 @@ class _GuessingGameState extends State<GuessingGame> {
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: _isCorrect
-                ? const Color(0xFF4CAF50)
-                    .withValues(alpha: 0.3)
-                : const Color(0xFFE91E63)
-                    .withValues(alpha: 0.3),
+                ? const Color(0xFF4CAF50).withValues(alpha: 0.3)
+                : const Color(0xFFE91E63).withValues(alpha: 0.3),
             width: 2,
           ),
         ),
@@ -954,9 +840,7 @@ class _GuessingGameState extends State<GuessingGame> {
               style: TextStyle(
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? Colors.white
-                    : Colors.black87,
+                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
             if (!_isCorrect) ...[
@@ -966,21 +850,16 @@ class _GuessingGameState extends State<GuessingGame> {
                 style: TextStyle(
                   fontSize: answerFontSize,
                   fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? Colors.white70
-                      : Colors.black54,
+                  color: isDark ? Colors.white70 : Colors.black54,
                 ),
               ),
             ],
             SizedBox(height: screenHeight * 0.02),
             Text(
-              _currentWord.vietnameseDefinition ??
-                  _currentWord.definition,
+              _currentWord.vietnameseDefinition ?? _currentWord.definition,
               style: TextStyle(
                 fontSize: definitionFontSize,
-                color: isDark
-                    ? Colors.white60
-                    : Colors.black45,
+                color: isDark ? Colors.white60 : Colors.black45,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -993,27 +872,20 @@ class _GuessingGameState extends State<GuessingGame> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () =>
-                        _translateDefinition(
-                            _currentWord.definition),
-                    icon: Icon(Icons.translate,
-                        size: iconSize),
+                        _translateDefinition(_currentWord.definition),
+                    icon: Icon(Icons.translate, size: iconSize),
                     label: Text('Dịch',
-                        style: TextStyle(
-                            fontSize:
-                                definitionFontSize)),
+                        style: TextStyle(fontSize: definitionFontSize)),
                     style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          vertical:
-                              screenHeight * 0.015),
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.015),
                       side: const BorderSide(
                         color: Color(0xFF26C6DA),
                         width: 2,
                       ),
-                      foregroundColor:
-                          const Color(0xFF26C6DA),
+                      foregroundColor: const Color(0xFF26C6DA),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -1021,19 +893,13 @@ class _GuessingGameState extends State<GuessingGame> {
                 SizedBox(width: screenWidth * 0.03),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () =>
-                        _saveWordToDictionary(
-                            _currentWord.word),
-                    icon: Icon(Icons.bookmark_add,
-                        size: iconSize),
+                    onPressed: () => _saveWordToDictionary(_currentWord.word),
+                    icon: Icon(Icons.bookmark_add, size: iconSize),
                     label: Text('Lưu từ',
-                        style: TextStyle(
-                            fontSize:
-                                definitionFontSize)),
+                        style: TextStyle(fontSize: definitionFontSize)),
                     style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          vertical:
-                              screenHeight * 0.015),
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.015),
                       side: BorderSide(
                         color: _isCorrect
                             ? const Color(0xFF4CAF50)
@@ -1044,8 +910,7 @@ class _GuessingGameState extends State<GuessingGame> {
                           ? const Color(0xFF4CAF50)
                           : const Color(0xFFE91E63),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -1061,11 +926,9 @@ class _GuessingGameState extends State<GuessingGame> {
                   horizontal: 32,
                   vertical: 16,
                 ),
-                backgroundColor:
-                    const Color(0xFF5BA3E8),
+                backgroundColor: const Color(0xFF5BA3E8),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),

@@ -45,8 +45,7 @@ class AppTheme {
 
 // App-level locale holder (persisted with SharedPreferences)
 class AppLocale {
-  static final ValueNotifier<Locale> locale =
-      ValueNotifier(const Locale('en'));
+  static final ValueNotifier<Locale> locale = ValueNotifier(const Locale('en'));
   static const _key = 'app_locale';
 
   static Future<void> load() async {
@@ -69,8 +68,7 @@ class AppLocale {
 // App-level primary color holder (persisted with SharedPreferences)
 class AppPrimaryColor {
   static final ValueNotifier<Color> color =
-      ValueNotifier(
-          const Color(0xFF2196F3)); // Default: Blue
+      ValueNotifier(const Color(0xFF2196F3)); // Default: Blue
   static const _key = 'app_primary_color';
 
   static const colors = [
@@ -83,10 +81,8 @@ class AppPrimaryColor {
   ];
 
   // Default colors for each theme
-  static const Color lightThemeDefault =
-      Color(0xFF2196F3); // Blue for light
-  static const Color darkThemeDefault =
-      Color(0xFFFF9800); // Orange for dark
+  static const Color lightThemeDefault = Color(0xFF2196F3); // Blue for light
+  static const Color darkThemeDefault = Color(0xFFFF9800); // Orange for dark
 
   static Future<void> load() async {
     try {
@@ -96,11 +92,8 @@ class AppPrimaryColor {
         color.value = Color(colorValue);
       } else {
         // Set default based on current theme
-        final isDark =
-            AppTheme.mode.value == ThemeMode.dark;
-        color.value = isDark
-            ? darkThemeDefault
-            : lightThemeDefault;
+        final isDark = AppTheme.mode.value == ThemeMode.dark;
+        color.value = isDark ? darkThemeDefault : lightThemeDefault;
       }
     } catch (e) {
       color.value = const Color(0xFF2196F3);
@@ -142,8 +135,7 @@ class MyApp extends StatelessWidget {
               valueListenable: AppPrimaryColor.color,
               builder: (context, primaryColor, _) {
                 // expose navigatorKey to NotificationService so it can show overlays without BuildContext
-                NotificationService.instance
-                    .navigatorKey = navigatorKey;
+                NotificationService.instance.navigatorKey = navigatorKey;
                 return MaterialApp(
                   navigatorKey: navigatorKey,
                   debugShowCheckedModeBanner: false,
@@ -155,32 +147,22 @@ class MyApp extends StatelessWidget {
                   ],
                   localizationsDelegates: const [
                     AppLocalizationsDelegate(),
-                    GlobalMaterialLocalizations
-                        .delegate,
-                    GlobalWidgetsLocalizations
-                        .delegate,
-                    GlobalCupertinoLocalizations
-                        .delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
                   ],
                   // Fallback logic if saved locale isn't supported
-                  localeResolutionCallback:
-                      (deviceLocale,
-                          supportedLocales) {
+                  localeResolutionCallback: (deviceLocale, supportedLocales) {
                     // If the selected locale is supported, use it.
-                    if (supportedLocales.any((l) =>
-                        l.languageCode ==
-                        locale.languageCode)) {
+                    if (supportedLocales
+                        .any((l) => l.languageCode == locale.languageCode)) {
                       return locale;
                     }
                     // Try to match device locale by language code.
                     if (deviceLocale != null) {
-                      final match =
-                          supportedLocales.firstWhere(
-                        (l) =>
-                            l.languageCode ==
-                            deviceLocale.languageCode,
-                        orElse: () =>
-                            supportedLocales.first,
+                      final match = supportedLocales.firstWhere(
+                        (l) => l.languageCode == deviceLocale.languageCode,
+                        orElse: () => supportedLocales.first,
                       );
                       return match;
                     }
