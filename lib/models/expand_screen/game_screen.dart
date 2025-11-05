@@ -658,7 +658,7 @@ class _GameScreenState extends State<GameScreen> {
   Widget _buildGameMenu() {
     return Scaffold(
       body: Hero(
-        tag: 'feature_Game',
+        tag: 'hero_game',
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(

@@ -53,40 +53,44 @@ class _StoryScreenState extends State<StoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(AppLocalizations.t(
-              context, 'story_short'))),
-      body: ListView.builder(
-        itemCount: stories.length,
-        itemBuilder: (c, i) {
-          final st = stories[i];
-          return ListTile(
-            title: Text(st.title),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: Text(st.title),
-                      ),
-                      body: Padding(
-                        padding: const EdgeInsets.all(
-                          16.0,
+    return Hero(
+      tag: 'hero_story',
+      child: Scaffold(
+        appBar: AppBar(
+            title: Text(AppLocalizations.t(
+                context, 'story_short'))),
+        body: ListView.builder(
+          itemCount: stories.length,
+          itemBuilder: (c, i) {
+            final st = stories[i];
+            return ListTile(
+              title: Text(st.title),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(st.title),
                         ),
-                        child: SingleChildScrollView(
-                          child: Text(st.content),
+                        body: Padding(
+                          padding:
+                              const EdgeInsets.all(
+                            16.0,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Text(st.content),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          );
-        },
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

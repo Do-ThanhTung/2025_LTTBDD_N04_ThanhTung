@@ -67,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: SafeArea(
               child: SingleChildScrollView(
+                physics:
+                    const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
@@ -190,16 +192,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     circleCount: 3,
+                                    heroTag:
+                                        'hero_dictionary',
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
+                                      Navigator.of(
+                                              context)
+                                          .push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation) =>
                                                   const DictionaryScreen(),
-                                        ),
-                                      ).then((_) =>
-                                          _loadStats()); // Reload stats khi quay lại
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
+                                                );
+                                              },
+                                              transitionDuration:
+                                                  const Duration(
+                                                      milliseconds: 500),
+                                            ),
+                                          )
+                                          .then((_) =>
+                                              _loadStats()); // Reload stats khi quay lại
                                     },
                                   ),
                                 ),
@@ -235,16 +256,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     circleCount: 4,
+                                    heroTag:
+                                        'hero_translation',
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
+                                      Navigator.of(
+                                              context)
+                                          .push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation) =>
                                                   const TranslationScreen(),
-                                        ),
-                                      ).then((_) =>
-                                          _loadStats()); // Reload stats khi quay lại
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
+                                                );
+                                              },
+                                              transitionDuration:
+                                                  const Duration(
+                                                      milliseconds: 500),
+                                            ),
+                                          )
+                                          .then((_) =>
+                                              _loadStats()); // Reload stats khi quay lại
                                     },
                                   ),
                                 ),
@@ -281,16 +321,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     circleCount: 5,
+                                    heroTag:
+                                        'hero_game',
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
+                                      Navigator.of(
+                                              context)
+                                          .push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation) =>
                                                   const GameScreen(),
-                                        ),
-                                      ).then((_) =>
-                                          _loadStats()); // Reload stats khi quay lại
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
+                                                );
+                                              },
+                                              transitionDuration:
+                                                  const Duration(
+                                                      milliseconds: 500),
+                                            ),
+                                          )
+                                          .then((_) =>
+                                              _loadStats()); // Reload stats khi quay lại
                                     },
                                   ),
                                 ),
@@ -326,16 +385,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ],
                                     ),
                                     circleCount: 6,
+                                    heroTag:
+                                        'hero_story',
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
+                                      Navigator.of(
+                                              context)
+                                          .push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation) =>
                                                   const StoryScreen(),
-                                        ),
-                                      ).then((_) =>
-                                          _loadStats()); // Reload stats khi quay lại
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
+                                                );
+                                              },
+                                              transitionDuration:
+                                                  const Duration(
+                                                      milliseconds: 500),
+                                            ),
+                                          )
+                                          .then((_) =>
+                                              _loadStats()); // Reload stats khi quay lại
                                     },
                                   ),
                                 ),
@@ -469,6 +547,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+
+                    // Thêm khoảng trống ở cuối để luôn có thể scroll
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -486,6 +567,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required Gradient gradient,
     required int circleCount,
     required VoidCallback onTap,
+    String? heroTag,
   }) {
     // Tạo vòng tròn với số lượng và vị trí khác nhau cho mỗi card
     List<Widget> _buildCircles() {
@@ -727,7 +809,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Hero(
-        tag: 'feature_$title',
+        tag: heroTag ?? 'feature_$title',
         child: Material(
           color: Colors.transparent,
           child: ClipRRect(

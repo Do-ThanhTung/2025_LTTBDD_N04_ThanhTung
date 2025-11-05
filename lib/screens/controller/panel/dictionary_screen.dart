@@ -85,108 +85,110 @@ class _DictionaryScreenState
     final isDark = Theme.of(context).brightness ==
         Brightness.dark;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        backgroundColor: isDark
-            ? const Color(0xFF1a1a2e)
-            : const Color(0xFFF5F3FF),
-        body: Column(
-          children: [
-            // Header with gradient
-            Container(
-              padding: const EdgeInsets.only(
-                top: 50,
-                left: 20,
-                right: 20,
-                bottom: 24,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
+    return Hero(
+      tag: 'hero_dictionary',
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: isDark
+              ? const Color(0xFF1a1a2e)
+              : const Color(0xFFF3E5F5),
+          body: Column(
+            children: [
+              // Header with gradient
+              Container(
+                padding: const EdgeInsets.only(
+                  top: 50,
+                  left: 20,
+                  right: 20,
+                  bottom: 24,
                 ),
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha(
-                            (0.85 * 255).round()),
-                    Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha(
-                            (0.65 * 255).round()),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Top bar with back button
-                  Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () =>
-                            Navigator.of(context)
-                                .maybePop(),
-                        child: Container(
-                          padding:
-                              const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white
-                                .withAlpha((0.2 * 255)
-                                    .round()),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.t(context,
-                            'practice_dictionary'),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.search,
-                        color: Colors.white70,
-                        size: 24,
-                      ),
-                    ],
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius:
+                      const BorderRadius.only(
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
                   ),
-                  const SizedBox(height: 20),
-                  // Search box
-                  _buildSearchWidget(),
-                ],
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFB39DDB),
+                      Color(0xFF9575CD),
+                      Color(0xFF7E57C2),
+                    ],
+                    stops: [0.0, 0.5, 1.0],
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // Top bar with back button
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context)
+                                  .maybePop(),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.all(
+                                    8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white
+                                  .withAlpha(
+                                      (0.2 * 255)
+                                          .round()),
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          AppLocalizations.t(context,
+                              'practice_dictionary'),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.w600,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.search,
+                          color: Colors.white70,
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Search box
+                    _buildSearchWidget(),
+                  ],
+                ),
               ),
-            ),
 
-            // Content area
-            const SizedBox(height: 12),
-            if (inProgress)
-              const Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 20),
-                child: LinearProgressIndicator(),
-              )
-            else if (responseModel != null)
-              Expanded(child: _buildResponseWidget())
-            else
-              Expanded(child: _buildEmptyState()),
-          ],
+              // Content area
+              const SizedBox(height: 12),
+              if (inProgress)
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20),
+                  child: LinearProgressIndicator(),
+                )
+              else if (responseModel != null)
+                Expanded(child: _buildResponseWidget())
+              else
+                Expanded(child: _buildEmptyState()),
+            ],
+          ),
         ),
       ),
     );
@@ -284,129 +286,236 @@ class _DictionaryScreenState
   Widget _buildEmptyState() {
     final isDark = Theme.of(context).brightness ==
         Brightness.dark;
+    
+    // Lấy lịch sử tìm kiếm
+    final searchHistory = SearchHistoryService.instance.getHistory();
 
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 20),
-      child: Card(
-        elevation: 0,
-        color: isDark
-            ? Colors.grey.shade800
-                .withAlpha((0.6 * 255).round())
-            : Colors.white
-                .withAlpha((0.8 * 255).round()),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context)
-                          .colorScheme
-                          .primary,
-                      Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withAlpha(
-                              (0.7 * 255).round()),
-                    ],
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                  size: 36,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                AppLocalizations.t(
-                    context, 'search_word'),
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? Colors.white
-                      : Colors.grey.shade800,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Discover meanings, examples, and more',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isDark
-                      ? Colors.grey.shade400
-                      : Colors.grey.shade600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          // Icon và tiêu đề
+          Center(
+            child: Card(
+            elevation: 0,
+            color: isDark
+                ? Colors.grey.shade800
+                    .withAlpha((0.6 * 255).round())
+                : Colors.white
+                    .withAlpha((0.8 * 255).round()),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  'hello',
-                  'happy',
-                  'learn',
-                  'beautiful'
-                ].map((word) {
-                  return InkWell(
-                    onTap: () {
-                      _searchController.text = word;
-                      _getMeaningFromApi(word);
-                    },
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFFB39DDB),
+                          Color(0xFF9575CD),
+                          Color(0xFF7E57C2),
+                        ],
                       ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha((0.15 * 255)
-                                    .round()),
-                            Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha((0.1 * 255)
-                                    .round()),
-                          ],
-                        ),
-                        borderRadius:
-                            BorderRadius.circular(20),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.t(
+                        context, 'search_word'),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? Colors.white
+                          : Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Discover meanings, examples, and more',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Lịch sử tìm kiếm
+          if (searchHistory.isNotEmpty) ...[
+            Row(
+              children: [
+                const Icon(
+                  Icons.history,
+                  size: 20,
+                  color: Color(0xFF9575CD),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Recent Searches',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isDark
+                        ? Colors.white
+                        : Colors.grey.shade800,
+                  ),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      SearchHistoryService.instance.clearHistory();
+                    });
+                  },
+                  child: Text(
+                    'Clear',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: searchHistory.map((word) {
+                return InkWell(
+                  onTap: () {
+                    _searchController.text = word;
+                    _getMeaningFromApi(word);
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFE1BEE7),
+                          Color(0xFFCE93D8),
+                        ],
                       ),
-                      child: Text(
-                        word,
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                      borderRadius:
+                          BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF9575CD)
+                              .withAlpha((0.2 * 255).round()),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Color(0xFF7E57C2),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          word,
+                          style: const TextStyle(
+                            color: Color(0xFF6A1B9A),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ] else ...[
+            // Nếu chưa có lịch sử, hiển thị gợi ý
+            Text(
+              'Suggested Words',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isDark
+                    ? Colors.white
+                    : Colors.grey.shade800,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                'hello',
+                'happy',
+                'learn',
+                'beautiful',
+                'friend',
+                'love',
+              ].map((word) {
+                return InkWell(
+                  onTap: () {
+                    _searchController.text = word;
+                    _getMeaningFromApi(word);
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFE1BEE7),
+                          Color(0xFFCE93D8),
+                        ],
+                      ),
+                      borderRadius:
+                          BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      word,
+                      style: const TextStyle(
+                        color: Color(0xFF6A1B9A),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ],
       ),
     );
   }
