@@ -1,7 +1,9 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator_plus/translator_plus.dart';
+
 import '../../../services/vocabulary_service.dart';
 
 class GuessingWord {
@@ -226,11 +228,31 @@ class _GuessingGameState extends State<GuessingGame> {
         _showResult = false;
         _hintsUsed = 0;
         _revealedPositions.clear();
-        // Initialize with first and last positions (matching the initial hint)
+
+        // Initialize với 10% chữ
+        final wordLength = _currentWord.word.length;
+        final initialReveal = (wordLength * 0.10).ceil();
+
+        // Luôn hiện chữ đầu
         _revealedPositions.add(0);
-        if (_currentWord.word.length > 1) {
-          _revealedPositions.add(_currentWord.word.length - 1);
+
+        // Luôn hiện chữ cuối nếu từ có > 1 chữ
+        if (wordLength > 1) {
+          _revealedPositions.add(wordLength - 1);
         }
+
+        // Thêm các chữ ngẫu nhiên ở giữa để đạt 10%
+        if (wordLength > 2 && _revealedPositions.length < initialReveal) {
+          final random = Random();
+          final middlePositions = List.generate(wordLength - 2, (i) => i + 1);
+          middlePositions.shuffle(random);
+
+          for (var pos in middlePositions) {
+            if (_revealedPositions.length >= initialReveal) break;
+            _revealedPositions.add(pos);
+          }
+        }
+
         _guessController.clear();
       }
       _isLoading = false;
@@ -238,6 +260,7 @@ class _GuessingGameState extends State<GuessingGame> {
   }
 
   String _createHint(String word) {
+    // Không dùng nữa vì giờ dùng _revealedPositions để hiển thị động
     if (word.isEmpty) return '';
     final letters = word.toLowerCase().split('');
     final result = <String>[];
@@ -283,49 +306,48 @@ class _GuessingGameState extends State<GuessingGame> {
       _hintsUsed++;
       final word = _currentWord.word;
       final wordLength = word.length;
-
-      // Tính số chữ cần hiện: 90% sau 3 gợi ý
-      // ensure we never reveal the entire word - leave at least one character hidden
-      final totalToReveal =
-          min((wordLength * 0.9).ceil(), max(0, wordLength - 1));
       final random = Random();
 
-      // Tính số chữ mới cần hiện cho gợi ý này
-      int targetReveal;
+      // Tính % mục tiêu cho từng lần gợi ý
+      double targetPercent;
       if (_hintsUsed == 1) {
-        targetReveal = (totalToReveal * 0.30).ceil();
+        // Gợi ý 1: Thêm 20% → Tổng 30%
+        targetPercent = 0.30;
       } else if (_hintsUsed == 2) {
-        targetReveal = (totalToReveal * 0.60).ceil();
+        // Gợi ý 2: Thêm 30% → Tổng 60%
+        targetPercent = 0.60;
       } else {
-        targetReveal = totalToReveal;
+        // Gợi ý 3: Thêm 30% → Tổng 90%
+        targetPercent = 0.90;
       }
 
-      // First and last positions are already in _revealedPositions from init
-      // No need to add them again
+      // Tính số chữ cần hiện
+      int targetReveal = (wordLength * targetPercent).ceil();
 
-      // If already reached target, nothing to do
+      // Đảm bảo không hiện hết từ (để lại ít nhất 1 chữ ẩn)
+      targetReveal = min(targetReveal, wordLength - 1);
+
+      // Nếu đã đạt hoặc vượt target, không cần làm gì
       if (_revealedPositions.length >= targetReveal) {
         return;
       }
 
-      // Add new positions without removing previously revealed ones
-      final positions = List.generate(wordLength, (i) => i)
+      // Lấy danh sách vị trí chưa hiện
+      final hiddenPositions = List.generate(wordLength, (i) => i)
           .where((i) => !_revealedPositions.contains(i))
           .toList();
-      positions.shuffle(random);
+      hiddenPositions.shuffle(random);
 
-      for (var pos in positions) {
-        if (_revealedPositions.length >= targetReveal) {
-          break;
-        }
-        _revealedPositions.add(pos);
+      // Thêm các vị trí mới cho đến khi đạt target
+      int toAdd = targetReveal - _revealedPositions.length;
+      for (int i = 0; i < min(toAdd, hiddenPositions.length); i++) {
+        _revealedPositions.add(hiddenPositions[i]);
       }
     });
   }
 
   String _getHintText() {
-    if (_hintsUsed == 0) return _currentWord.hint;
-
+    // Luôn dùng _revealedPositions để hiển thị từ, ngay cả lần đầu
     final word = _currentWord.word;
     return word
         .split('')
@@ -690,10 +712,10 @@ class _GuessingGameState extends State<GuessingGame> {
                   Expanded(
                     child: Text(
                       _hintsUsed == 1
-                          ? 'Đã dùng 1 gợi ý: Hiện 30-40% chữ'
+                          ? 'Đã dùng 1 gợi ý'
                           : _hintsUsed == 2
-                              ? 'Đã dùng 2 gợi ý: Hiện 60-70% chữ'
-                              : 'Đã dùng 3 gợi ý: Hiện 90% chữ',
+                              ? 'Đã dùng 2 gợi ý'
+                              : 'Đã dùng 3 gợi ý',
                       style: TextStyle(
                         fontSize: smallFontSize,
                         color:
