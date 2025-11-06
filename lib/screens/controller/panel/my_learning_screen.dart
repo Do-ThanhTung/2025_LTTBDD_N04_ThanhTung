@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyLearningScreen extends StatefulWidget {
   const MyLearningScreen({super.key});
@@ -8,223 +9,510 @@ class MyLearningScreen extends StatefulWidget {
 }
 
 class _MyLearningScreenState extends State<MyLearningScreen> {
-  int wordsLearned = 142;
-  int dailyGoal = 10;
-  int todayProgress = 7;
-  int currentStreak = 5;
-  int totalStories = 8;
-  int gamesPlayed = 23;
-  int coursesInProgress = 2;
+  late SharedPreferences prefs;
+  List<String> savedWords = [];
+  List<String> readStories = [];
+  int todayWords = 0;
+  int currentStreak = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+    _initializeSampleData();
+  }
+
+  Future<void> _initializeSampleData() async {
+    prefs = await SharedPreferences.getInstance();
+    // Check if already initialized
+    if ((prefs.getStringList('saved_words') ?? []).isEmpty) {
+      final sampleWords = [
+        'Awesome',
+        'Incredible',
+        'Beautiful',
+        'Wonderful',
+        'Amazing'
+      ];
+      await prefs.setStringList('saved_words', sampleWords);
+      setState(() {
+        savedWords = sampleWords;
+      });
+    }
+  }
+
+  Future<void> _loadData() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      savedWords = prefs.getStringList('saved_words') ?? [];
+      readStories = prefs.getStringList('read_stories') ?? [];
+      todayWords = prefs.getInt('today_words') ?? 0;
+      currentStreak = prefs.getInt('current_streak') ?? 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  colors: [Color(0xFF111827), Color(0xFF1F2937)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : const LinearGradient(
-                  colors: [
-                    Color(0xFFF0E6FF),
-                    Color(0xFFE6D5FF),
-                    Color(0xFFFFE6F0)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-        ),
+        color: isDark ? Colors.black : Colors.white,
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(screenWidth * 0.05),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF6366F1),
-                        Color(0xFF8B5CF6),
-                        Color(0xFFEC4899)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    'Quá trình học tập',
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                // Header
+                Text(
+                  '📚 Quá trình học tập',
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.065,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF9333EA), Color(0xFFEC4899)],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Khóa học: $coursesInProgress',
-                    style: const TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF3B82F6),
-                        Color(0xFF06B6D4),
-                        Color(0xFF14B8A6)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Mục tiêu hôm nay',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      const SizedBox(height: 12),
-                      Text('$todayProgress / $dailyGoal từ',
-                          style: const TextStyle(
-                              fontSize: 32, color: Colors.white)),
-                      const SizedBox(height: 12),
-                      LinearProgressIndicator(
-                        value: todayProgress / dailyGoal,
-                        backgroundColor: Colors.white30,
-                        valueColor: const AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    ],
+                SizedBox(height: screenHeight * 0.04),
+
+                // Daily Words - Clickable
+                GestureDetector(
+                  onTap: () =>
+                      _showTodayWordsList(context, screenWidth, isDark),
+                  child: _buildBasicCardWithStreakIcon(
+                    context,
+                    screenWidth,
+                    '📖 Từ học hôm nay',
+                    '$todayWords từ',
+                    isDark,
+                    showStreakIcon: todayWords >= 10,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFF97316),
-                        Color(0xFFEF4444),
-                        Color(0xFFEC4899)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Chuỗi học',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      Text('$currentStreak ngày ',
-                          style: const TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ],
+                SizedBox(height: screenHeight * 0.02),
+
+                // Learning Streak
+                _buildBasicCard(
+                  context,
+                  screenWidth,
+                  '🔥 Chuỗi học',
+                  '$currentStreak ngày liên tiếp',
+                  isDark,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+
+                // Saved Words (Clickable)
+                GestureDetector(
+                  onTap: () =>
+                      _showSavedWordsList(context, screenWidth, isDark),
+                  child: _buildBasicCard(
+                    context,
+                    screenWidth,
+                    '⭐ Từ đã lưu',
+                    '${savedWords.length} từ',
+                    isDark,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                              colors: [Color(0xFF9333EA), Color(0xFF7C3AED)]),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.book,
-                                color: Colors.white, size: 32),
-                            const SizedBox(height: 12),
-                            Text('$wordsLearned',
-                                style: const TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                            const Text('Từ đã học',
-                                style: TextStyle(color: Colors.white70)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                              colors: [Color(0xFFFB923C), Color(0xFFF97316)]),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.emoji_events,
-                                color: Colors.white, size: 32),
-                            const SizedBox(height: 12),
-                            Text('$gamesPlayed',
-                                style: const TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                            const Text('Trò chơi',
-                                style: TextStyle(color: Colors.white70)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                        colors: [Color(0xFF10B981), Color(0xFF14B8A6)]),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Truyện đã đọc',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      Text('$totalStories ',
-                          style: const TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ],
+                SizedBox(height: screenHeight * 0.02),
+
+                // Read Stories (Clickable)
+                GestureDetector(
+                  onTap: () =>
+                      _showReadStoriesList(context, screenWidth, isDark),
+                  child: _buildBasicCard(
+                    context,
+                    screenWidth,
+                    '📕 Truyện đã đọc',
+                    '${readStories.length} truyện',
+                    isDark,
                   ),
                 ),
-                const SizedBox(height: 80),
+                SizedBox(height: screenHeight * 0.08),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBasicCard(
+    BuildContext context,
+    double screenWidth,
+    String title,
+    String value,
+    bool isDark,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(screenWidth * 0.05),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[900] : Colors.grey[100],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: screenWidth * 0.038,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white70 : Colors.black54,
+            ),
+          ),
+          SizedBox(height: screenWidth * 0.04),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: screenWidth * 0.075,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // New widget with streak icon
+  Widget _buildBasicCardWithStreakIcon(
+    BuildContext context,
+    double screenWidth,
+    String title,
+    String value,
+    bool isDark, {
+    required bool showStreakIcon,
+  }) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey[900] : Colors.grey[100],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.038,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.04),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.064,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Streak fire icon
+        if (showStreakIcon)
+          Positioned(
+            right: screenWidth * 0.04,
+            top: screenWidth * 0.04,
+            child: Container(
+              padding: EdgeInsets.all(screenWidth * 0.02),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey[800] : Colors.grey[300],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '🔥',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.05,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  // Show today's words list
+  void _showTodayWordsList(
+    BuildContext context,
+    double screenWidth,
+    bool isDark,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '📖 Từ học hôm nay ($todayWords)',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.048,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.04),
+              Expanded(
+                child: todayWords == 0
+                    ? Center(
+                        child: Text(
+                          'Chưa có từ nào hôm nay',
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.036,
+                            color: isDark ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          'Đã học $todayWords từ hôm nay\n${todayWords >= 10 ? "🔥 Chuỗi lửa +1!" : "Cần ${10 - todayWords} từ nữa để đạt chuỗi lửa"}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.04,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Show saved words - tapping word jumps to dictionary
+  void _showSavedWordsList(
+    BuildContext context,
+    double screenWidth,
+    bool isDark,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '⭐ Từ đã lưu (${savedWords.length})',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.048,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.04),
+              Expanded(
+                child: savedWords.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Chưa có từ nào được lưu',
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.036,
+                            color: isDark ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: savedWords.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(bottom: screenWidth * 0.03),
+                            decoration: BoxDecoration(
+                              color: isDark ? Colors.grey[800] : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.grey[700]!
+                                    : Colors.grey[300]!,
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                savedWords[index],
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w500,
+                                  color: isDark ? Colors.white : Colors.black,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      // Jump to dictionary
+                                      _jumpToDictionary(savedWords[index]);
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(
+                                      Icons.search,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        savedWords.removeAt(index);
+                                        prefs.setStringList(
+                                            'saved_words', savedWords);
+                                      });
+                                      Navigator.pop(context);
+                                      _showSavedWordsList(
+                                          context, screenWidth, isDark);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color:
+                                          isDark ? Colors.red[300] : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Show read stories history
+  void _showReadStoriesList(
+    BuildContext context,
+    double screenWidth,
+    bool isDark,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '📕 Lịch sử đọc truyện (${readStories.length})',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.048,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.04),
+              Expanded(
+                child: readStories.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Chưa có truyện nào được đọc',
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.036,
+                            color: isDark ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: readStories.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(bottom: screenWidth * 0.03),
+                            decoration: BoxDecoration(
+                              color: isDark ? Colors.grey[800] : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.grey[700]!
+                                    : Colors.grey[300]!,
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                readStories[index],
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w500,
+                                  color: isDark ? Colors.white : Colors.black,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    readStories.removeAt(index);
+                                    prefs.setStringList(
+                                        'read_stories', readStories);
+                                  });
+                                  Navigator.pop(context);
+                                  _showReadStoriesList(
+                                      context, screenWidth, isDark);
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: isDark ? Colors.red[300] : Colors.red,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Jump to dictionary page
+  void _jumpToDictionary(String word) {
+    // TODO: Implement navigation to dictionary screen
+    // For now, show a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Tra từ "$word" trong từ điển'),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
