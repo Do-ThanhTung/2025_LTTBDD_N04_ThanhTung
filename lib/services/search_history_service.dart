@@ -13,8 +13,7 @@ class SearchHistoryService {
   static final _key = 'search_history';
   List<String> _history = [];
 
-  static SearchHistoryService get instance =>
-      _instance;
+  static SearchHistoryService get instance => _instance;
 
   Future<void> loadHistory() async {
     try {

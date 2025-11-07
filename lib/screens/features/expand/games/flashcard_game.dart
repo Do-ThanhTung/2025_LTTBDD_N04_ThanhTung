@@ -23,69 +23,57 @@ class FlashCard {
 final List<FlashCard> flashCards = [
   FlashCard(
     word: 'Abundant',
-    meaning:
-        'Existing or available in large quantities; plentiful',
+    meaning: 'Existing or available in large quantities; plentiful',
     example: 'The garden has abundant flowers.',
   ),
   FlashCard(
     word: 'Achieve',
-    meaning:
-        'To successfully reach a desired objective or result',
+    meaning: 'To successfully reach a desired objective or result',
     example: 'She worked hard to achieve her goals.',
   ),
   FlashCard(
     word: 'Brilliant',
-    meaning:
-        'Exceptionally clever or talented; very bright',
+    meaning: 'Exceptionally clever or talented; very bright',
     example: 'He is a brilliant student.',
   ),
   FlashCard(
     word: 'Curious',
-    meaning:
-        'Eager to know or learn something; inquisitive',
+    meaning: 'Eager to know or learn something; inquisitive',
     example: 'Children are naturally curious.',
   ),
   FlashCard(
     word: 'Delightful',
-    meaning:
-        'Causing delight; charming and very pleasant',
+    meaning: 'Causing delight; charming and very pleasant',
     example: 'We had a delightful evening.',
   ),
   FlashCard(
     word: 'Elegant',
-    meaning:
-        'Graceful and stylish in appearance or manner',
+    meaning: 'Graceful and stylish in appearance or manner',
     example: 'She wore an elegant dress.',
   ),
   FlashCard(
     word: 'Fantastic',
-    meaning:
-        'Extraordinarily good or attractive; excellent',
+    meaning: 'Extraordinarily good or attractive; excellent',
     example: 'That was a fantastic performance!',
   ),
   FlashCard(
     word: 'Grateful',
-    meaning:
-        'Feeling or showing appreciation for kindness',
+    meaning: 'Feeling or showing appreciation for kindness',
     example: 'I am grateful for your help.',
   ),
   FlashCard(
     word: 'Humble',
-    meaning:
-        'Having or showing a modest estimate of one\'s importance',
-    example:
-        'Despite his success, he remained humble.',
+    meaning: 'Having or showing a modest estimate of one\'s importance',
+    example: 'Despite his success, he remained humble.',
   ),
   FlashCard(
     word: 'Impressive',
-    meaning:
-        'Evoking admiration through size, quality, or skill',
+    meaning: 'Evoking admiration through size, quality, or skill',
     example: 'Your work is very impressive.',
   ),
   FlashCard(
     word: 'Joyful',
-    meaning:
-        'Feeling, expressing, or causing great pleasure and happiness',
+    meaning: 'Feeling, expressing, or causing great pleasure and happiness',
     example: 'It was a joyful celebration.',
   ),
   FlashCard(
@@ -96,14 +84,12 @@ final List<FlashCard> flashCards = [
   ),
   FlashCard(
     word: 'Lovely',
-    meaning:
-        'Exquisitely beautiful; very pleasant or enjoyable',
+    meaning: 'Exquisitely beautiful; very pleasant or enjoyable',
     example: 'What a lovely surprise!',
   ),
   FlashCard(
     word: 'Magnificent',
-    meaning:
-        'Extremely beautiful, elaborate, or impressive',
+    meaning: 'Extremely beautiful, elaborate, or impressive',
     example: 'The view from the top was magnificent.',
   ),
   FlashCard(
@@ -119,26 +105,22 @@ final List<FlashCard> flashCards = [
   ),
   FlashCard(
     word: 'Peaceful',
-    meaning:
-        'Free from disturbance; tranquil and calm',
+    meaning: 'Free from disturbance; tranquil and calm',
     example: 'The countryside is very peaceful.',
   ),
   FlashCard(
     word: 'Remarkable',
-    meaning:
-        'Worthy of attention; striking and extraordinary',
+    meaning: 'Worthy of attention; striking and extraordinary',
     example: 'Her achievements are truly remarkable.',
   ),
   FlashCard(
     word: 'Sincere',
-    meaning:
-        'Free from pretense or deceit; genuine and honest',
+    meaning: 'Free from pretense or deceit; genuine and honest',
     example: 'Please accept my sincere apologies.',
   ),
   FlashCard(
     word: 'Talented',
-    meaning:
-        'Having a natural aptitude or skill for something',
+    meaning: 'Having a natural aptitude or skill for something',
     example: 'She is a talented musician.',
   ),
 ];
@@ -154,12 +136,10 @@ class FlashcardGame extends StatefulWidget {
   });
 
   @override
-  State<FlashcardGame> createState() =>
-      _FlashcardGameState();
+  State<FlashcardGame> createState() => _FlashcardGameState();
 }
 
-class _FlashcardGameState
-    extends State<FlashcardGame> {
+class _FlashcardGameState extends State<FlashcardGame> {
   int _currentCardIndex = 0;
   bool _showAnswer = false;
   int _knownCards = 0;
@@ -174,8 +154,8 @@ class _FlashcardGameState
   void initState() {
     super.initState();
     // make confetti longer so it is visible with the new dialog
-    _confettiController = ConfettiController(
-        duration: const Duration(seconds: 4));
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 4));
     _startGame();
   }
 
@@ -193,8 +173,7 @@ class _FlashcardGameState
     final random = Random();
 
     // 1. Lấy từ đã tra từ VocabularyService
-    final vocabItems = await VocabularyService.instance
-        .getVocabularyForGame();
+    final vocabItems = await VocabularyService.instance.getVocabularyForGame();
 
     final cards = <FlashCard>[];
 
@@ -209,9 +188,7 @@ class _FlashcardGameState
 
     // 3. Nếu không đủ từ, bổ sung từ dữ liệu mẫu
     if (cards.length < 20) {
-      final sampleCards =
-          List<FlashCard>.from(flashCards)
-            ..shuffle(random);
+      final sampleCards = List<FlashCard>.from(flashCards)..shuffle(random);
       final needed = 20 - cards.length;
       cards.addAll(sampleCards.take(needed));
     }
@@ -233,8 +210,7 @@ class _FlashcardGameState
   }
 
   void _handleNextCard() {
-    if (_currentCardIndex <
-        _shuffledFlashCards.length - 1) {
+    if (_currentCardIndex < _shuffledFlashCards.length - 1) {
       setState(() {
         _currentCardIndex++;
         _showAnswer = false;
@@ -245,8 +221,7 @@ class _FlashcardGameState
   }
 
   void _handleSkipCard() {
-    final currentCard =
-        _shuffledFlashCards[_currentCardIndex];
+    final currentCard = _shuffledFlashCards[_currentCardIndex];
     if (!_skippedCards.contains(currentCard)) {
       _skippedCards.add(currentCard);
     }
@@ -260,12 +235,9 @@ class _FlashcardGameState
     _handleNextCard();
   }
 
-  Future<void> _saveWordToDictionary(
-      String word) async {
-    final prefs =
-        await SharedPreferences.getInstance();
-    List<String> recentSearches =
-        prefs.getStringList('recent_searches') ?? [];
+  Future<void> _saveWordToDictionary(String word) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> recentSearches = prefs.getStringList('recent_searches') ?? [];
 
     recentSearches.remove(word);
     recentSearches.insert(0, word);
@@ -273,8 +245,7 @@ class _FlashcardGameState
       recentSearches = recentSearches.sublist(0, 20);
     }
 
-    await prefs.setStringList(
-        'recent_searches', recentSearches);
+    await prefs.setStringList('recent_searches', recentSearches);
 
     if (!mounted) return;
 
@@ -287,8 +258,7 @@ class _FlashcardGameState
     );
   }
 
-  Future<void> _translateTextInline(
-      String text) async {
+  Future<void> _translateTextInline(String text) async {
     if (text.trim().isEmpty) return;
     if (_translationCache.containsKey(text)) {
       return; // already translated
@@ -299,21 +269,19 @@ class _FlashcardGameState
     try {
       // Use Google Translator API
       final translator = GoogleTranslator();
-      final translation = await translator
-          .translate(text, from: 'en', to: 'vi');
+      final translation =
+          await translator.translate(text, from: 'en', to: 'vi');
 
       if (!mounted) return;
 
       if (translation.text.isNotEmpty) {
-        setState(() => _translationCache[text] =
-            translation.text);
+        setState(() => _translationCache[text] = translation.text);
       } else {
         // Hiển thị thông báo nếu không dịch được
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text(
-                  'Không thể dịch văn bản này'),
+              content: const Text('Không thể dịch văn bản này'),
               duration: const Duration(seconds: 2),
               backgroundColor: Colors.orange,
             ),
@@ -325,8 +293,7 @@ class _FlashcardGameState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('Lỗi khi dịch: ${e.toString()}'),
+            content: Text('Lỗi khi dịch: ${e.toString()}'),
             duration: const Duration(seconds: 2),
             backgroundColor: Colors.red,
           ),
@@ -345,12 +312,10 @@ class _FlashcardGameState
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) =>
-            AlertDialog(
+        builder: (context, setDialogState) => AlertDialog(
           title: const Row(
             children: [
-              Icon(Icons.bookmark_add,
-                  color: Colors.purple),
+              Icon(Icons.bookmark_add, color: Colors.purple),
               SizedBox(width: 8),
               Text('Chọn từ cần lưu'),
             ],
@@ -362,8 +327,7 @@ class _FlashcardGameState
               itemCount: cards.length,
               itemBuilder: (context, index) {
                 final card = cards[index];
-                final isSelected =
-                    selectedWords.contains(card.word);
+                final isSelected = selectedWords.contains(card.word);
 
                 return CheckboxListTile(
                   value: isSelected,
@@ -372,8 +336,7 @@ class _FlashcardGameState
                       if (value == true) {
                         selectedWords.add(card.word);
                       } else {
-                        selectedWords
-                            .remove(card.word);
+                        selectedWords.remove(card.word);
                       }
                     });
                   },
@@ -405,22 +368,18 @@ class _FlashcardGameState
               onPressed: selectedWords.isEmpty
                   ? null
                   : () async {
-                      final navigator =
-                          Navigator.of(context);
+                      final navigator = Navigator.of(context);
                       for (var word in selectedWords) {
-                        await _saveWordToDictionary(
-                            word);
+                        await _saveWordToDictionary(word);
                       }
                       if (!mounted) return;
                       navigator.pop();
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple,
-                disabledBackgroundColor:
-                    Colors.grey[300],
+                disabledBackgroundColor: Colors.grey[300],
               ),
-              child: Text(
-                  'Lưu (${selectedWords.length})'),
+              child: Text('Lưu (${selectedWords.length})'),
             ),
           ],
         ),
@@ -434,9 +393,7 @@ class _FlashcardGameState
 
     final titleText = _knownCards == 20
         ? 'Tuyệt vời!'
-        : (_knownCards == 0
-            ? 'Cố gắng lên!'
-            : 'Chúc mừng!');
+        : (_knownCards == 0 ? 'Cố gắng lên!' : 'Chúc mừng!');
 
     final subtitle = _knownCards == 20
         ? 'Bạn đã biết tất cả ${_shuffledFlashCards.length}/${_shuffledFlashCards.length} từ!'
@@ -448,20 +405,14 @@ class _FlashcardGameState
       context: context,
       barrierDismissible: false,
       barrierLabel: 'Kết quả',
-      barrierColor:
-          Colors.black.withValues(alpha: 0.6),
-      transitionDuration:
-          const Duration(milliseconds: 300),
+      barrierColor: Colors.black.withValues(alpha: 0.6),
+      transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, anim1, anim2) {
-        final screenWidth =
-            MediaQuery.of(context).size.width;
-        final screenHeight =
-            MediaQuery.of(context).size.height;
+        final screenWidth = MediaQuery.of(context).size.width;
+        final screenHeight = MediaQuery.of(context).size.height;
 
         return ScaleTransition(
-          scale: CurvedAnimation(
-              parent: anim1,
-              curve: Curves.easeOutBack),
+          scale: CurvedAnimation(parent: anim1, curve: Curves.easeOutBack),
           child: FadeTransition(
             opacity: anim1,
             child: Center(
@@ -486,12 +437,10 @@ class _FlashcardGameState
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius:
-                        BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(28),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF7B6BE8)
-                            .withValues(alpha: 0.4),
+                        color: const Color(0xFF7B6BE8).withValues(alpha: 0.4),
                         blurRadius: 32,
                         offset: const Offset(0, 12),
                       ),
@@ -505,63 +454,43 @@ class _FlashcardGameState
                         Text(
                           titleText,
                           style: TextStyle(
-                            fontSize:
-                                screenWidth * 0.065,
-                            fontWeight:
-                                FontWeight.bold,
+                            fontSize: screenWidth * 0.065,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
                             letterSpacing: 0.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(
-                            height:
-                                screenHeight * 0.012),
+                        SizedBox(height: screenHeight * 0.012),
 
                         // Subtitle
                         Text(
                           subtitle,
                           style: TextStyle(
-                            color: Colors.white
-                                .withValues(
-                                    alpha: 0.85),
-                            fontSize:
-                                screenWidth * 0.038,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontSize: screenWidth * 0.038,
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(
-                            height:
-                                screenHeight * 0.03),
+                        SizedBox(height: screenHeight * 0.03),
 
                         // Stats container
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(
-                            vertical:
-                                screenHeight * 0.022,
-                            horizontal:
-                                screenWidth * 0.04,
+                          padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.022,
+                            horizontal: screenWidth * 0.04,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white
-                                .withValues(
-                                    alpha: 0.15),
-                            borderRadius:
-                                BorderRadius.circular(
-                                    20),
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white
-                                  .withValues(
-                                      alpha: 0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               width: 1.5,
                             ),
                           ),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               // Known cards
                               Expanded(
@@ -570,68 +499,36 @@ class _FlashcardGameState
                                     Text(
                                       '✅ Đã biết',
                                       style: TextStyle(
-                                        color: Colors
-                                            .white
-                                            .withValues(
-                                                alpha:
-                                                    0.9),
-                                        fontSize:
-                                            screenWidth *
-                                                0.035,
-                                        fontWeight:
-                                            FontWeight
-                                                .w500,
+                                        color:
+                                            Colors.white.withValues(alpha: 0.9),
+                                        fontSize: screenWidth * 0.035,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    SizedBox(
-                                        height:
-                                            screenHeight *
-                                                0.01),
+                                    SizedBox(height: screenHeight * 0.01),
                                     Container(
-                                      padding: EdgeInsets
-                                          .symmetric(
-                                        horizontal:
-                                            screenWidth *
-                                                0.05,
-                                        vertical:
-                                            screenHeight *
-                                                0.01,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.05,
+                                        vertical: screenHeight * 0.01,
                                       ),
-                                      decoration:
-                                          BoxDecoration(
-                                        color: const Color(
-                                            0xFF4CAF50),
-                                        borderRadius:
-                                            BorderRadius
-                                                .circular(
-                                                    14),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF4CAF50),
+                                        borderRadius: BorderRadius.circular(14),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: const Color(
-                                                    0xFF4CAF50)
-                                                .withValues(
-                                                    alpha: 0.4),
-                                            blurRadius:
-                                                12,
-                                            offset:
-                                                const Offset(
-                                                    0,
-                                                    4),
+                                            color: const Color(0xFF4CAF50)
+                                                .withValues(alpha: 0.4),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 4),
                                           ),
                                         ],
                                       ),
                                       child: Text(
                                         '$_knownCards',
-                                        style:
-                                            TextStyle(
-                                          color: Colors
-                                              .white,
-                                          fontSize:
-                                              screenWidth *
-                                                  0.065,
-                                          fontWeight:
-                                              FontWeight
-                                                  .bold,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.065,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
@@ -642,11 +539,8 @@ class _FlashcardGameState
                               // Divider
                               Container(
                                 width: 1.5,
-                                height: screenHeight *
-                                    0.07,
-                                color: Colors.white
-                                    .withValues(
-                                        alpha: 0.3),
+                                height: screenHeight * 0.07,
+                                color: Colors.white.withValues(alpha: 0.3),
                               ),
 
                               // Skipped cards
@@ -656,68 +550,36 @@ class _FlashcardGameState
                                     Text(
                                       '⏭️ Bỏ qua',
                                       style: TextStyle(
-                                        color: Colors
-                                            .white
-                                            .withValues(
-                                                alpha:
-                                                    0.9),
-                                        fontSize:
-                                            screenWidth *
-                                                0.035,
-                                        fontWeight:
-                                            FontWeight
-                                                .w500,
+                                        color:
+                                            Colors.white.withValues(alpha: 0.9),
+                                        fontSize: screenWidth * 0.035,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    SizedBox(
-                                        height:
-                                            screenHeight *
-                                                0.01),
+                                    SizedBox(height: screenHeight * 0.01),
                                     Container(
-                                      padding: EdgeInsets
-                                          .symmetric(
-                                        horizontal:
-                                            screenWidth *
-                                                0.05,
-                                        vertical:
-                                            screenHeight *
-                                                0.01,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.05,
+                                        vertical: screenHeight * 0.01,
                                       ),
-                                      decoration:
-                                          BoxDecoration(
-                                        color: const Color(
-                                            0xFFFF9800),
-                                        borderRadius:
-                                            BorderRadius
-                                                .circular(
-                                                    14),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF9800),
+                                        borderRadius: BorderRadius.circular(14),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: const Color(
-                                                    0xFFFF9800)
-                                                .withValues(
-                                                    alpha: 0.4),
-                                            blurRadius:
-                                                12,
-                                            offset:
-                                                const Offset(
-                                                    0,
-                                                    4),
+                                            color: const Color(0xFFFF9800)
+                                                .withValues(alpha: 0.4),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 4),
                                           ),
                                         ],
                                       ),
                                       child: Text(
                                         '${_skippedCards.length}',
-                                        style:
-                                            TextStyle(
-                                          color: Colors
-                                              .white,
-                                          fontSize:
-                                              screenWidth *
-                                                  0.065,
-                                          fontWeight:
-                                              FontWeight
-                                                  .bold,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.065,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
@@ -727,9 +589,7 @@ class _FlashcardGameState
                             ],
                           ),
                         ),
-                        SizedBox(
-                            height:
-                                screenHeight * 0.03),
+                        SizedBox(height: screenHeight * 0.03),
 
                         // Action buttons
                         Row(
@@ -738,137 +598,88 @@ class _FlashcardGameState
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop();
-                                  if (_knownCards ==
-                                      0) {
-                                    _showSelectWordsDialog(
-                                        _shuffledFlashCards);
+                                  Navigator.of(context).pop();
+                                  if (_knownCards == 0) {
+                                    _showSelectWordsDialog(_shuffledFlashCards);
                                   } else {
-                                    _showSelectWordsDialog(
-                                        _skippedCards);
+                                    _showSelectWordsDialog(_skippedCards);
                                   }
                                 },
-                                style: OutlinedButton
-                                    .styleFrom(
-                                  foregroundColor:
-                                      Colors.white,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
                                   side: BorderSide(
-                                    color: Colors.white
-                                        .withValues(
-                                            alpha:
-                                                0.6),
+                                    color: Colors.white.withValues(alpha: 0.6),
                                     width: 2,
                                   ),
-                                  padding: EdgeInsets
-                                      .symmetric(
-                                    vertical:
-                                        screenHeight *
-                                            0.018,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.018,
                                   ),
-                                  shape:
-                                      RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                                16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
                                 ),
                                 child: Text(
                                   'Lưu từ',
                                   style: TextStyle(
-                                    fontSize:
-                                        screenWidth *
-                                            0.04,
-                                    fontWeight:
-                                        FontWeight
-                                            .w600,
+                                    fontSize: screenWidth * 0.04,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                                width: screenWidth *
-                                    0.03),
+                            SizedBox(width: screenWidth * 0.03),
 
                             // Replay button
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop();
+                                  Navigator.of(context).pop();
                                   _startGame();
                                 },
-                                style: ElevatedButton
-                                    .styleFrom(
-                                  backgroundColor:
-                                      Colors.white,
-                                  foregroundColor:
-                                      const Color(
-                                          0xFF8B7EE8),
-                                  padding: EdgeInsets
-                                      .symmetric(
-                                    vertical:
-                                        screenHeight *
-                                            0.018,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF8B7EE8),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.018,
                                   ),
                                   elevation: 4,
-                                  shadowColor: Colors
-                                      .black
-                                      .withValues(
-                                          alpha: 0.3),
-                                  shape:
-                                      RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                                16),
+                                  shadowColor:
+                                      Colors.black.withValues(alpha: 0.3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
                                 ),
                                 child: Text(
                                   'Chơi lại',
                                   style: TextStyle(
-                                    fontSize:
-                                        screenWidth *
-                                            0.04,
-                                    fontWeight:
-                                        FontWeight
-                                            .bold,
+                                    fontSize: screenWidth * 0.04,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                            height:
-                                screenHeight * 0.015),
+                        SizedBox(height: screenHeight * 0.015),
 
                         // Back to menu button
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context)
-                                .pop();
+                            Navigator.of(context).pop();
                             widget.onBack();
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors
-                                .white
-                                .withValues(
-                                    alpha: 0.85),
-                            padding:
-                                EdgeInsets.symmetric(
-                              vertical:
-                                  screenHeight * 0.012,
+                            foregroundColor:
+                                Colors.white.withValues(alpha: 0.85),
+                            padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.012,
                             ),
                           ),
                           child: Text(
                             'Bỏ qua',
                             style: TextStyle(
-                              fontSize:
-                                  screenWidth * 0.038,
-                              fontWeight:
-                                  FontWeight.w500,
+                              fontSize: screenWidth * 0.038,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -887,8 +698,7 @@ class _FlashcardGameState
   @override
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Hiển thị loading khi đang tải dữ liệu
     if (_isLoading) {
@@ -896,21 +706,16 @@ class _FlashcardGameState
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF9D8EF5),
-                Color(0xFF7B6BE8)
-              ],
+              colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
           child: const Center(
             child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(
-                    color: Colors.white),
+                CircularProgressIndicator(color: Colors.white),
                 SizedBox(height: 20),
                 Text(
                   'Đang tải từ vựng...',
@@ -933,10 +738,7 @@ class _FlashcardGameState
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF9D8EF5),
-                Color(0xFF7B6BE8)
-              ],
+              colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -945,8 +747,7 @@ class _FlashcardGameState
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.info_outline,
@@ -970,16 +771,13 @@ class _FlashcardGameState
                     label: const Text('Quay lại'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor:
-                          const Color(0xFF7B6BE8),
-                      padding:
-                          const EdgeInsets.symmetric(
+                      foregroundColor: const Color(0xFF7B6BE8),
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 32,
                         vertical: 16,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -991,10 +789,8 @@ class _FlashcardGameState
       );
     }
 
-    final currentCard =
-        _shuffledFlashCards[_currentCardIndex];
-    final progress = (_currentCardIndex + 1) /
-        _shuffledFlashCards.length;
+    final currentCard = _shuffledFlashCards[_currentCardIndex];
+    final progress = (_currentCardIndex + 1) / _shuffledFlashCards.length;
 
     return Scaffold(
       body: Stack(
@@ -1015,10 +811,7 @@ class _FlashcardGameState
                     bottomRight: Radius.circular(40),
                   ),
                   gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF9D8EF5),
-                      Color(0xFF7B6BE8)
-                    ],
+                    colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -1028,9 +821,7 @@ class _FlashcardGameState
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment
-                                .spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
                             onTap: widget.onBack,
@@ -1044,24 +835,18 @@ class _FlashcardGameState
                             'Thẻ ghi nhớ',
                             style: TextStyle(
                               fontSize: 20,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets
-                                .symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white
-                                  .withValues(
-                                      alpha: 0.2),
-                              borderRadius:
-                                  BorderRadius
-                                      .circular(20),
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
                               children: [
@@ -1070,17 +855,12 @@ class _FlashcardGameState
                                   color: Colors.amber,
                                   size: 18,
                                 ),
-                                const SizedBox(
-                                    width: 4),
+                                const SizedBox(width: 4),
                                 Text(
                                   '$_knownCards/${_shuffledFlashCards.length}',
-                                  style:
-                                      const TextStyle(
-                                    color:
-                                        Colors.white,
-                                    fontWeight:
-                                        FontWeight
-                                            .bold,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
@@ -1091,21 +871,17 @@ class _FlashcardGameState
                       const SizedBox(height: 16),
                       LinearProgressIndicator(
                         value: progress,
-                        backgroundColor: Colors.white
-                            .withValues(alpha: 0.3),
+                        backgroundColor: Colors.white.withValues(alpha: 0.3),
                         valueColor:
-                            const AlwaysStoppedAnimation<
-                                Color>(Colors.white),
+                            const AlwaysStoppedAnimation<Color>(Colors.white),
                         minHeight: 6,
-                        borderRadius:
-                            BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Thẻ ${_currentCardIndex + 1} trong số ${_shuffledFlashCards.length}',
                         style: TextStyle(
-                          color: Colors.white
-                              .withValues(alpha: 0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 14,
                         ),
                       ),
@@ -1119,77 +895,51 @@ class _FlashcardGameState
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       LayoutBuilder(
-                        builder:
-                            (context, constraints) {
+                        builder: (context, constraints) {
                           // Tính toán kích thước 1 lần cho cả 2 mặt thẻ
-                          final screenWidth =
-                              MediaQuery.of(context)
-                                  .size
-                                  .width;
+                          final screenWidth = MediaQuery.of(context).size.width;
                           final screenHeight =
-                              MediaQuery.of(context)
-                                  .size
-                                  .height;
+                              MediaQuery.of(context).size.height;
 
                           // Thẻ co dãn theo cả chiều ngang và cao
                           // Chiều cao: 45-50% màn hình
                           final cardHeight =
-                              (screenHeight * 0.45)
-                                  .clamp(250.0, 500.0);
+                              (screenHeight * 0.45).clamp(250.0, 500.0);
 
                           // Chiều rộng: 85-90% màn hình (tùy kích thước)
                           final cardWidth =
-                              (screenWidth * 0.88)
-                                  .clamp(280.0, 600.0);
+                              (screenWidth * 0.88).clamp(280.0, 600.0);
 
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                _showAnswer =
-                                    !_showAnswer;
+                                _showAnswer = !_showAnswer;
                               });
                             },
-                            child:
-                                TweenAnimationBuilder<
-                                    double>(
+                            child: TweenAnimationBuilder<double>(
                               tween: Tween<double>(
                                 begin: 0,
-                                end: _showAnswer
-                                    ? 180
-                                    : 0,
+                                end: _showAnswer ? 180 : 0,
                               ),
-                              duration: const Duration(
-                                  milliseconds: 400),
-                              builder: (context, value,
-                                  child) {
-                                final angle = value *
-                                    (3.14159 / 180);
-                                final showBack =
-                                    value > 90;
+                              duration: const Duration(milliseconds: 400),
+                              builder: (context, value, child) {
+                                final angle = value * (3.14159 / 180);
+                                final showBack = value > 90;
 
                                 return Transform(
-                                  transform: Matrix4
-                                      .identity()
-                                    ..setEntry(
-                                        3, 2, 0.001)
+                                  transform: Matrix4.identity()
+                                    ..setEntry(3, 2, 0.001)
                                     ..rotateY(angle),
-                                  alignment:
-                                      Alignment.center,
+                                  alignment: Alignment.center,
                                   child: showBack
                                       ? Transform(
-                                          transform: Matrix4
-                                              .identity()
-                                            ..rotateY(
-                                                3.14159),
-                                          alignment:
-                                              Alignment
-                                                  .center,
-                                          child:
-                                              _buildCardBack(
+                                          transform: Matrix4.identity()
+                                            ..rotateY(3.14159),
+                                          alignment: Alignment.center,
+                                          child: _buildCardBack(
                                             currentCard,
                                             isDark,
                                             cardHeight,
@@ -1217,36 +967,25 @@ class _FlashcardGameState
                         children: [
                           Expanded(
                             child: OutlinedButton(
-                              onPressed:
-                                  _handleSkipCard,
-                              style: OutlinedButton
-                                  .styleFrom(
+                              onPressed: _handleSkipCard,
+                              style: OutlinedButton.styleFrom(
                                 padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                        vertical: 16),
+                                    const EdgeInsets.symmetric(vertical: 16),
                                 side: BorderSide(
                                   color: isDark
                                       ? Colors.white30
-                                      : Colors.grey
-                                          .shade300,
+                                      : Colors.grey.shade300,
                                   width: 2,
                                 ),
-                                shape:
-                                    RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                              16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
                               child: Text(
                                 'Bỏ qua',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: isDark
-                                      ? Colors.white
-                                      : Colors.black87,
+                                  color: isDark ? Colors.white : Colors.black87,
                                 ),
                               ),
                             ),
@@ -1255,33 +994,19 @@ class _FlashcardGameState
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: () =>
-                                  _saveWordToDictionary(
-                                      currentCard
-                                          .word),
-                              icon: const Icon(
-                                  Icons.bookmark_add,
-                                  size: 20),
+                                  _saveWordToDictionary(currentCard.word),
+                              icon: const Icon(Icons.bookmark_add, size: 20),
                               label: const Text('Lưu'),
-                              style: OutlinedButton
-                                  .styleFrom(
+                              style: OutlinedButton.styleFrom(
                                 padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                        vertical: 16),
+                                    const EdgeInsets.symmetric(vertical: 16),
                                 side: const BorderSide(
-                                  color: Color(
-                                      0xFF9D8EF5),
+                                  color: Color(0xFF9D8EF5),
                                   width: 2,
                                 ),
-                                foregroundColor:
-                                    const Color(
-                                        0xFF9D8EF5),
-                                shape:
-                                    RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                              16),
+                                foregroundColor: const Color(0xFF9D8EF5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
                             ),
@@ -1290,47 +1015,27 @@ class _FlashcardGameState
                           Expanded(
                             flex: 2,
                             child: ElevatedButton(
-                              onPressed: _showAnswer
-                                  ? _handleKnowCard
-                                  : null,
-                              style: ElevatedButton
-                                  .styleFrom(
+                              onPressed: _showAnswer ? _handleKnowCard : null,
+                              style: ElevatedButton.styleFrom(
                                 padding:
-                                    const EdgeInsets
-                                        .symmetric(
-                                        vertical: 16),
-                                backgroundColor:
-                                    const Color(
-                                        0xFF4CAF50),
-                                disabledBackgroundColor:
-                                    Colors
-                                        .grey.shade300,
-                                shape:
-                                    RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                              16),
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                backgroundColor: const Color(0xFF4CAF50),
+                                disabledBackgroundColor: Colors.grey.shade300,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                                 elevation: 0,
                               ),
                               child: const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                      Icons
-                                          .check_circle,
-                                      size: 20),
+                                  Icon(Icons.check_circle, size: 20),
                                   SizedBox(width: 8),
                                   Text(
                                     'Tôi biết từ này',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight:
-                                          FontWeight
-                                              .bold,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
@@ -1355,25 +1060,20 @@ class _FlashcardGameState
             child: SizedBox(
               height: 0,
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: ConfettiWidget(
-                        confettiController:
-                            _confettiController,
-                        blastDirection: pi / 2 +
-                            0.25, // slightly to the right
+                        confettiController: _confettiController,
+                        blastDirection: pi / 2 + 0.25, // slightly to the right
                         emissionFrequency: 0.18,
                         numberOfParticles: 12,
                         maxBlastForce: 20,
                         minBlastForce: 8,
                         gravity: 0.35,
-                        blastDirectionality:
-                            BlastDirectionality
-                                .explosive,
+                        blastDirectionality: BlastDirectionality.explosive,
                         shouldLoop: false,
                         colors: const [
                           Colors.purple,
@@ -1389,18 +1089,14 @@ class _FlashcardGameState
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ConfettiWidget(
-                        confettiController:
-                            _confettiController,
-                        blastDirection:
-                            pi / 2, // straight down
+                        confettiController: _confettiController,
+                        blastDirection: pi / 2, // straight down
                         emissionFrequency: 0.20,
                         numberOfParticles: 14,
                         maxBlastForce: 24,
                         minBlastForce: 10,
                         gravity: 0.32,
-                        blastDirectionality:
-                            BlastDirectionality
-                                .explosive,
+                        blastDirectionality: BlastDirectionality.explosive,
                         shouldLoop: false,
                         colors: const [
                           Colors.purple,
@@ -1416,18 +1112,14 @@ class _FlashcardGameState
                     child: Align(
                       alignment: Alignment.topRight,
                       child: ConfettiWidget(
-                        confettiController:
-                            _confettiController,
-                        blastDirection: pi / 2 -
-                            0.25, // slightly to the left
+                        confettiController: _confettiController,
+                        blastDirection: pi / 2 - 0.25, // slightly to the left
                         emissionFrequency: 0.18,
                         numberOfParticles: 12,
                         maxBlastForce: 20,
                         minBlastForce: 8,
                         gravity: 0.35,
-                        blastDirectionality:
-                            BlastDirectionality
-                                .explosive,
+                        blastDirectionality: BlastDirectionality.explosive,
                         shouldLoop: false,
                         colors: const [
                           Colors.purple,
@@ -1457,8 +1149,7 @@ class _FlashcardGameState
     double screenHeight,
   ) {
     // Kích thước font responsive
-    final wordFontSize =
-        (screenWidth * 0.08).clamp(28.0, 42.0);
+    final wordFontSize = (screenWidth * 0.08).clamp(28.0, 42.0);
 
     return Container(
       width: cardWidth,
@@ -1470,22 +1161,15 @@ class _FlashcardGameState
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDark
-              ? [
-                  const Color(0xFF2D2D2D),
-                  const Color(0xFF1A1A1A)
-                ]
-              : [
-                  Colors.white,
-                  const Color(0xFFF8F5FF)
-                ],
+              ? [const Color(0xFF2D2D2D), const Color(0xFF1A1A1A)]
+              : [Colors.white, const Color(0xFFF8F5FF)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9D8EF5)
-                .withValues(alpha: 0.3),
+            color: const Color(0xFF9D8EF5).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -1497,8 +1181,7 @@ class _FlashcardGameState
           style: TextStyle(
             fontSize: wordFontSize,
             fontWeight: FontWeight.bold,
-            color:
-                isDark ? Colors.white : Colors.black87,
+            color: isDark ? Colors.white : Colors.black87,
             letterSpacing: 1.2,
           ),
           textAlign: TextAlign.center,
@@ -1518,12 +1201,9 @@ class _FlashcardGameState
     double screenHeight,
   ) {
     // Kích thước font responsive
-    final meaningFontSize =
-        (screenWidth * 0.065).clamp(22.0, 32.0);
-    final exampleFontSize =
-        (screenWidth * 0.032).clamp(13.0, 16.0);
-    final buttonSize =
-        (screenWidth * 0.028).clamp(12.0, 16.0);
+    final meaningFontSize = (screenWidth * 0.065).clamp(22.0, 32.0);
+    final exampleFontSize = (screenWidth * 0.032).clamp(13.0, 16.0);
+    final buttonSize = (screenWidth * 0.028).clamp(12.0, 16.0);
 
     return Container(
       width: cardWidth,
@@ -1535,22 +1215,15 @@ class _FlashcardGameState
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDark
-              ? [
-                  const Color(0xFF2D2D2D),
-                  const Color(0xFF1A1A1A)
-                ]
-              : [
-                  Colors.white,
-                  const Color(0xFFF8F5FF)
-                ],
+              ? [const Color(0xFF2D2D2D), const Color(0xFF1A1A1A)]
+              : [Colors.white, const Color(0xFFF8F5FF)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9D8EF5)
-                .withValues(alpha: 0.3),
+            color: const Color(0xFF9D8EF5).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -1567,33 +1240,25 @@ class _FlashcardGameState
               child: InkWell(
                 onTap: _isTranslating
                     ? null
-                    : () => _translateTextInline(
-                        card.meaning),
-                borderRadius:
-                    BorderRadius.circular(12),
+                    : () => _translateTextInline(card.meaning),
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: EdgeInsets.all(
-                      screenWidth * 0.025),
+                  padding: EdgeInsets.all(screenWidth * 0.025),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF26C6DA)
-                            .withValues(alpha: 0.2),
-                        const Color(0xFF26C6DA)
-                            .withValues(alpha: 0.1),
+                        const Color(0xFF26C6DA).withValues(alpha: 0.2),
+                        const Color(0xFF26C6DA).withValues(alpha: 0.1),
                       ],
                     ),
-                    borderRadius:
-                        BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF26C6DA)
-                          .withValues(alpha: 0.4),
+                      color: const Color(0xFF26C6DA).withValues(alpha: 0.4),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF26C6DA)
-                            .withValues(alpha: 0.2),
+                        color: const Color(0xFF26C6DA).withValues(alpha: 0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -1603,12 +1268,9 @@ class _FlashcardGameState
                       ? SizedBox(
                           width: buttonSize * 1.2,
                           height: buttonSize * 1.2,
-                          child:
-                              CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<
-                                    Color>(
+                            valueColor: AlwaysStoppedAnimation<Color>(
                               const Color(0xFF26C6DA),
                             ),
                           ),
@@ -1616,8 +1278,7 @@ class _FlashcardGameState
                       : Icon(
                           Icons.translate_rounded,
                           size: buttonSize * 1.2,
-                          color:
-                              const Color(0xFF26C6DA),
+                          color: const Color(0xFF26C6DA),
                         ),
                 ),
               ),
@@ -1625,10 +1286,8 @@ class _FlashcardGameState
           ),
           // Main content centered - English definition or Vietnamese translation
           Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
-            crossAxisAlignment:
-                CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Definition box (English or Vietnamese based on translation state)
               Flexible(
@@ -1644,91 +1303,57 @@ class _FlashcardGameState
                       children: [
                         // Show Vietnamese translation if available, otherwise English
                         Text(
-                          _translationCache
-                                  .containsKey(
-                                      card.meaning)
-                              ? _translationCache[
-                                  card.meaning]!
+                          _translationCache.containsKey(card.meaning)
+                              ? _translationCache[card.meaning]!
                               : card.meaning,
                           style: TextStyle(
                             fontSize: meaningFontSize,
-                            fontWeight:
-                                FontWeight.w600,
-                            color: isDark
-                                ? Colors.white
-                                : Colors.black87,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white : Colors.black87,
                             height: 1.6,
                             letterSpacing: 0.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         // Language indicator when translated
-                        if (_translationCache
-                            .containsKey(
-                                card.meaning)) ...[
-                          SizedBox(
-                              height: screenHeight *
-                                  0.015),
+                        if (_translationCache.containsKey(card.meaning)) ...[
+                          SizedBox(height: screenHeight * 0.015),
                           Container(
-                            padding:
-                                EdgeInsets.symmetric(
-                              horizontal:
-                                  screenWidth * 0.03,
-                              vertical:
-                                  screenHeight * 0.006,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.03,
+                              vertical: screenHeight * 0.006,
                             ),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(
-                                          0xFF26C6DA)
-                                      .withValues(
-                                          alpha: 0.2),
-                                  const Color(
-                                          0xFF26C6DA)
-                                      .withValues(
-                                          alpha: 0.15),
+                                  const Color(0xFF26C6DA)
+                                      .withValues(alpha: 0.2),
+                                  const Color(0xFF26C6DA)
+                                      .withValues(alpha: 0.15),
                                 ],
                               ),
-                              borderRadius:
-                                  BorderRadius
-                                      .circular(12),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: const Color(
-                                        0xFF26C6DA)
-                                    .withValues(
-                                        alpha: 0.4),
+                                color: const Color(0xFF26C6DA)
+                                    .withValues(alpha: 0.4),
                                 width: 1,
                               ),
                             ),
                             child: Row(
-                              mainAxisSize:
-                                  MainAxisSize.min,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons
-                                      .check_circle_rounded,
-                                  size:
-                                      exampleFontSize *
-                                          0.9,
-                                  color: const Color(
-                                      0xFF26C6DA),
+                                  Icons.check_circle_rounded,
+                                  size: exampleFontSize * 0.9,
+                                  color: const Color(0xFF26C6DA),
                                 ),
-                                SizedBox(
-                                    width:
-                                        screenWidth *
-                                            0.01),
+                                SizedBox(width: screenWidth * 0.01),
                                 Text(
                                   'Đã dịch sang Tiếng Việt',
                                   style: TextStyle(
-                                    fontSize:
-                                        exampleFontSize *
-                                            0.85,
-                                    color: const Color(
-                                        0xFF26C6DA),
-                                    fontWeight:
-                                        FontWeight
-                                            .w600,
+                                    fontSize: exampleFontSize * 0.85,
+                                    color: const Color(0xFF26C6DA),
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -1747,8 +1372,7 @@ class _FlashcardGameState
                   flex: 2,
                   child: Container(
                     width: double.infinity,
-                    margin: EdgeInsets.symmetric(
-                        horizontal: cardWidth * 0.08),
+                    margin: EdgeInsets.symmetric(horizontal: cardWidth * 0.08),
                     padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.045,
                       vertical: screenHeight * 0.018,
@@ -1757,25 +1381,15 @@ class _FlashcardGameState
                       gradient: LinearGradient(
                         colors: [
                           const Color(0xFFFFF3E0)
-                              .withValues(
-                                  alpha: isDark
-                                      ? 0.3
-                                      : 1.0),
+                              .withValues(alpha: isDark ? 0.3 : 1.0),
                           const Color(0xFFFFE0B2)
-                              .withValues(
-                                  alpha: isDark
-                                      ? 0.25
-                                      : 1.0),
+                              .withValues(alpha: isDark ? 0.25 : 1.0),
                         ],
                       ),
-                      borderRadius:
-                          BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: const Color(0xFFFFB74D)
-                            .withValues(
-                                alpha: isDark
-                                    ? 0.35
-                                    : 0.25),
+                            .withValues(alpha: isDark ? 0.35 : 0.25),
                         width: 1.5,
                       ),
                     ),
@@ -1783,15 +1397,11 @@ class _FlashcardGameState
                       child: Text(
                         '"${card.example}"',
                         style: TextStyle(
-                          fontSize:
-                              exampleFontSize * 1.05,
+                          fontSize: exampleFontSize * 1.05,
                           fontStyle: FontStyle.italic,
                           color: isDark
-                              ? Colors.white
-                                  .withValues(
-                                      alpha: 0.9)
-                              : const Color(
-                                  0xFF5D4037),
+                              ? Colors.white.withValues(alpha: 0.9)
+                              : const Color(0xFF5D4037),
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,

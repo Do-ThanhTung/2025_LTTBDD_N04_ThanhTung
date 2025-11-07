@@ -7,8 +7,7 @@ import 'screens/auth/auth_wrapper.dart';
 import 'services/notification_service.dart';
 
 class AppTheme {
-  static final ValueNotifier<ThemeMode> mode =
-      ValueNotifier(ThemeMode.light);
+  static final ValueNotifier<ThemeMode> mode = ValueNotifier(ThemeMode.light);
   static const _key = 'app_theme';
 
   static Future<void> load() async {
@@ -42,8 +41,7 @@ class AppTheme {
 }
 
 class AppLocale {
-  static final ValueNotifier<Locale> locale =
-      ValueNotifier(const Locale('en'));
+  static final ValueNotifier<Locale> locale = ValueNotifier(const Locale('en'));
   static const _key = 'app_locale';
 
   static Future<void> load() async {
@@ -77,10 +75,8 @@ class AppPrimaryColor {
     Color(0xFFE91E63),
   ];
 
-  static const Color lightThemeDefault =
-      Color(0xFF2196F3);
-  static const Color darkThemeDefault =
-      Color(0xFFFF9800);
+  static const Color lightThemeDefault = Color(0xFF2196F3);
+  static const Color darkThemeDefault = Color(0xFFFF9800);
 
   static Future<void> load() async {
     try {
@@ -89,11 +85,8 @@ class AppPrimaryColor {
       if (colorValue != null) {
         color.value = Color(colorValue);
       } else {
-        final isDark =
-            AppTheme.mode.value == ThemeMode.dark;
-        color.value = isDark
-            ? darkThemeDefault
-            : lightThemeDefault;
+        final isDark = AppTheme.mode.value == ThemeMode.dark;
+        color.value = isDark ? darkThemeDefault : lightThemeDefault;
       }
     } catch (e) {
       color.value = const Color(0xFF2196F3);
@@ -133,8 +126,7 @@ class MyApp extends StatelessWidget {
             return ValueListenableBuilder<Color>(
               valueListenable: AppPrimaryColor.color,
               builder: (context, primaryColor, _) {
-                NotificationService.instance
-                    .navigatorKey = navigatorKey;
+                NotificationService.instance.navigatorKey = navigatorKey;
                 return MaterialApp(
                   navigatorKey: navigatorKey,
                   debugShowCheckedModeBanner: false,
@@ -146,29 +138,19 @@ class MyApp extends StatelessWidget {
                   ],
                   localizationsDelegates: const [
                     AppLocalizationsDelegate(),
-                    GlobalMaterialLocalizations
-                        .delegate,
-                    GlobalWidgetsLocalizations
-                        .delegate,
-                    GlobalCupertinoLocalizations
-                        .delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
                   ],
-                  localeResolutionCallback:
-                      (deviceLocale,
-                          supportedLocales) {
-                    if (supportedLocales.any((l) =>
-                        l.languageCode ==
-                        locale.languageCode)) {
+                  localeResolutionCallback: (deviceLocale, supportedLocales) {
+                    if (supportedLocales
+                        .any((l) => l.languageCode == locale.languageCode)) {
                       return locale;
                     }
                     if (deviceLocale != null) {
-                      final match =
-                          supportedLocales.firstWhere(
-                        (l) =>
-                            l.languageCode ==
-                            deviceLocale.languageCode,
-                        orElse: () =>
-                            supportedLocales.first,
+                      final match = supportedLocales.firstWhere(
+                        (l) => l.languageCode == deviceLocale.languageCode,
+                        orElse: () => supportedLocales.first,
                       );
                       return match;
                     }

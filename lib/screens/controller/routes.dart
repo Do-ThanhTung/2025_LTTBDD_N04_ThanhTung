@@ -7,12 +7,10 @@ import '../home/home_dashboard_screen.dart';
 import '../home/learning_progress_screen.dart';
 
 class Routes {
-  static Map<String, WidgetBuilder> getRoutes(
-      BuildContext context) {
+  static Map<String, WidgetBuilder> getRoutes(BuildContext context) {
     return {
       '/home': (context) => const HomeScreen(),
-      '/my_learning': (context) =>
-          const MyLearningScreen(),
+      '/my_learning': (context) => const MyLearningScreen(),
       '/expand': (context) => const ExpandScreen(),
       '/settings': (context) => const SettingsScreen(),
     };

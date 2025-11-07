@@ -1,36 +1,29 @@
 import 'package:flutter/widgets.dart';
 
 class AppLocalizations {
-  static const Map<String, Map<String, String>>
-      _localizedValues = {
+  static const Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'settings': 'Settings',
-      'settings_intro':
-          'Personalize how you learn best',
+      'settings_intro': 'Personalize how you learn best',
       'account': 'Account',
       'profile': 'Profile',
-      'profile_subtitle':
-          'Update your display name and avatar',
+      'profile_subtitle': 'Update your display name and avatar',
       'security': 'Security',
-      'security_subtitle':
-          'Manage password and sign-in options',
+      'security_subtitle': 'Manage password and sign-in options',
       'preferences': 'Preferences',
       'dark_mode': 'Dark mode',
-      'dark_mode_subtitle':
-          'Give your eyes a break at night',
+      'dark_mode_subtitle': 'Give your eyes a break at night',
       'vocabulary': 'Vocabulary',
       'welcome_start': 'Welcome , Start searching',
       'practice_dictionary': 'Practice\nDictionary',
-      'meaning_cannot_be_fetched':
-          'Meaning cannot be fetched',
+      'meaning_cannot_be_fetched': 'Meaning cannot be fetched',
       'language': 'Language',
       'language_subtitle': 'Set the app language',
       'theme': 'Theme',
       'english': 'English',
       'vietnamese': 'Vietnamese',
       'notifications': 'Notifications',
-      'notifications_subtitle':
-          'Stay informed about new lessons',
+      'notifications_subtitle': 'Stay informed about new lessons',
       'system_default': 'System default',
       'light': 'Light',
       'dark': 'Dark',
@@ -40,8 +33,7 @@ class AppLocalizations {
       'expand': 'Expand',
       'study_chill': 'Study & Chill',
       'learn_more_fun': 'Learn more, have fun',
-      'learn_on_go':
-          'Learn on the go — read and practice',
+      'learn_on_go': 'Learn on the go — read and practice',
       'short_stories': 'Short Stories',
       'short_stories_subtitle': 'Read and learn words',
       // Expand screen
@@ -53,53 +45,41 @@ class AppLocalizations {
       // Lesson names
       'lesson_why_flutter': 'Why Flutter Development',
       'lesson_setup_macos': 'Setup Flutter on MacOS',
-      'lesson_setup_windows':
-          'Setup Flutter on Windows',
-      'lesson_intro_widgets':
-          'Introduction to Flutter widgets.',
-      'lesson_stateless_widgets':
-          'What are Stateless Widgets?',
-      'lesson_stateful_widgets':
-          'What are Statefull Widgets?',
+      'lesson_setup_windows': 'Setup Flutter on Windows',
+      'lesson_intro_widgets': 'Introduction to Flutter widgets.',
+      'lesson_stateless_widgets': 'What are Stateless Widgets?',
+      'lesson_stateful_widgets': 'What are Statefull Widgets?',
       // Duration units
       'duration_min': 'min',
       'duration_sec': 'sec',
       'ok': 'OK',
       'translation_failed': 'Translation failed',
-      'expand_header_title':
-          'Study & Chill\nLearn more, have fun',
-      'expand_header_subtitle':
-          'Learn on the go — read and practice',
+      'expand_header_title': 'Study & Chill\nLearn more, have fun',
+      'expand_header_subtitle': 'Learn on the go — read and practice',
       'definition': 'Definition',
       'synonyms': 'Synonyms',
       'antonyms': 'Antonyms',
       'nothing_to_translate': 'Nothing to translate',
       'translation_network_hint':
           'Please check your internet connection and try again',
-      'not_found_in_local':
-          'No local translation found for this text',
+      'not_found_in_local': 'No local translation found for this text',
       'no_results': 'No results',
       // Settings - colors
       'primary_color': 'Primary Color',
       'choose_a_color': 'Choose a color',
-      'primary_color_updated':
-          'Primary color updated!',
+      'primary_color_updated': 'Primary color updated!',
       'text_to_speech': 'Text-to-speech',
       'tts_description': 'Enable voice pronunciation',
       'support': 'Support',
       'help_support': 'Help & support',
-      'help_support_subtitle':
-          'Get answers and contact support',
+      'help_support_subtitle': 'Get answers and contact support',
       'about': 'About',
       'logout': 'Logout',
-      'logout_message_short':
-          'Sign out of your account',
+      'logout_message_short': 'Sign out of your account',
       'confirm_logout': 'Confirm logout',
-      'logout_message':
-          'Are you sure you want to logout?',
+      'logout_message': 'Are you sure you want to logout?',
       'login_required': 'Login Required',
-      'login_required_message':
-          'You need to login to access this feature',
+      'login_required_message': 'You need to login to access this feature',
       'cancel': 'Cancel',
       // Login/Signup
       'welcome_back': 'Welcome Back!',
@@ -113,23 +93,18 @@ class AppLocalizations {
       'continue_as_guest': 'Continue as Guest',
       'fill_all_fields': 'Please fill all fields',
       'invalid_email': 'Please enter a valid email',
-      'password_too_short':
-          'Password must be at least 6 characters',
+      'password_too_short': 'Password must be at least 6 characters',
       'login_success': 'Login successful!',
-      'signup_success':
-          'Account created successfully!',
+      'signup_success': 'Account created successfully!',
       'or': 'OR',
       'app_title': 'English Learning',
       'account_benefits': 'Tại sao cần tài khoản?',
-      'benefit_history':
-          'Lưu lịch sử tra cứu và từ yêu thích',
-      'benefit_features':
-          'Tiến độ học tập đồng bộ trên tất cả thiết bị',
+      'benefit_history': 'Lưu lịch sử tra cứu và từ yêu thích',
+      'benefit_features': 'Tiến độ học tập đồng bộ trên tất cả thiết bị',
       'login_with': 'Login with ',
       'login_with_email': 'Login with Email',
       'email_login': 'Email Login',
-      'terms_intro':
-          'When using PEnglish, you agree with our ',
+      'terms_intro': 'When using PEnglish, you agree with our ',
       'terms_link': 'terms of use ',
       'privacy_link': 'and privacy policy',
       // Home screen - new home
@@ -151,37 +126,30 @@ class AppLocalizations {
       'correct_word': 'The correct word is',
       'play_again': 'Play Again',
       'loading_vocabulary': 'Loading vocabulary...',
-      'no_vocabulary':
-          'No vocabulary available to play',
+      'no_vocabulary': 'No vocabulary available to play',
     },
     'vi': {
       'settings': 'Cài đặt',
-      'settings_intro':
-          'Cá nhân hoá trải nghiệm học của bạn',
+      'settings_intro': 'Cá nhân hoá trải nghiệm học của bạn',
       'account': 'Tài khoản',
       'profile': 'Hồ sơ',
-      'profile_subtitle':
-          'Cập nhật tên hiển thị và ảnh đại diện',
+      'profile_subtitle': 'Cập nhật tên hiển thị và ảnh đại diện',
       'security': 'Bảo mật',
-      'security_subtitle':
-          'Quản lý mật khẩu và tuỳ chọn đăng nhập',
+      'security_subtitle': 'Quản lý mật khẩu và tuỳ chọn đăng nhập',
       'preferences': 'Tuỳ chọn',
       'dark_mode': 'Chế độ tối',
-      'dark_mode_subtitle':
-          'Giảm chói mắt vào ban đêm',
+      'dark_mode_subtitle': 'Giảm chói mắt vào ban đêm',
       'vocabulary': 'Từ vựng',
       'welcome_start': 'Chào mừng, bắt đầu tìm kiếm',
       'practice_dictionary': 'Từ điển \n thực hành',
-      'meaning_cannot_be_fetched':
-          'Không thể lấy nghĩa',
+      'meaning_cannot_be_fetched': 'Không thể lấy nghĩa',
       'language': 'Ngôn ngữ',
       'language_subtitle': 'Chọn ngôn ngữ hiển thị',
       'theme': 'Giao diện',
       'english': 'Tiếng Anh',
       'vietnamese': 'Tiếng Việt',
       'notifications': 'Thông báo',
-      'notifications_subtitle':
-          'Nhận thông báo về bài học mới',
+      'notifications_subtitle': 'Nhận thông báo về bài học mới',
       'system_default': 'Mặc định hệ thống',
       'light': 'Sáng',
       'dark': 'Tối',
@@ -191,8 +159,7 @@ class AppLocalizations {
       'expand': 'Mở rộng',
       'study_chill': 'Vừa học vừa thư giãn',
       'learn_more_fun': 'Càng học càng vui',
-      'learn_on_go':
-          'Ứng dụng ngay kiến vừa học vào đọc và phản xạ',
+      'learn_on_go': 'Ứng dụng ngay kiến vừa học vào đọc và phản xạ',
       'short_stories': 'Truyện ngắn',
       'short_stories_subtitle': 'Đọc và học từ',
       // Expand screen
@@ -202,57 +169,43 @@ class AppLocalizations {
       'translation': 'Dịch văn bản',
       'translation_subtitle': 'Dịch các câu',
       // Lesson names
-      'lesson_why_flutter':
-          'Tại sao phát triển Flutter',
-      'lesson_setup_macos':
-          'Cài đặt Flutter trên MacOS',
-      'lesson_setup_windows':
-          'Cài đặt Flutter trên Windows',
-      'lesson_intro_widgets':
-          'Giới thiệu về Flutter widgets.',
-      'lesson_stateless_widgets':
-          'Stateless Widget là gì?',
-      'lesson_stateful_widgets':
-          'Stateful Widget là gì?',
+      'lesson_why_flutter': 'Tại sao phát triển Flutter',
+      'lesson_setup_macos': 'Cài đặt Flutter trên MacOS',
+      'lesson_setup_windows': 'Cài đặt Flutter trên Windows',
+      'lesson_intro_widgets': 'Giới thiệu về Flutter widgets.',
+      'lesson_stateless_widgets': 'Stateless Widget là gì?',
+      'lesson_stateful_widgets': 'Stateful Widget là gì?',
       // Duration units
       'duration_min': 'phút',
       'duration_sec': 'giây',
       'ok': 'OK',
       'translation_failed': 'Dịch thất bại',
-      'expand_header_title':
-          'Vừa học vừa thư giãn\nCàng học càng vui',
+      'expand_header_title': 'Vừa học vừa thư giãn\nCàng học càng vui',
       'expand_header_subtitle':
           'Ứng dụng ngay kiến vừa học \nvào đọc và phản xạ',
       'definition': 'Định nghĩa',
       'synonyms': 'Từ đồng nghĩa',
       'antonyms': 'Từ trái nghĩa',
       'nothing_to_translate': 'Không có gì để dịch',
-      'translation_network_hint':
-          'Vui lòng kiểm tra kết nối mạng và thử lại',
-      'not_found_in_local':
-          'Không tìm thấy bản dịch nội bộ cho văn bản này',
+      'translation_network_hint': 'Vui lòng kiểm tra kết nối mạng và thử lại',
+      'not_found_in_local': 'Không tìm thấy bản dịch nội bộ cho văn bản này',
       'no_results': 'Không có kết quả',
       // Settings - colors
       'primary_color': 'Màu chủ đạo',
       'choose_a_color': 'Chọn một màu',
-      'primary_color_updated':
-          'Đã cập nhật màu chủ đạo!',
+      'primary_color_updated': 'Đã cập nhật màu chủ đạo!',
       'text_to_speech': 'Đọc văn bản',
       'tts_description': 'Bật phát âm giọng đọc',
       'support': 'Hỗ trợ',
       'help_support': 'Trợ giúp & hỗ trợ',
-      'help_support_subtitle':
-          'Tìm câu trả lời hoặc liên hệ hỗ trợ',
+      'help_support_subtitle': 'Tìm câu trả lời hoặc liên hệ hỗ trợ',
       'about': 'Giới thiệu',
       'logout': 'Đăng xuất',
-      'logout_message_short':
-          'Đăng xuất khỏi tài khoản',
+      'logout_message_short': 'Đăng xuất khỏi tài khoản',
       'confirm_logout': 'Xác nhận đăng xuất',
-      'logout_message':
-          'Bạn có chắc chắn muốn đăng xuất không?',
+      'logout_message': 'Bạn có chắc chắn muốn đăng xuất không?',
       'login_required': 'Yêu cầu đăng nhập',
-      'login_required_message':
-          'Bạn cần đăng nhập để xem tính năng này',
+      'login_required_message': 'Bạn cần đăng nhập để xem tính năng này',
       'cancel': 'Hủy',
       // Login/Signup
       'welcome_back': 'Chào mừng trở lại!',
@@ -264,18 +217,14 @@ class AppLocalizations {
       'no_account': 'Chưa có tài khoản? ',
       'have_account': 'Đã có tài khoản? ',
       'continue_as_guest': 'Tiếp tục dưới dạng khách',
-      'fill_all_fields':
-          'Vui lòng điền tất cả các trường',
+      'fill_all_fields': 'Vui lòng điền tất cả các trường',
       'invalid_email': 'Vui lòng nhập email hợp lệ',
-      'password_too_short':
-          'Mật khẩu phải có ít nhất 6 ký tự',
+      'password_too_short': 'Mật khẩu phải có ít nhất 6 ký tự',
       'login_success': 'Đăng nhập thành công!',
-      'signup_success':
-          'Tài khoản đã được tạo thành công!',
+      'signup_success': 'Tài khoản đã được tạo thành công!',
       'or': 'HOẶC',
       'app_title': 'Học Tiếng Anh',
-      'account_benefits':
-          'Lợi ích của tài khoản đã đăng ký:',
+      'account_benefits': 'Lợi ích của tài khoản đã đăng ký:',
       'benefit_history':
           'Lưu trữ lịch sử tìm kiếm và đánh dấu với tài khoản VIP',
       'benefit_features':
@@ -283,8 +232,7 @@ class AppLocalizations {
       'login_with': 'Đăng nhập với ',
       'login_with_email': 'Đăng nhập bằng Email',
       'email_login': 'Đăng nhập Email',
-      'terms_intro':
-          'Khi sử dụng PEnglish, bạn đồng ý với ',
+      'terms_intro': 'Khi sử dụng PEnglish, bạn đồng ý với ',
       'terms_link': 'điều khoản sử dụng ',
       'privacy_link': 'và chính sách bảo mật',
       // Home screen - new home
@@ -311,21 +259,18 @@ class AppLocalizations {
   };
 
   static String t(BuildContext context, String key) {
-    final code =
-        Localizations.localeOf(context).languageCode;
+    final code = Localizations.localeOf(context).languageCode;
     return _localizedValues[code]?[key] ?? key;
   }
 }
 
 /// A simple delegate so `AppLocalizations` can be used with
 /// `MaterialApp.localizationsDelegates`.
-class AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) =>
-      ['en', 'vi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en', 'vi'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
@@ -334,9 +279,6 @@ class AppLocalizationsDelegate
   }
 
   @override
-  bool shouldReload(
-          covariant LocalizationsDelegate<
-                  AppLocalizations>
-              old) =>
+  bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) =>
       false;
 }

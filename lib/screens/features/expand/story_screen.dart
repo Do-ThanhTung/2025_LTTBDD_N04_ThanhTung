@@ -18,13 +18,11 @@ class Story {
     this.keywords = const [],
   });
 
-  factory Story.fromJson(Map<String, dynamic> json) =>
-      Story(
+  factory Story.fromJson(Map<String, dynamic> json) => Story(
         title: json['title'] ?? '',
         content: json['content'] ?? '',
         category: json['category'] ?? 'General',
-        keywords: List<String>.from(
-            json['keywords'] as List? ?? []),
+        keywords: List<String>.from(json['keywords'] as List? ?? []),
       );
 }
 
@@ -32,8 +30,7 @@ class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
 
   @override
-  State<StoryScreen> createState() =>
-      _StoryScreenState();
+  State<StoryScreen> createState() => _StoryScreenState();
 }
 
 class _StoryScreenState extends State<StoryScreen> {
@@ -52,20 +49,15 @@ class _StoryScreenState extends State<StoryScreen> {
     });
 
     try {
-      final String jsonString =
-          await rootBundle.loadString(
+      final String jsonString = await rootBundle.loadString(
         'assets/data/stories.json',
       );
-      final List<dynamic> jsonList =
-          json.decode(jsonString);
-      debugPrint(
-          '✅ Loaded ${jsonList.length} stories');
-      debugPrint(
-          'First story keywords: ${(jsonList[0] as Map)['keywords']}');
+      final List<dynamic> jsonList = json.decode(jsonString);
+      debugPrint('✅ Loaded ${jsonList.length} stories');
+      debugPrint('First story keywords: ${(jsonList[0] as Map)['keywords']}');
       setState(() {
         stories = jsonList
-            .map((e) => Story.fromJson(
-                e as Map<String, dynamic>))
+            .map((e) => Story.fromJson(e as Map<String, dynamic>))
             .toList();
         isLoading = false;
       });
@@ -79,12 +71,9 @@ class _StoryScreenState extends State<StoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth =
-        MediaQuery.of(context).size.width;
-    final screenHeight =
-        MediaQuery.of(context).size.height;
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Hero(
       tag: 'hero_story',
@@ -118,12 +107,10 @@ class _StoryScreenState extends State<StoryScreen> {
               child: SafeArea(
                 bottom: false,
                 child: Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: () =>
-                          Navigator.pop(context),
+                      onTap: () => Navigator.pop(context),
                       child: Icon(
                         Icons.arrow_back,
                         color: Colors.white,
@@ -138,8 +125,7 @@ class _StoryScreenState extends State<StoryScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(
-                        width: screenWidth * 0.065),
+                    SizedBox(width: screenWidth * 0.065),
                   ],
                 ),
               ),
@@ -150,24 +136,17 @@ class _StoryScreenState extends State<StoryScreen> {
               child: isLoading
                   ? Center(
                       child: Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(
-                            color: const Color(
-                                0xFF00BCD4),
+                            color: const Color(0xFF00BCD4),
                           ),
-                          SizedBox(
-                              height:
-                                  screenHeight * 0.02),
+                          SizedBox(height: screenHeight * 0.02),
                           Text(
                             'Đang tải truyện...',
                             style: TextStyle(
-                              color: isDark
-                                  ? Colors.white70
-                                  : Colors.black54,
-                              fontSize:
-                                  screenWidth * 0.04,
+                              color: isDark ? Colors.white70 : Colors.black54,
+                              fontSize: screenWidth * 0.04,
                             ),
                           ),
                         ],
@@ -176,49 +155,30 @@ class _StoryScreenState extends State<StoryScreen> {
                   : stories.isEmpty
                       ? Center(
                           child: Column(
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons
-                                    .library_books_outlined,
-                                size:
-                                    screenWidth * 0.2,
-                                color: isDark
-                                    ? Colors.white38
-                                    : Colors.black26,
+                                Icons.library_books_outlined,
+                                size: screenWidth * 0.2,
+                                color: isDark ? Colors.white38 : Colors.black26,
                               ),
-                              SizedBox(
-                                  height:
-                                      screenHeight *
-                                          0.02),
+                              SizedBox(height: screenHeight * 0.02),
                               Text(
                                 'Chưa có truyện nào',
                                 style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white70
-                                      : Colors.black54,
-                                  fontSize:
-                                      screenWidth *
-                                          0.045,
-                                  fontWeight:
-                                      FontWeight.w500,
+                                  color:
+                                      isDark ? Colors.white70 : Colors.black54,
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(
-                                  height:
-                                      screenHeight *
-                                          0.01),
+                              SizedBox(height: screenHeight * 0.01),
                               Text(
                                 'Truyện sẽ được cập nhật sớm',
                                 style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white38
-                                      : Colors.black38,
-                                  fontSize:
-                                      screenWidth *
-                                          0.035,
+                                  color:
+                                      isDark ? Colors.white38 : Colors.black38,
+                                  fontSize: screenWidth * 0.035,
                                 ),
                               ),
                             ],
@@ -226,28 +186,17 @@ class _StoryScreenState extends State<StoryScreen> {
                         )
                       : SingleChildScrollView(
                           child: Padding(
-                            padding:
-                                EdgeInsets.symmetric(
-                              horizontal:
-                                  screenWidth * 0.05,
-                              vertical:
-                                  screenHeight * 0.02,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.05,
+                              vertical: screenHeight * 0.02,
                             ),
                             child: Column(
-                              children:
-                                  stories.map((story) {
+                              children: stories.map((story) {
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                      bottom:
-                                          screenHeight *
-                                              0.015),
-                                  child:
-                                      _buildStoryListItem(
-                                          context,
-                                          story,
-                                          screenWidth,
-                                          screenHeight,
-                                          isDark),
+                                      bottom: screenHeight * 0.015),
+                                  child: _buildStoryListItem(context, story,
+                                      screenWidth, screenHeight, isDark),
                                 );
                               }).toList(),
                             ),
@@ -260,12 +209,8 @@ class _StoryScreenState extends State<StoryScreen> {
     );
   }
 
-  Widget _buildStoryListItem(
-      BuildContext context,
-      Story story,
-      double screenWidth,
-      double screenHeight,
-      bool isDark) {
+  Widget _buildStoryListItem(BuildContext context, Story story,
+      double screenWidth, double screenHeight, bool isDark) {
     final containerHeight = screenHeight * 0.11;
     final titleFontSize = screenWidth * 0.036;
     final descriptionFontSize = screenWidth * 0.026;
@@ -275,8 +220,7 @@ class _StoryScreenState extends State<StoryScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                StoryDetailScreen(story: story),
+            builder: (_) => StoryDetailScreen(story: story),
           ),
         );
       },
@@ -289,29 +233,24 @@ class _StoryScreenState extends State<StoryScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: isDark
-              ? Colors.grey[800]
-                  ?.withValues(alpha: 0.7)
+              ? Colors.grey[800]?.withValues(alpha: 0.7)
               : Colors.white.withValues(alpha: 0.8),
           boxShadow: [
             BoxShadow(
-              color:
-                  Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Title and description
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Flexible(
                     child: Text(
@@ -319,23 +258,18 @@ class _StoryScreenState extends State<StoryScreen> {
                       style: TextStyle(
                         fontSize: titleFontSize,
                         fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.white
-                            : Colors.black87,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  SizedBox(
-                      height: screenHeight * 0.003),
+                  SizedBox(height: screenHeight * 0.003),
                   Text(
                     story.category,
                     style: TextStyle(
                       fontSize: descriptionFontSize,
-                      color: isDark
-                          ? Colors.white70
-                          : Colors.black54,
+                      color: isDark ? Colors.white70 : Colors.black54,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -349,9 +283,7 @@ class _StoryScreenState extends State<StoryScreen> {
             Icon(
               Icons.arrow_forward_ios,
               size: screenWidth * 0.04,
-              color: isDark
-                  ? Colors.white38
-                  : Colors.black26,
+              color: isDark ? Colors.white38 : Colors.black26,
             ),
           ],
         ),
@@ -363,16 +295,13 @@ class _StoryScreenState extends State<StoryScreen> {
 class StoryDetailScreen extends StatefulWidget {
   final Story story;
 
-  const StoryDetailScreen(
-      {super.key, required this.story});
+  const StoryDetailScreen({super.key, required this.story});
 
   @override
-  State<StoryDetailScreen> createState() =>
-      _StoryDetailScreenState();
+  State<StoryDetailScreen> createState() => _StoryDetailScreenState();
 }
 
-class _StoryDetailScreenState
-    extends State<StoryDetailScreen> {
+class _StoryDetailScreenState extends State<StoryDetailScreen> {
   double _fontSize = 16.0;
   final bool _isReadingMode = false;
   bool _isStoryRead = false;
@@ -386,21 +315,16 @@ class _StoryDetailScreenState
   }
 
   Future<void> _checkIfStoryRead() async {
-    final prefs =
-        await SharedPreferences.getInstance();
-    final readStories =
-        prefs.getStringList('read_stories') ?? [];
+    final prefs = await SharedPreferences.getInstance();
+    final readStories = prefs.getStringList('read_stories') ?? [];
     setState(() {
-      _isStoryRead =
-          readStories.contains(widget.story.title);
+      _isStoryRead = readStories.contains(widget.story.title);
     });
   }
 
   Future<void> _toggleStoryRead() async {
-    final prefs =
-        await SharedPreferences.getInstance();
-    final readStories =
-        prefs.getStringList('read_stories') ?? [];
+    final prefs = await SharedPreferences.getInstance();
+    final readStories = prefs.getStringList('read_stories') ?? [];
 
     setState(() {
       _isStoryRead = !_isStoryRead;
@@ -409,8 +333,7 @@ class _StoryDetailScreenState
     if (_isStoryRead) {
       if (!readStories.contains(widget.story.title)) {
         readStories.add(widget.story.title);
-        await prefs.setStringList(
-            'read_stories', readStories);
+        await prefs.setStringList('read_stories', readStories);
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -423,8 +346,7 @@ class _StoryDetailScreenState
       }
     } else {
       readStories.remove(widget.story.title);
-      await prefs.setStringList(
-          'read_stories', readStories);
+      await prefs.setStringList('read_stories', readStories);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -464,8 +386,7 @@ class _StoryDetailScreenState
             context,
             MediaQuery.of(context).size.width,
             MediaQuery.of(context).size.height,
-            Theme.of(context).brightness ==
-                Brightness.dark);
+            Theme.of(context).brightness == Brightness.dark);
       }
     } catch (e) {
       setState(() {
@@ -484,25 +405,16 @@ class _StoryDetailScreenState
 
   List<String> _splitIntoSentences(String content) {
     // Tách nội dung thành các câu dựa trên dấu chấm, chấm hỏi, chấm than
-    final sentences =
-        content.split(RegExp(r'(?<=[.!?])\s+'));
-    return sentences
-        .where(
-            (sentence) => sentence.trim().isNotEmpty)
-        .toList();
+    final sentences = content.split(RegExp(r'(?<=[.!?])\s+'));
+    return sentences.where((sentence) => sentence.trim().isNotEmpty).toList();
   }
 
-  void _showTranslateBottomSheet(
-      BuildContext context,
-      double screenWidth,
-      double screenHeight,
-      bool isDark) {
+  void _showTranslateBottomSheet(BuildContext context, double screenWidth,
+      double screenHeight, bool isDark) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: isDark
-          ? const Color(0xFF1A1A1A)
-          : Colors.white,
+      backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -511,44 +423,34 @@ class _StoryDetailScreenState
       ),
       builder: (context) {
         return Container(
-          height:
-              MediaQuery.of(context).size.height * 0.9,
+          height: MediaQuery.of(context).size.height * 0.9,
           padding: EdgeInsets.all(screenWidth * 0.05),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '🌐 Bản dịch tiếng Việt',
                     style: TextStyle(
                       fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? Colors.white
-                          : Colors.black,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   IconButton(
-                    onPressed: () =>
-                        Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.close,
-                      color: isDark
-                          ? Colors.white
-                          : Colors.black,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
               ),
               Divider(
-                color: isDark
-                    ? Colors.grey[700]
-                    : Colors.grey[300],
+                color: isDark ? Colors.grey[700] : Colors.grey[300],
               ),
               SizedBox(height: screenWidth * 0.03),
 
@@ -557,24 +459,17 @@ class _StoryDetailScreenState
                 child: _isTranslating
                     ? Center(
                         child: Column(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircularProgressIndicator(
-                              color: const Color(
-                                  0xFF00BCD4),
+                              color: const Color(0xFF00BCD4),
                             ),
-                            SizedBox(
-                                height: screenHeight *
-                                    0.02),
+                            SizedBox(height: screenHeight * 0.02),
                             Text(
                               'Đang dịch...',
                               style: TextStyle(
-                                fontSize:
-                                    screenWidth * 0.04,
-                                color: isDark
-                                    ? Colors.white70
-                                    : Colors.black54,
+                                fontSize: screenWidth * 0.04,
+                                color: isDark ? Colors.white70 : Colors.black54,
                               ),
                             ),
                           ],
@@ -585,41 +480,28 @@ class _StoryDetailScreenState
                             child: Text(
                               'Nhấn nút dịch để bắt đầu',
                               style: TextStyle(
-                                fontSize:
-                                    screenWidth * 0.04,
-                                color: isDark
-                                    ? Colors.white70
-                                    : Colors.black54,
+                                fontSize: screenWidth * 0.04,
+                                color: isDark ? Colors.white70 : Colors.black54,
                               ),
                             ),
                           )
                         : SingleChildScrollView(
                             child: Container(
-                              padding: EdgeInsets.all(
-                                  screenWidth * 0.04),
-                              decoration:
-                                  BoxDecoration(
+                              padding: EdgeInsets.all(screenWidth * 0.04),
+                              decoration: BoxDecoration(
                                 color: isDark
                                     ? Colors.grey[800]
-                                    : const Color(
-                                        0xFFF5F5F5),
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(16),
+                                    : const Color(0xFFF5F5F5),
+                                borderRadius: BorderRadius.circular(16),
                               ),
                               child: Text(
                                 _translatedContent,
                                 style: TextStyle(
-                                  fontSize:
-                                      screenWidth *
-                                          0.038,
+                                  fontSize: screenWidth * 0.038,
                                   height: 1.8,
-                                  color: isDark
-                                      ? Colors.white
-                                      : Colors.black87,
+                                  color: isDark ? Colors.white : Colors.black87,
                                 ),
-                                textAlign:
-                                    TextAlign.justify,
+                                textAlign: TextAlign.justify,
                               ),
                             ),
                           ),
@@ -629,20 +511,15 @@ class _StoryDetailScreenState
 
               // Button
               ElevatedButton(
-                onPressed: _isTranslating
-                    ? null
-                    : _translateStory,
+                onPressed: _isTranslating ? null : _translateStory,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color(0xFF00BCD4),
-                  disabledBackgroundColor:
-                      Colors.grey[400],
+                  backgroundColor: const Color(0xFF00BCD4),
+                  disabledBackgroundColor: Colors.grey[400],
                   padding: EdgeInsets.symmetric(
                     vertical: screenWidth * 0.04,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: Text(
@@ -667,12 +544,9 @@ class _StoryDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth =
-        MediaQuery.of(context).size.width;
-    final screenHeight =
-        MediaQuery.of(context).size.height;
-    final isDark = Theme.of(context).brightness ==
-        Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Column(
@@ -704,12 +578,10 @@ class _StoryDetailScreenState
             child: SafeArea(
               bottom: false,
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () =>
-                        Navigator.pop(context),
+                    onTap: () => Navigator.pop(context),
                     child: Icon(
                       Icons.arrow_back,
                       color: Colors.white,
@@ -721,22 +593,18 @@ class _StoryDetailScreenState
                       child: Text(
                         widget.story.title,
                         style: TextStyle(
-                          fontSize:
-                              screenWidth * 0.045,
+                          fontSize: screenWidth * 0.045,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                         textAlign: TextAlign.center,
                         maxLines: 2,
-                        overflow:
-                            TextOverflow.ellipsis,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                   IconButton(
-                    onPressed: _isTranslating
-                        ? null
-                        : _translateStory,
+                    onPressed: _isTranslating ? null : _translateStory,
                     icon: Icon(
                       Icons.translate,
                       color: Colors.white,
@@ -746,9 +614,7 @@ class _StoryDetailScreenState
                   IconButton(
                     onPressed: _toggleStoryRead,
                     icon: Icon(
-                      _isStoryRead
-                          ? Icons.bookmark
-                          : Icons.bookmark_border,
+                      _isStoryRead ? Icons.bookmark : Icons.bookmark_border,
                       color: Colors.white,
                       size: screenWidth * 0.055,
                     ),
@@ -761,18 +627,16 @@ class _StoryDetailScreenState
           // Content
           Expanded(
             child: _isReadingMode
-                ? _buildReadingMode(
-                    screenWidth, screenHeight, isDark)
-                : _buildNormalMode(
-                    screenWidth, screenHeight, isDark),
+                ? _buildReadingMode(screenWidth, screenHeight, isDark)
+                : _buildNormalMode(screenWidth, screenHeight, isDark),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNormalMode(double screenWidth,
-      double screenHeight, bool isDark) {
+  Widget _buildNormalMode(
+      double screenWidth, double screenHeight, bool isDark) {
     // Responsive adjustments
     final contentPadding = screenWidth * 0.04;
     final contentCardPadding = screenWidth * 0.05;
@@ -782,24 +646,18 @@ class _StoryDetailScreenState
       child: SingleChildScrollView(
         padding: EdgeInsets.all(contentPadding),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Story content as paragraph
             Container(
               width: double.infinity,
-              padding:
-                  EdgeInsets.all(contentCardPadding),
+              padding: EdgeInsets.all(contentCardPadding),
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF1A1A1A)
-                    : Colors.white,
-                borderRadius:
-                    BorderRadius.circular(16),
+                color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black
-                        .withValues(alpha: 0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -810,9 +668,7 @@ class _StoryDetailScreenState
                 style: TextStyle(
                   fontSize: _fontSize,
                   height: 1.8,
-                  color: isDark
-                      ? Colors.white
-                      : Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
                 textAlign: TextAlign.justify,
               ),
@@ -823,26 +679,20 @@ class _StoryDetailScreenState
             // Keywords section
             Container(
               width: double.infinity,
-              padding:
-                  EdgeInsets.all(contentCardPadding),
+              padding: EdgeInsets.all(contentCardPadding),
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF1A1A1A)
-                    : Colors.white,
-                borderRadius:
-                    BorderRadius.circular(16),
+                color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black
-                        .withValues(alpha: 0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '📖 Key Words',
@@ -852,86 +702,51 @@ class _StoryDetailScreenState
                       color: const Color(0xFF00BCD4),
                     ),
                   ),
-                  SizedBox(
-                      height: contentPadding * 1.5),
+                  SizedBox(height: contentPadding * 1.5),
                   widget.story.keywords.isEmpty
                       ? Text(
                           'No keywords available',
                           style: TextStyle(
-                            fontSize:
-                                screenWidth * 0.034,
-                            color: isDark
-                                ? Colors.white70
-                                : Colors.black54,
+                            fontSize: screenWidth * 0.034,
+                            color: isDark ? Colors.white70 : Colors.black54,
                           ),
                         )
                       : Wrap(
-                          spacing:
-                              keywordPadding * 1.5,
-                          runSpacing:
-                              keywordPadding * 1.5,
-                          children: widget
-                              .story.keywords
-                              .map((keyword) {
+                          spacing: keywordPadding * 1.5,
+                          runSpacing: keywordPadding * 1.5,
+                          children: widget.story.keywords.map((keyword) {
                             return GestureDetector(
                               onTap: () {
                                 // Save to favorites
-                                ScaffoldMessenger.of(
-                                        context)
-                                    .showSnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                        'Đã lưu: $keyword'),
-                                    duration:
-                                        const Duration(
-                                            seconds:
-                                                1),
-                                    backgroundColor:
-                                        const Color(
-                                            0xFF00BCD4),
+                                    content: Text('Đã lưu: $keyword'),
+                                    duration: const Duration(seconds: 1),
+                                    backgroundColor: const Color(0xFF00BCD4),
                                   ),
                                 );
                               },
                               child: Container(
-                                padding: EdgeInsets
-                                    .symmetric(
-                                  horizontal:
-                                      keywordPadding *
-                                          1.3,
-                                  vertical:
-                                      keywordPadding *
-                                          0.7,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: keywordPadding * 1.3,
+                                  vertical: keywordPadding * 0.7,
                                 ),
-                                decoration:
-                                    BoxDecoration(
-                                  color: const Color(
-                                          0xFF4DD0E1)
-                                      .withValues(
-                                          alpha: 0.2),
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                              22),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF4DD0E1)
+                                      .withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(22),
                                   border: Border.all(
-                                    color: const Color(
-                                            0xFF00BCD4)
-                                        .withValues(
-                                            alpha:
-                                                0.6),
+                                    color: const Color(0xFF00BCD4)
+                                        .withValues(alpha: 0.6),
                                     width: 1.5,
                                   ),
                                 ),
                                 child: Text(
                                   keyword,
                                   style: TextStyle(
-                                    fontSize:
-                                        screenWidth *
-                                            0.034,
-                                    color: const Color(
-                                        0xFF00BCD4),
-                                    fontWeight:
-                                        FontWeight
-                                            .w600,
+                                    fontSize: screenWidth * 0.034,
+                                    color: const Color(0xFF00BCD4),
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -949,27 +764,20 @@ class _StoryDetailScreenState
     );
   }
 
-  Widget _buildReadingMode(double screenWidth,
-      double screenHeight, bool isDark) {
+  Widget _buildReadingMode(
+      double screenWidth, double screenHeight, bool isDark) {
     // Responsive adjustments
-    final horizontalPadding = screenWidth *
-        (screenWidth > 600 ? 0.12 : 0.08);
-    final titleFontSize = screenWidth *
-        (screenWidth > 600 ? 0.07 : 0.06);
-    final topSpacing = screenHeight *
-        (screenWidth > 600 ? 0.08 : 0.05);
-    final titleBottomSpacing = screenHeight *
-        (screenWidth > 600 ? 0.06 : 0.04);
-    final bottomSpacing = screenHeight *
-        (screenWidth > 600 ? 0.15 : 0.1);
-    final controlBottomPosition = screenHeight *
-        (screenWidth > 600 ? 0.08 : 0.05);
-    final controlRightPosition = screenWidth *
-        (screenWidth > 600 ? 0.08 : 0.05);
-    final controlPadding = screenWidth *
-        (screenWidth > 600 ? 0.03 : 0.02);
-    final controlIconSize = screenWidth *
-        (screenWidth > 600 ? 0.06 : 0.05);
+    final horizontalPadding = screenWidth * (screenWidth > 600 ? 0.12 : 0.08);
+    final titleFontSize = screenWidth * (screenWidth > 600 ? 0.07 : 0.06);
+    final topSpacing = screenHeight * (screenWidth > 600 ? 0.08 : 0.05);
+    final titleBottomSpacing = screenHeight * (screenWidth > 600 ? 0.06 : 0.04);
+    final bottomSpacing = screenHeight * (screenWidth > 600 ? 0.15 : 0.1);
+    final controlBottomPosition =
+        screenHeight * (screenWidth > 600 ? 0.08 : 0.05);
+    final controlRightPosition =
+        screenWidth * (screenWidth > 600 ? 0.08 : 0.05);
+    final controlPadding = screenWidth * (screenWidth > 600 ? 0.03 : 0.02);
+    final controlIconSize = screenWidth * (screenWidth > 600 ? 0.06 : 0.05);
 
     return Container(
       color: isDark ? Colors.black : Colors.white,
@@ -978,8 +786,7 @@ class _StoryDetailScreenState
           children: [
             // Content
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding),
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -989,72 +796,45 @@ class _StoryDetailScreenState
                       style: TextStyle(
                         fontSize: titleFontSize,
                         fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                        height: titleBottomSpacing),
+                    SizedBox(height: titleBottomSpacing),
                     Column(
-                      children: _splitIntoSentences(
-                              widget.story.content)
+                      children: _splitIntoSentences(widget.story.content)
                           .asMap()
                           .entries
                           .map((entry) {
                         final index = entry.key;
-                        final sentence =
-                            entry.value.trim();
+                        final sentence = entry.value.trim();
                         return Padding(
-                          padding: EdgeInsets.only(
-                              bottom:
-                                  screenHeight * 0.02),
+                          padding: EdgeInsets.only(bottom: screenHeight * 0.02),
                           child: Row(
-                            crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
                                 width: screenWidth *
-                                    (screenWidth > 600
-                                        ? 0.08
-                                        : 0.07),
+                                    (screenWidth > 600 ? 0.08 : 0.07),
                                 height: screenWidth *
-                                    (screenWidth > 600
-                                        ? 0.08
-                                        : 0.07),
+                                    (screenWidth > 600 ? 0.08 : 0.07),
                                 margin: EdgeInsets.only(
-                                    right:
-                                        screenWidth *
-                                            0.03,
-                                    top: screenHeight *
-                                        0.005),
-                                decoration:
-                                    BoxDecoration(
-                                  color: const Color(
-                                          0xFF4DD0E1)
-                                      .withValues(
-                                          alpha: 0.3),
+                                    right: screenWidth * 0.03,
+                                    top: screenHeight * 0.005),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF4DD0E1)
+                                      .withValues(alpha: 0.3),
                                   borderRadius:
-                                      BorderRadius.circular(
-                                          screenWidth *
-                                              0.04),
+                                      BorderRadius.circular(screenWidth * 0.04),
                                 ),
                                 child: Center(
                                   child: Text(
                                     '${index + 1}',
                                     style: TextStyle(
                                       fontSize: screenWidth *
-                                          (screenWidth >
-                                                  600
-                                              ? 0.035
-                                              : 0.032),
-                                      fontWeight:
-                                          FontWeight
-                                              .bold,
-                                      color: const Color(
-                                          0xFF00BCD4),
+                                          (screenWidth > 600 ? 0.035 : 0.032),
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF00BCD4),
                                     ),
                                   ),
                                 ),
@@ -1063,18 +843,12 @@ class _StoryDetailScreenState
                                 child: Text(
                                   sentence,
                                   style: TextStyle(
-                                    fontSize: _fontSize +
-                                        (screenWidth >
-                                                600
-                                            ? 4
-                                            : 2),
+                                    fontSize:
+                                        _fontSize + (screenWidth > 600 ? 4 : 2),
                                     height: 1.8,
-                                    color: isDark
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: isDark ? Colors.white : Colors.black,
                                   ),
-                                  textAlign: TextAlign
-                                      .justify,
+                                  textAlign: TextAlign.justify,
                                 ),
                               ),
                             ],
@@ -1093,18 +867,13 @@ class _StoryDetailScreenState
               bottom: controlBottomPosition,
               right: controlRightPosition,
               child: Container(
-                padding:
-                    EdgeInsets.all(controlPadding),
+                padding: EdgeInsets.all(controlPadding),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.grey[800]
-                      : Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  color: isDark ? Colors.grey[800] : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black
-                          .withValues(alpha: 0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -1115,30 +884,24 @@ class _StoryDetailScreenState
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          if (_fontSize > 12)
-                            _fontSize -= 2;
+                          if (_fontSize > 12) _fontSize -= 2;
                         });
                       },
                       icon: Icon(
                         Icons.text_decrease,
-                        color: isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                         size: controlIconSize,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          if (_fontSize < 24)
-                            _fontSize += 2;
+                          if (_fontSize < 24) _fontSize += 2;
                         });
                       },
                       icon: Icon(
                         Icons.text_increase,
-                        color: isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                         size: controlIconSize,
                       ),
                     ),

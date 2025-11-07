@@ -8,12 +8,10 @@ class MainHomeScreen extends StatefulWidget {
   const MainHomeScreen({super.key});
 
   @override
-  State<MainHomeScreen> createState() =>
-      _MainHomeScreenState();
+  State<MainHomeScreen> createState() => _MainHomeScreenState();
 }
 
-class _MainHomeScreenState
-    extends State<MainHomeScreen> {
+class _MainHomeScreenState extends State<MainHomeScreen> {
   int _selectedIndex = 0;
 
   @override
@@ -22,32 +20,22 @@ class _MainHomeScreenState
       valueListenable: AppLocale.locale,
       builder: (context, _, __) {
         final routes = Routes.getRoutes(context);
-        final routeList = [
-          '/home',
-          '/my_learning',
-          '/settings'
-        ];
-        final currentRoute = (_selectedIndex >= 0 &&
-                _selectedIndex < routeList.length)
-            ? routeList[_selectedIndex]
-            : '/home';
-        final pageBuilder =
-            routes[currentRoute] ?? routes['/home']!;
-        String t(String key) =>
-            AppLocalizations.t(context, key);
+        final routeList = ['/home', '/my_learning', '/settings'];
+        final currentRoute =
+            (_selectedIndex >= 0 && _selectedIndex < routeList.length)
+                ? routeList[_selectedIndex]
+                : '/home';
+        final pageBuilder = routes[currentRoute] ?? routes['/home']!;
+        String t(String key) => AppLocalizations.t(context, key);
 
         return Scaffold(
           body: pageBuilder(context),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            selectedItemColor:
-                Theme.of(context).colorScheme.primary,
-            unselectedItemColor: Theme.of(context)
-                .colorScheme
-                .onSurface
-                .withValues(alpha: 0.6),
-            backgroundColor:
-                Theme.of(context).colorScheme.surface,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            unselectedItemColor:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 8,
             items: [
               BottomNavigationBarItem(
