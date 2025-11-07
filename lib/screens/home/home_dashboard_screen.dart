@@ -1,18 +1,21 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math' as math;
-import '../../../l10n/app_localizations.dart';
-import '../../../main.dart';
-import '../../../models/expand_screen/story_screen.dart';
-import '../../../models/expand_screen/game_screen.dart';
-import '../../../models/expand_screen/translation_screen.dart';
-import 'dictionary_screen.dart';
+
+import '../../l10n/app_localizations.dart';
+import '../../main.dart';
+import '../features/dictionary/dictionary_screen.dart';
+import '../features/expand/game_screen.dart';
+import '../features/expand/story_screen.dart';
+import '../features/expand/translation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() =>
+      _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -27,11 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadStats() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs =
+        await SharedPreferences.getInstance();
     setState(() {
       _searchCount = prefs.getInt('search_count') ?? 0;
       _gamesPlayed = prefs.getInt('games_played') ?? 0;
-      _totalTrophies = prefs.getInt('total_trophies') ?? 0;
+      _totalTrophies =
+          prefs.getInt('total_trophies') ?? 0;
     });
   }
 
@@ -41,7 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ValueListenableBuilder<Color>(
         valueListenable: AppPrimaryColor.color,
         builder: (context, primaryColor, _) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final isDark =
+              Theme.of(context).brightness ==
+                  Brightness.dark;
 
           return Container(
             decoration: BoxDecoration(
@@ -63,9 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: SafeArea(
               child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+                physics:
+                    const AlwaysScrollableScrollPhysics(),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     // Header with gradient background
                     Container(
@@ -81,16 +90,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                           stops: const [0.0, 0.5, 1.0],
                         ),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(32),
-                          bottomRight: Radius.circular(32),
+                        borderRadius:
+                            const BorderRadius.only(
+                          bottomLeft:
+                              Radius.circular(32),
+                          bottomRight:
+                              Radius.circular(32),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF2196F3)
-                                .withAlpha((0.3 * 255).round()),
+                            color:
+                                const Color(0xFF2196F3)
+                                    .withAlpha(
+                                        (0.3 * 255)
+                                            .round()),
                             blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            offset:
+                                const Offset(0, 10),
                             spreadRadius: -5,
                           ),
                         ],
@@ -101,31 +117,48 @@ class _HomeScreenState extends State<HomeScreen> {
                           ..._buildRandomBubbles(),
                           // Nội dung chính
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
+                            padding: const EdgeInsets
+                                .fromLTRB(
+                                20, 20, 20, 60),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
                               children: [
                                 Text(
-                                  AppLocalizations.t(context, 'study_chill'),
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  AppLocalizations.t(
+                                      context,
+                                      'study_chill'),
+                                  style:
+                                      const TextStyle(
+                                    color:
+                                        Colors.white,
                                     fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight:
+                                        FontWeight
+                                            .bold,
                                     shadows: [
                                       Shadow(
-                                        color: Colors.black26,
-                                        offset: Offset(0, 2),
+                                        color: Colors
+                                            .black26,
+                                        offset: Offset(
+                                            0, 2),
                                         blurRadius: 4,
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(
+                                    height: 4),
                                 Text(
-                                  AppLocalizations.t(context, 'learn_more_fun'),
+                                  AppLocalizations.t(
+                                      context,
+                                      'learn_more_fun'),
                                   style: TextStyle(
                                     color: Colors.white
-                                        .withAlpha((0.95 * 255).round()),
+                                        .withAlpha((0.95 *
+                                                255)
+                                            .round()),
                                     fontSize: 14,
                                   ),
                                 ),
@@ -138,7 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Feature Cards Grid (2x2)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      padding:
+                          const EdgeInsets.fromLTRB(
+                              20, 0, 20, 20),
                       child: Transform.translate(
                         offset: const Offset(0, -40),
                         child: Column(
@@ -146,28 +181,43 @@ class _HomeScreenState extends State<HomeScreen> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildFeatureCard(
+                                  child:
+                                      _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context, 'dictionary'),
+                                        context,
+                                        'dictionary'),
                                     icon: Icons.search,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                                    gradient:
+                                        const LinearGradient(
+                                      begin: Alignment
+                                          .topLeft,
+                                      end: Alignment
+                                          .bottomRight,
                                       colors: [
-                                        Color(0xFFB39DDB),
-                                        Color(0xFF9575CD),
-                                        Color(0xFF7E57C2),
+                                        Color(
+                                            0xFFB39DDB),
+                                        Color(
+                                            0xFF9575CD),
+                                        Color(
+                                            0xFF7E57C2),
                                       ],
-                                      stops: [0.0, 0.5, 1.0],
+                                      stops: [
+                                        0.0,
+                                        0.5,
+                                        1.0
+                                      ],
                                     ),
                                     circleCount: 3,
-                                    heroTag: 'hero_dictionary',
+                                    heroTag:
+                                        'hero_dictionary',
                                     onTap: () {
-                                      Navigator.of(context)
+                                      Navigator.of(
+                                              context)
                                           .push(
                                             PageRouteBuilder(
-                                              pageBuilder: (context, animation,
+                                              pageBuilder: (context,
+                                                      animation,
                                                       secondaryAnimation) =>
                                                   const DictionaryScreen(),
                                               transitionsBuilder: (context,
@@ -175,8 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   secondaryAnimation,
                                                   child) {
                                                 return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
                                                 );
                                               },
                                               transitionDuration:
@@ -189,30 +241,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                     },
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(
+                                    width: 12),
                                 Expanded(
-                                  child: _buildFeatureCard(
+                                  child:
+                                      _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context, 'translation'),
-                                    icon: Icons.translate,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
+                                        context,
+                                        'translation'),
+                                    icon: Icons
+                                        .translate,
+                                    gradient:
+                                        const LinearGradient(
+                                      begin: Alignment
+                                          .topRight,
+                                      end: Alignment
+                                          .bottomLeft,
                                       colors: [
-                                        Color(0xFF26C6DA),
-                                        Color(0xFF00ACC1),
-                                        Color(0xFF00897B),
+                                        Color(
+                                            0xFF26C6DA),
+                                        Color(
+                                            0xFF00ACC1),
+                                        Color(
+                                            0xFF00897B),
                                       ],
-                                      stops: [0.0, 0.5, 1.0],
+                                      stops: [
+                                        0.0,
+                                        0.5,
+                                        1.0
+                                      ],
                                     ),
                                     circleCount: 4,
-                                    heroTag: 'hero_translation',
+                                    heroTag:
+                                        'hero_translation',
                                     onTap: () {
-                                      Navigator.of(context)
+                                      Navigator.of(
+                                              context)
                                           .push(
                                             PageRouteBuilder(
-                                              pageBuilder: (context, animation,
+                                              pageBuilder: (context,
+                                                      animation,
                                                       secondaryAnimation) =>
                                                   const TranslationScreen(),
                                               transitionsBuilder: (context,
@@ -220,8 +289,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   secondaryAnimation,
                                                   child) {
                                                 return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
                                                 );
                                               },
                                               transitionDuration:
@@ -240,27 +311,42 @@ class _HomeScreenState extends State<HomeScreen> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildFeatureCard(
+                                  child:
+                                      _buildFeatureCard(
                                     context,
                                     title: 'Game',
-                                    icon: Icons.videogame_asset,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
+                                    icon: Icons
+                                        .videogame_asset,
+                                    gradient:
+                                        const LinearGradient(
+                                      begin: Alignment
+                                          .bottomLeft,
+                                      end: Alignment
+                                          .topRight,
                                       colors: [
-                                        Color(0xFFF06292),
-                                        Color(0xFFEC407A),
-                                        Color(0xFFE91E63),
+                                        Color(
+                                            0xFFF06292),
+                                        Color(
+                                            0xFFEC407A),
+                                        Color(
+                                            0xFFE91E63),
                                       ],
-                                      stops: [0.0, 0.5, 1.0],
+                                      stops: [
+                                        0.0,
+                                        0.5,
+                                        1.0
+                                      ],
                                     ),
                                     circleCount: 5,
-                                    heroTag: 'hero_game',
+                                    heroTag:
+                                        'hero_game',
                                     onTap: () {
-                                      Navigator.of(context)
+                                      Navigator.of(
+                                              context)
                                           .push(
                                             PageRouteBuilder(
-                                              pageBuilder: (context, animation,
+                                              pageBuilder: (context,
+                                                      animation,
                                                       secondaryAnimation) =>
                                                   const GameScreen(),
                                               transitionsBuilder: (context,
@@ -268,8 +354,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   secondaryAnimation,
                                                   child) {
                                                 return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
                                                 );
                                               },
                                               transitionDuration:
@@ -282,30 +370,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                     },
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(
+                                    width: 12),
                                 Expanded(
-                                  child: _buildFeatureCard(
+                                  child:
+                                      _buildFeatureCard(
                                     context,
                                     title: AppLocalizations.t(
-                                        context, 'short_stories'),
-                                    icon: Icons.menu_book,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.bottomRight,
-                                      end: Alignment.topLeft,
+                                        context,
+                                        'short_stories'),
+                                    icon: Icons
+                                        .menu_book,
+                                    gradient:
+                                        const LinearGradient(
+                                      begin: Alignment
+                                          .bottomRight,
+                                      end: Alignment
+                                          .topLeft,
                                       colors: [
-                                        Color(0xFF4DD0E1),
-                                        Color(0xFF26C6DA),
-                                        Color(0xFF00BCD4),
+                                        Color(
+                                            0xFF4DD0E1),
+                                        Color(
+                                            0xFF26C6DA),
+                                        Color(
+                                            0xFF00BCD4),
                                       ],
-                                      stops: [0.0, 0.5, 1.0],
+                                      stops: [
+                                        0.0,
+                                        0.5,
+                                        1.0
+                                      ],
                                     ),
                                     circleCount: 6,
-                                    heroTag: 'hero_story',
+                                    heroTag:
+                                        'hero_story',
                                     onTap: () {
-                                      Navigator.of(context)
+                                      Navigator.of(
+                                              context)
                                           .push(
                                             PageRouteBuilder(
-                                              pageBuilder: (context, animation,
+                                              pageBuilder: (context,
+                                                      animation,
                                                       secondaryAnimation) =>
                                                   const StoryScreen(),
                                               transitionsBuilder: (context,
@@ -313,8 +418,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   secondaryAnimation,
                                                   child) {
                                                 return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
+                                                  opacity:
+                                                      animation,
+                                                  child:
+                                                      child,
                                                 );
                                               },
                                               transitionDuration:
@@ -334,52 +441,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             // Quick Stats
                             Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
+                              padding:
+                                  const EdgeInsets.all(
+                                      20),
+                              decoration:
+                                  BoxDecoration(
                                 color: isDark
-                                    ? Colors.grey.shade800
-                                        .withAlpha((0.7 * 255).round())
+                                    ? Colors
+                                        .grey.shade800
+                                        .withAlpha(
+                                            (0.7 * 255)
+                                                .round())
                                     : Colors.white
-                                        .withAlpha((0.8 * 255).round()),
-                                borderRadius: BorderRadius.circular(20),
+                                        .withAlpha((0.8 *
+                                                255)
+                                            .round()),
+                                borderRadius:
+                                    BorderRadius
+                                        .circular(20),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black
-                                        .withAlpha((0.05 * 255).round()),
+                                        .withAlpha((0.05 *
+                                                255)
+                                            .round()),
                                     blurRadius: 10,
-                                    offset: const Offset(0, 2),
+                                    offset:
+                                        const Offset(
+                                            0, 2),
                                   ),
                                 ],
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment
+                                        .start,
                                 children: [
                                   Text(
                                     'Thống kê',
                                     style: TextStyle(
                                       fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight:
+                                          FontWeight
+                                              .bold,
                                       color: isDark
-                                          ? Colors.white
-                                          : Colors.grey.shade800,
+                                          ? Colors
+                                              .white
+                                          : Colors.grey
+                                              .shade800,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(
+                                      height: 16),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment
+                                            .spaceAround,
                                     children: [
                                       _buildStatItem(
                                         context,
                                         '$_searchCount',
                                         'Từ',
                                         const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
+                                          begin: Alignment
+                                              .topLeft,
+                                          end: Alignment
+                                              .bottomRight,
                                           colors: [
-                                            Color(0xFFB39DDB),
-                                            Color(0xFF9575CD),
-                                            Color(0xFF7E57C2),
+                                            Color(
+                                                0xFFB39DDB),
+                                            Color(
+                                                0xFF9575CD),
+                                            Color(
+                                                0xFF7E57C2),
                                           ],
                                         ),
                                       ),
@@ -388,12 +522,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         '$_gamesPlayed',
                                         'Trò chơi',
                                         const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
+                                          begin: Alignment
+                                              .topLeft,
+                                          end: Alignment
+                                              .bottomRight,
                                           colors: [
-                                            Color(0xFFF06292),
-                                            Color(0xFFEC407A),
-                                            Color(0xFFE91E63),
+                                            Color(
+                                                0xFFF06292),
+                                            Color(
+                                                0xFFEC407A),
+                                            Color(
+                                                0xFFE91E63),
                                           ],
                                         ),
                                       ),
@@ -402,12 +541,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         '$_totalTrophies',
                                         'Cúp',
                                         const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
+                                          begin: Alignment
+                                              .topLeft,
+                                          end: Alignment
+                                              .bottomRight,
                                           colors: [
-                                            Color(0xFFFFD54F),
-                                            Color(0xFFFFCA28),
-                                            Color(0xFFFFC107),
+                                            Color(
+                                                0xFFFFD54F),
+                                            Color(
+                                                0xFFFFCA28),
+                                            Color(
+                                                0xFFFFC107),
                                           ],
                                         ),
                                       ),
@@ -436,27 +580,38 @@ class _HomeScreenState extends State<HomeScreen> {
   // Tạo bong bóng ngẫu nhiên cho header
   List<Widget> _buildRandomBubbles() {
     final random = math.Random();
-    final bubbleCount = 3 + random.nextInt(4); // 3-6 bong bóng
+    final bubbleCount =
+        3 + random.nextInt(4); // 3-6 bong bóng
 
     return List.generate(bubbleCount, (index) {
-      final size = 40.0 + random.nextDouble() * 100; // Kích thước 40-140
-      final leftPercent = random.nextDouble(); // 0.0 - 1.0
-      final topPercent = random.nextDouble(); // 0.0 - 1.0
+      final size = 40.0 +
+          random.nextDouble() *
+              100; // Kích thước 40-140
+      final leftPercent =
+          random.nextDouble(); // 0.0 - 1.0
+      final topPercent =
+          random.nextDouble(); // 0.0 - 1.0
       final opacity = 0.05 +
-          random.nextDouble() * 0.10; // Độ trong suốt 0.05-0.15 (nhẹ hơn)
+          random.nextDouble() *
+              0.10; // Độ trong suốt 0.05-0.15 (nhẹ hơn)
 
       return Positioned.fill(
         child: Align(
           alignment: Alignment(
-            -1 + (leftPercent * 2), // -1 đến 1 (trái sang phải)
-            -1 + (topPercent * 2), // -1 đến 1 (trên xuống dưới)
+            -1 +
+                (leftPercent *
+                    2), // -1 đến 1 (trái sang phải)
+            -1 +
+                (topPercent *
+                    2), // -1 đến 1 (trên xuống dưới)
           ),
           child: Container(
             width: size,
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withAlpha((opacity * 255).round()),
+              color: Colors.white
+                  .withAlpha((opacity * 255).round()),
             ),
           ),
         ),
@@ -486,7 +641,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 100,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.12 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.12 * 255).round()),
               ),
             ),
           ),
@@ -498,7 +654,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.1 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.1 * 255).round()),
               ),
             ),
           ),
@@ -510,7 +667,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.08 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.08 * 255).round()),
               ),
             ),
           ),
@@ -526,7 +684,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.13 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.13 * 255).round()),
               ),
             ),
           ),
@@ -538,7 +697,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.09 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.09 * 255).round()),
               ),
             ),
           ),
@@ -550,7 +710,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 55,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.07 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.07 * 255).round()),
               ),
             ),
           ),
@@ -562,7 +723,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.11 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.11 * 255).round()),
               ),
             ),
           ),
@@ -578,7 +740,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 95,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.14 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.14 * 255).round()),
               ),
             ),
           ),
@@ -590,7 +753,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 90,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.1 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.1 * 255).round()),
               ),
             ),
           ),
@@ -602,7 +766,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.08 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.08 * 255).round()),
               ),
             ),
           ),
@@ -614,7 +779,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 45,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.12 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.12 * 255).round()),
               ),
             ),
           ),
@@ -626,7 +792,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 35,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.09 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.09 * 255).round()),
               ),
             ),
           ),
@@ -642,7 +809,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.13 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.13 * 255).round()),
               ),
             ),
           ),
@@ -654,7 +822,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 85,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.11 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.11 * 255).round()),
               ),
             ),
           ),
@@ -666,7 +835,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 55,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.09 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.09 * 255).round()),
               ),
             ),
           ),
@@ -678,7 +848,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.1 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.1 * 255).round()),
               ),
             ),
           ),
@@ -690,7 +861,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.07 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.07 * 255).round()),
               ),
             ),
           ),
@@ -702,7 +874,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withAlpha((0.08 * 255).round()),
+                color: Colors.white
+                    .withAlpha((0.08 * 255).round()),
               ),
             ),
           ),
@@ -722,10 +895,12 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 160,
               decoration: BoxDecoration(
                 gradient: gradient,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius:
+                    BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha((0.1 * 255).round()),
+                    color: Colors.black.withAlpha(
+                        (0.1 * 255).round()),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -739,19 +914,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Nội dung chính
                   Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(14),
+                          padding:
+                              const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Colors.white.withAlpha((0.3 * 255).round()),
-                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white
+                                .withAlpha((0.3 * 255)
+                                    .round()),
+                            borderRadius:
+                                BorderRadius.circular(
+                                    16),
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    Colors.black.withAlpha((0.1 * 255).round()),
+                                color: Colors.black
+                                    .withAlpha(
+                                        (0.1 * 255)
+                                            .round()),
                                 blurRadius: 8,
-                                offset: const Offset(0, 2),
+                                offset:
+                                    const Offset(0, 2),
                               ),
                             ],
                           ),
@@ -767,7 +951,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 17,
-                            fontWeight: FontWeight.bold,
+                            fontWeight:
+                                FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -789,7 +974,8 @@ class _HomeScreenState extends State<HomeScreen> {
     String label,
     Gradient gradient,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     return Column(
       children: [
@@ -801,13 +987,15 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: gradient.colors.first.withAlpha((0.3 * 255).round()),
+                color: gradient.colors.first
+                    .withAlpha((0.3 * 255).round()),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
                 spreadRadius: 0,
               ),
               BoxShadow(
-                color: gradient.colors.last.withAlpha((0.2 * 255).round()),
+                color: gradient.colors.last
+                    .withAlpha((0.2 * 255).round()),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
                 spreadRadius: -5,
@@ -825,7 +1013,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 45,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withAlpha((0.15 * 255).round()),
+                    color: Colors.white.withAlpha(
+                        (0.15 * 255).round()),
                   ),
                 ),
               ),
@@ -837,7 +1026,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 35,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withAlpha((0.1 * 255).round()),
+                    color: Colors.white.withAlpha(
+                        (0.1 * 255).round()),
                   ),
                 ),
               ),
@@ -849,7 +1039,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 25,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withAlpha((0.08 * 255).round()),
+                    color: Colors.white.withAlpha(
+                        (0.08 * 255).round()),
                   ),
                 ),
               ),
@@ -861,7 +1052,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 20,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withAlpha((0.12 * 255).round()),
+                    color: Colors.white.withAlpha(
+                        (0.12 * 255).round()),
                   ),
                 ),
               ),
@@ -892,7 +1084,9 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+            color: isDark
+                ? Colors.grey.shade300
+                : Colors.grey.shade700,
           ),
         ),
       ],

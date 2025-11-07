@@ -5,10 +5,12 @@ class MyLearningScreen extends StatefulWidget {
   const MyLearningScreen({super.key});
 
   @override
-  State<MyLearningScreen> createState() => _MyLearningScreenState();
+  State<MyLearningScreen> createState() =>
+      _MyLearningScreenState();
 }
 
-class _MyLearningScreenState extends State<MyLearningScreen> {
+class _MyLearningScreenState
+    extends State<MyLearningScreen> {
   late SharedPreferences prefs;
   List<String> savedWords = [];
   List<String> readStories = [];
@@ -22,10 +24,17 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
     _initializeSampleData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadData();
+  }
+
   Future<void> _initializeSampleData() async {
     prefs = await SharedPreferences.getInstance();
     // Check if already initialized
-    if ((prefs.getStringList('saved_words') ?? []).isEmpty) {
+    if ((prefs.getStringList('saved_words') ?? [])
+        .isEmpty) {
       final sampleWords = [
         'Awesome',
         'Incredible',
@@ -33,7 +42,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
         'Wonderful',
         'Amazing'
       ];
-      await prefs.setStringList('saved_words', sampleWords);
+      await prefs.setStringList(
+          'saved_words', sampleWords);
       setState(() {
         savedWords = sampleWords;
       });
@@ -42,28 +52,50 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
 
   Future<void> _loadData() async {
     prefs = await SharedPreferences.getInstance();
+    final isLoggedIn =
+        prefs.getBool('is_logged_in') ?? false;
+
     setState(() {
-      savedWords = prefs.getStringList('saved_words') ?? [];
-      readStories = prefs.getStringList('read_stories') ?? [];
-      todayWords = prefs.getInt('today_words') ?? 0;
-      currentStreak = prefs.getInt('current_streak') ?? 0;
+      if (isLoggedIn) {
+        // Load data only if logged in
+        savedWords =
+            prefs.getStringList('saved_words') ?? [];
+        readStories =
+            prefs.getStringList('read_stories') ?? [];
+        todayWords = prefs.getInt('today_words') ?? 0;
+        currentStreak =
+            prefs.getInt('current_streak') ?? 0;
+      } else {
+        // Show 0 if not logged in
+        savedWords = [];
+        readStories = [];
+        todayWords = 0;
+        currentStreak = 0;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth =
+        MediaQuery.of(context).size.width;
+    final screenHeight =
+        MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness ==
+        Brightness.dark;
 
     return Scaffold(
       body: Container(
         color: isDark ? Colors.black : Colors.white,
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(screenWidth * 0.05),
+            physics:
+                const AlwaysScrollableScrollPhysics(),
+            padding:
+                EdgeInsets.all(screenWidth * 0.05),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment:
+                  CrossAxisAlignment.stretch,
               children: [
                 // Header
                 Text(
@@ -71,40 +103,29 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                   style: TextStyle(
                     fontSize: screenWidth * 0.065,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black,
+                    color: isDark
+                        ? Colors.white
+                        : Colors.black,
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.04),
 
-                // Daily Words - Clickable
+                // Daily Words - Full width with Streak Badge
                 GestureDetector(
-                  onTap: () =>
-                      _showTodayWordsList(context, screenWidth, isDark),
-                  child: _buildBasicCardWithStreakIcon(
+                  onTap: () => _showTodayWordsList(
+                      context, screenWidth, isDark),
+                  child: _buildTodayWordsCard(
                     context,
                     screenWidth,
-                    '📖 Từ học hôm nay',
-                    '$todayWords từ',
                     isDark,
-                    showStreakIcon: todayWords >= 10,
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-
-                // Learning Streak
-                _buildBasicCard(
-                  context,
-                  screenWidth,
-                  '🔥 Chuỗi học',
-                  '$currentStreak ngày liên tiếp',
-                  isDark,
                 ),
                 SizedBox(height: screenHeight * 0.02),
 
                 // Saved Words (Clickable)
                 GestureDetector(
-                  onTap: () =>
-                      _showSavedWordsList(context, screenWidth, isDark),
+                  onTap: () => _showSavedWordsList(
+                      context, screenWidth, isDark),
                   child: _buildBasicCard(
                     context,
                     screenWidth,
@@ -117,8 +138,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
 
                 // Read Stories (Clickable)
                 GestureDetector(
-                  onTap: () =>
-                      _showReadStoriesList(context, screenWidth, isDark),
+                  onTap: () => _showReadStoriesList(
+                      context, screenWidth, isDark),
                   child: _buildBasicCard(
                     context,
                     screenWidth,
@@ -146,10 +167,14 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.05),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[900] : Colors.grey[100],
+        color: isDark
+            ? Colors.grey[900]
+            : Colors.grey[100],
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+          color: isDark
+              ? Colors.grey[800]!
+              : Colors.grey[300]!,
           width: 1.5,
         ),
       ),
@@ -161,7 +186,9 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
             style: TextStyle(
               fontSize: screenWidth * 0.038,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white70 : Colors.black54,
+              color: isDark
+                  ? Colors.white70
+                  : Colors.black54,
             ),
           ),
           SizedBox(height: screenWidth * 0.04),
@@ -170,7 +197,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
             style: TextStyle(
               fontSize: screenWidth * 0.075,
               fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black,
+              color:
+                  isDark ? Colors.white : Colors.black,
             ),
           ),
         ],
@@ -179,68 +207,114 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
   }
 
   // New widget with streak icon
-  Widget _buildBasicCardWithStreakIcon(
+  Widget _buildTodayWordsCard(
     BuildContext context,
     double screenWidth,
-    String title,
-    String value,
-    bool isDark, {
-    required bool showStreakIcon,
-  }) {
+    bool isDark,
+  ) {
     return Stack(
       children: [
         Container(
           padding: EdgeInsets.all(screenWidth * 0.05),
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey[900] : Colors.grey[100],
+            color: isDark
+                ? Colors.grey[900]
+                : Colors.grey[100],
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+              color: isDark
+                  ? Colors.grey[800]!
+                  : Colors.grey[300]!,
               width: 1.5,
             ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                '📖 Từ học hôm nay',
                 style: TextStyle(
                   fontSize: screenWidth * 0.038,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white70 : Colors.black54,
+                  color: isDark
+                      ? Colors.white70
+                      : Colors.black54,
                 ),
               ),
               SizedBox(height: screenWidth * 0.04),
               Text(
-                value,
+                '$todayWords/10',
                 style: TextStyle(
-                  fontSize: screenWidth * 0.064,
+                  fontSize: screenWidth * 0.075,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.03),
+              // Progress bar
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: todayWords / 10,
+                  minHeight: screenWidth * 0.025,
+                  backgroundColor: isDark
+                      ? Colors.grey[800]
+                      : Colors.grey[300],
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(
+                    todayWords >= 10
+                        ? Colors.green
+                        : Colors.orange,
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        // Streak fire icon
-        if (showStreakIcon)
-          Positioned(
-            right: screenWidth * 0.04,
-            top: screenWidth * 0.04,
-            child: Container(
-              padding: EdgeInsets.all(screenWidth * 0.02),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[800] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '🔥',
-                style: TextStyle(
-                  fontSize: screenWidth * 0.05,
-                ),
+        // Streak badge top-right
+        Positioned(
+          right: 0,
+          top: 0,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenWidth * 0.03,
+            ),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16),
+                bottomLeft: Radius.circular(14),
               ),
             ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '🔥',
+                  style: TextStyle(
+                      fontSize: screenWidth * 0.05),
+                ),
+                SizedBox(height: screenWidth * 0.005),
+                Text(
+                  '$currentStreak',
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.042,
+                    fontWeight: FontWeight.bold,
+                    color: isDark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
+        ),
       ],
     );
   }
@@ -253,7 +327,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
   ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      backgroundColor:
+          isDark ? Colors.grey[900] : Colors.grey[100],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -264,14 +339,17 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
         return Container(
           padding: EdgeInsets.all(screenWidth * 0.05),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Text(
                 '📖 Từ học hôm nay ($todayWords)',
                 style: TextStyle(
                   fontSize: screenWidth * 0.048,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               SizedBox(height: screenWidth * 0.04),
@@ -281,8 +359,11 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                         child: Text(
                           'Chưa có từ nào hôm nay',
                           style: TextStyle(
-                            fontSize: screenWidth * 0.036,
-                            color: isDark ? Colors.white70 : Colors.black54,
+                            fontSize:
+                                screenWidth * 0.036,
+                            color: isDark
+                                ? Colors.white70
+                                : Colors.black54,
                           ),
                         ),
                       )
@@ -291,8 +372,11 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                           'Đã học $todayWords từ hôm nay\n${todayWords >= 10 ? "🔥 Chuỗi lửa +1!" : "Cần ${10 - todayWords} từ nữa để đạt chuỗi lửa"}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: screenWidth * 0.04,
-                            color: isDark ? Colors.white : Colors.black,
+                            fontSize:
+                                screenWidth * 0.04,
+                            color: isDark
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
                       ),
@@ -312,7 +396,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
   ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      backgroundColor:
+          isDark ? Colors.grey[900] : Colors.grey[100],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -323,14 +408,17 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
         return Container(
           padding: EdgeInsets.all(screenWidth * 0.05),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Text(
                 '⭐ Từ đã lưu (${savedWords.length})',
                 style: TextStyle(
                   fontSize: screenWidth * 0.048,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               SizedBox(height: screenWidth * 0.04),
@@ -340,8 +428,11 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                         child: Text(
                           'Chưa có từ nào được lưu',
                           style: TextStyle(
-                            fontSize: screenWidth * 0.036,
-                            color: isDark ? Colors.white70 : Colors.black54,
+                            fontSize:
+                                screenWidth * 0.036,
+                            color: isDark
+                                ? Colors.white70
+                                : Colors.black54,
                           ),
                         ),
                       )
@@ -349,54 +440,79 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                         itemCount: savedWords.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(bottom: screenWidth * 0.03),
+                            margin: EdgeInsets.only(
+                                bottom: screenWidth *
+                                    0.03),
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[800] : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                              color: isDark
+                                  ? Colors.grey[800]
+                                  : Colors.white,
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(12),
                               border: Border.all(
                                 color: isDark
                                     ? Colors.grey[700]!
-                                    : Colors.grey[300]!,
+                                    : Colors
+                                        .grey[300]!,
                               ),
                             ),
                             child: ListTile(
                               title: Text(
                                 savedWords[index],
                                 style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  fontWeight: FontWeight.w500,
-                                  color: isDark ? Colors.white : Colors.black,
+                                  fontSize:
+                                      screenWidth *
+                                          0.04,
+                                  fontWeight:
+                                      FontWeight.w500,
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                               trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisSize:
+                                    MainAxisSize.min,
                                 children: [
                                   IconButton(
                                     onPressed: () {
                                       // Jump to dictionary
-                                      _jumpToDictionary(savedWords[index]);
-                                      Navigator.pop(context);
+                                      _jumpToDictionary(
+                                          savedWords[
+                                              index]);
+                                      Navigator.pop(
+                                          context);
                                     },
                                     icon: const Icon(
                                       Icons.search,
-                                      color: Colors.blue,
+                                      color:
+                                          Colors.blue,
                                     ),
                                   ),
                                   IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        savedWords.removeAt(index);
+                                        savedWords
+                                            .removeAt(
+                                                index);
                                         prefs.setStringList(
-                                            'saved_words', savedWords);
+                                            'saved_words',
+                                            savedWords);
                                       });
-                                      Navigator.pop(context);
+                                      Navigator.pop(
+                                          context);
                                       _showSavedWordsList(
-                                          context, screenWidth, isDark);
+                                          context,
+                                          screenWidth,
+                                          isDark);
                                     },
                                     icon: Icon(
                                       Icons.delete,
-                                      color:
-                                          isDark ? Colors.red[300] : Colors.red,
+                                      color: isDark
+                                          ? Colors
+                                              .red[300]
+                                          : Colors.red,
                                     ),
                                   ),
                                 ],
@@ -421,7 +537,8 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
   ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[100],
+      backgroundColor:
+          isDark ? Colors.grey[900] : Colors.grey[100],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -432,14 +549,17 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
         return Container(
           padding: EdgeInsets.all(screenWidth * 0.05),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
             children: [
               Text(
                 '📕 Lịch sử đọc truyện (${readStories.length})',
                 style: TextStyle(
                   fontSize: screenWidth * 0.048,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               SizedBox(height: screenWidth * 0.04),
@@ -449,8 +569,11 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                         child: Text(
                           'Chưa có truyện nào được đọc',
                           style: TextStyle(
-                            fontSize: screenWidth * 0.036,
-                            color: isDark ? Colors.white70 : Colors.black54,
+                            fontSize:
+                                screenWidth * 0.036,
+                            color: isDark
+                                ? Colors.white70
+                                : Colors.black54,
                           ),
                         ),
                       )
@@ -458,39 +581,59 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
                         itemCount: readStories.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(bottom: screenWidth * 0.03),
+                            margin: EdgeInsets.only(
+                                bottom: screenWidth *
+                                    0.03),
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[800] : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                              color: isDark
+                                  ? Colors.grey[800]
+                                  : Colors.white,
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(12),
                               border: Border.all(
                                 color: isDark
                                     ? Colors.grey[700]!
-                                    : Colors.grey[300]!,
+                                    : Colors
+                                        .grey[300]!,
                               ),
                             ),
                             child: ListTile(
                               title: Text(
                                 readStories[index],
                                 style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  fontWeight: FontWeight.w500,
-                                  color: isDark ? Colors.white : Colors.black,
+                                  fontSize:
+                                      screenWidth *
+                                          0.04,
+                                  fontWeight:
+                                      FontWeight.w500,
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                               trailing: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    readStories.removeAt(index);
+                                    readStories
+                                        .removeAt(
+                                            index);
                                     prefs.setStringList(
-                                        'read_stories', readStories);
+                                        'read_stories',
+                                        readStories);
                                   });
-                                  Navigator.pop(context);
+                                  Navigator.pop(
+                                      context);
                                   _showReadStoriesList(
-                                      context, screenWidth, isDark);
+                                      context,
+                                      screenWidth,
+                                      isDark);
                                 },
                                 icon: Icon(
                                   Icons.delete,
-                                  color: isDark ? Colors.red[300] : Colors.red,
+                                  color: isDark
+                                      ? Colors.red[300]
+                                      : Colors.red,
                                 ),
                               ),
                             ),
