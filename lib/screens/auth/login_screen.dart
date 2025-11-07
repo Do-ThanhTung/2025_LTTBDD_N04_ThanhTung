@@ -12,69 +12,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
-  late bool _isLogin;
+  bool _isLoading = false; // ignore: unused_field
 
   @override
   void initState() {
     super.initState();
-    _isLogin = true;
-  }
-
-  Future<void> _handleAuth() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorSnackBar(AppLocalizations.t(context, 'fill_all_fields'));
-      return;
-    }
-
-    if (!email.contains('@')) {
-      _showErrorSnackBar(AppLocalizations.t(context, 'invalid_email'));
-      return;
-    }
-
-    if (password.length < 6) {
-      _showErrorSnackBar(AppLocalizations.t(context, 'password_too_short'));
-      return;
-    }
-
-    setState(() => _isLoading = true);
-
-    try {
-      await Future.delayed(const Duration(seconds: 2));
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_email', email);
-      await prefs.setString('user_id', email.split('@')[0]);
-      await prefs.setBool('is_logged_in', true);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isLogin
-                  ? AppLocalizations.t(context, 'login_success')
-                  : AppLocalizations.t(context, 'signup_success'),
-            ),
-            duration: const Duration(seconds: 1),
-          ),
-        );
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-      }
-    } catch (e) {
-      if (mounted) {
-        _showErrorSnackBar('Error: ${e.toString()}');
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
   }
 
   void _showErrorSnackBar(String message) {

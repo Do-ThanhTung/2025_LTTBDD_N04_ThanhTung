@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -360,15 +362,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               context: context,
                               builder: (dialogContext) => AlertDialog(
                                 title: Text(AppLocalizations.t(
-                                    context, 'confirm_logout')),
+                                    dialogContext, 'confirm_logout')),
                                 content: Text(AppLocalizations.t(
-                                    context, 'logout_message')),
+                                    dialogContext, 'logout_message')),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(dialogContext).pop(),
-                                    child: Text(
-                                        AppLocalizations.t(context, 'cancel')),
+                                    child: Text(AppLocalizations.t(
+                                        dialogContext, 'cancel')),
                                   ),
                                   TextButton(
                                     onPressed: () async {
@@ -376,18 +378,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           await SharedPreferences.getInstance();
                                       await prefs.setBool(
                                           'is_logged_in', false);
-                                      if (!mounted) return;
+                                      if (!mounted) {
+                                        return;
+                                      }
 
                                       Navigator.of(dialogContext).pop();
-                                      ScaffoldMessenger.of(context)
+                                      ScaffoldMessenger.of(dialogContext)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text('Logged out.')),
                                       );
                                       _loadSettings();
                                     },
-                                    child: Text(
-                                        AppLocalizations.t(context, 'logout')),
+                                    child: Text(AppLocalizations.t(
+                                        dialogContext, 'logout')),
                                   ),
                                 ],
                               ),
