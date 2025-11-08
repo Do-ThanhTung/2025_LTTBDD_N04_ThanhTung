@@ -18,7 +18,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isDarkMode = false;
   bool _notificationsEnabled = true;
   bool _ttsEnabled = true;
-  String _selectedLanguage = 'en';
+  String _selectedLanguage = 'system';
   Color _primaryColor = AppPrimaryColor.color.value;
   bool _isLoggedIn = false;
 
@@ -41,7 +41,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _isDarkMode = AppTheme.mode.value == ThemeMode.dark;
       _notificationsEnabled = prefs.getBool('notifications') ?? true;
       _ttsEnabled = prefs.getBool('tts_enabled') ?? true;
-      _selectedLanguage = AppLocale.locale.value.languageCode;
+      _selectedLanguage = AppLocale.followsSystemLocale
+          ? 'system'
+          : AppLocale.locale.value.languageCode;
       _primaryColor = AppPrimaryColor.color.value;
       _isLoggedIn = prefs.getBool('is_logged_in') ?? false;
     });
@@ -81,8 +83,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _changeLanguage(String? value) async {
     if (value == null) return;
-    final locale = Locale(value);
-    await AppLocale.save(locale);
+    if (value == 'system') {
+      await AppLocale.resetToSystem();
+    } else {
+      final locale = Locale(value);
+      await AppLocale.save(locale);
+    }
     if (!mounted) return;
     setState(() {
       _selectedLanguage = value;
@@ -134,8 +140,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SettingsHeader(primaryColor: _primaryColor),
-              const SizedBox(height: 24),
               _SectionLabel(title: AppLocalizations.t(context, 'account')),
               const SizedBox(height: 12),
               _SettingCard(
@@ -213,6 +217,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             value: _selectedLanguage,
                             borderRadius: BorderRadius.circular(12),
                             items: [
+                              DropdownMenuItem(
+                                value: 'system',
+                                child: Text(AppLocalizations.t(
+                                    context, 'system_default')),
+                              ),
                               DropdownMenuItem(
                                 value: 'en',
                                 child: Text(
@@ -329,12 +338,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: AppLocalizations.t(context, 'about'),
                       subtitle: 'Version 1.0.0',
                       onTap: () {
-                        showAboutDialog(
-                          context: context,
-                          applicationName: 'English Learning App',
-                          applicationVersion: '1.0.0',
-                          applicationLegalese: '© 2025 Your Company',
-                        );
+                        Navigator.pushNamed(context, '/about');
                       },
                     ),
                     const Divider(height: 1),
@@ -401,74 +405,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SettingsHeader extends StatelessWidget {
-  const _SettingsHeader({required this.primaryColor});
-
-  final Color primaryColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            primaryColor.withValues(alpha: 0.92),
-            primaryColor.withValues(alpha: 0.78),
-            primaryColor.withValues(alpha: 0.72),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withValues(alpha: 0.25),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.22),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Icon(Icons.settings, color: Colors.white, size: 34),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.t(context, 'settings'),
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  AppLocalizations.t(context, 'settings_intro'),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.85),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

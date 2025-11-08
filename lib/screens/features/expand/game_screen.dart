@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../l10n/app_localizations.dart';
 import 'games/flashcard_game.dart';
-import 'games/matching_game.dart';
 import 'games/guessing_game.dart';
+import 'games/matching_game.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -16,6 +18,10 @@ class _GameScreenState extends State<GameScreen> {
   int _totalTrophies = 0;
   int _matchingTrophies = 0;
   int _guessingTrophies = 0;
+
+  String _t(String key) => AppLocalizations.t(context, key);
+  String _tr(String key, {Map<String, String>? params}) =>
+      AppLocalizations.tr(context, key, params: params);
 
   @override
   void initState() {
@@ -193,9 +199,9 @@ class _GameScreenState extends State<GameScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Text(
-                          'Trò chơi học tập',
-                          style: TextStyle(
+                        Text(
+                          _t('games_title'),
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -248,9 +254,9 @@ class _GameScreenState extends State<GameScreen> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   _buildGameCard(
-                    title: 'Thẻ ghi nhớ',
-                    subtitle: 'Kiểm tra vốn từ vựng với thẻ ghi nhớ tương tác',
-                    badge: '20 thẻ',
+                    title: _t('flashcard_menu_title'),
+                    subtitle: _t('flashcard_menu_description'),
+                    badge: _t('flashcard_menu_badge'),
                     icon: Icons.star_outline,
                     gradient: const LinearGradient(
                       colors: [Color(0xFF9D8EF5), Color(0xFF7B6BE8)],
@@ -262,9 +268,10 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   const SizedBox(height: 16),
                   _buildGameCard(
-                    title: 'Ghép đôi',
-                    subtitle: 'Ghép từ tiếng Anh với nghĩa tiếng Việt',
-                    badge: '$_matchingTrophies 🏆',
+                    title: _t('matching_menu_title'),
+                    subtitle: _t('matching_menu_description'),
+                    badge: _tr('game_trophies_badge',
+                        params: {'count': '$_matchingTrophies'}),
                     icon: Icons.emoji_events_outlined,
                     gradient: const LinearGradient(
                       colors: [Color(0xFF5EC9B4), Color(0xFF4BB9A5)],
@@ -276,9 +283,10 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   const SizedBox(height: 16),
                   _buildGameCard(
-                    title: 'Đoán từ',
-                    subtitle: 'Đoán từ dựa trên gợi ý và định nghĩa',
-                    badge: '$_guessingTrophies 🏆',
+                    title: _t('guessing_menu_title'),
+                    subtitle: _t('guessing_menu_description'),
+                    badge: _tr('game_trophies_badge',
+                        params: {'count': '$_guessingTrophies'}),
                     icon: Icons.lightbulb_outline,
                     gradient: const LinearGradient(
                       colors: [Color(0xFF5BA3E8), Color(0xFF4A8DD4)],

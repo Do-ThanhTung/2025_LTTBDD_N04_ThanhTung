@@ -29,6 +29,9 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   final FlutterTts _flutterTts = FlutterTts();
   Set<String> _savedWords = {};
 
+  String _t(BuildContext context, String key) =>
+      AppLocalizations.t(context, key);
+
   @override
   void initState() {
     super.initState();
@@ -286,7 +289,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
         controller: _searchController,
         style: const TextStyle(fontSize: 15),
         decoration: InputDecoration(
-          hintText: 'Search for a word...',
+          hintText: _t(context, 'dictionary_search_hint'),
           hintStyle: TextStyle(
             color: Colors.grey.shade600,
           ),
@@ -313,8 +316,8 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Search',
+                    child: Text(
+                      _t(context, 'dictionary_search_button'),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -387,7 +390,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      AppLocalizations.t(context, 'search_word'),
+                      _t(context, 'search_word'),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -396,7 +399,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Discover meanings, examples, and more',
+                      _t(context, 'dictionary_empty_subtitle'),
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark
@@ -424,7 +427,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Recent Searches',
+                  _t(context, 'dictionary_recent_searches'),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -439,7 +442,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                     });
                   },
                   child: Text(
-                    'Clear',
+                    _t(context, 'clear'),
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 13,
@@ -506,7 +509,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
           ] else ...[
             // Nếu chưa có lịch sử, hiển thị gợi ý
             Text(
-              'Suggested Words',
+              _t(context, 'dictionary_suggested_words'),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

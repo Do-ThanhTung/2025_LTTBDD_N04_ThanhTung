@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator_plus/translator_plus.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../services/vocabulary_service.dart';
 
 class FlashCard {
@@ -150,6 +151,10 @@ class _FlashcardGameState extends State<FlashcardGame> {
   final Map<String, String> _translationCache = {};
   bool _isTranslating = false;
 
+  String _t(String key) => AppLocalizations.t(context, key);
+  String _tr(String key, {Map<String, String>? params}) =>
+      AppLocalizations.tr(context, key, params: params);
+
   @override
   void initState() {
     super.initState();
@@ -243,7 +248,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Vui lòng đăng nhập để lưu từ'),
+          content: Text(_t('flashcard_login_required')),
           duration: const Duration(seconds: 2),
           backgroundColor: Colors.red,
         ),
@@ -268,7 +273,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Đã lưu "$word" vào từ điển'),
+        content: Text(_tr('flashcard_saved_word', params: {'word': word})),
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.green,
       ),
@@ -298,7 +303,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Không thể dịch văn bản này'),
+              content: Text(_t('flashcard_translate_error')),
               duration: const Duration(seconds: 2),
               backgroundColor: Colors.orange,
             ),
@@ -310,7 +315,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Lỗi khi dịch: ${e.toString()}'),
+            content: Text(_tr('flashcard_translate_failed',
+                params: {'error': e.toString()})),
             duration: const Duration(seconds: 2),
             backgroundColor: Colors.red,
           ),
@@ -330,11 +336,11 @@ class _FlashcardGameState extends State<FlashcardGame> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.bookmark_add, color: Colors.purple),
-              SizedBox(width: 8),
-              Text('Chọn từ cần lưu'),
+              const Icon(Icons.bookmark_add, color: Colors.purple),
+              const SizedBox(width: 8),
+              Text(_t('matching_select_words_title')),
             ],
           ),
           content: SizedBox(
@@ -379,7 +385,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
+              child: Text(_t('matching_cancel')),
             ),
             ElevatedButton(
               onPressed: selectedWords.isEmpty
@@ -396,7 +402,8 @@ class _FlashcardGameState extends State<FlashcardGame> {
                 backgroundColor: Colors.purple,
                 disabledBackgroundColor: Colors.grey[300],
               ),
-              child: Text('Lưu (${selectedWords.length})'),
+              child: Text(_tr('matching_save_button',
+                  params: {'count': '${selectedWords.length}'})),
             ),
           ],
         ),
@@ -409,14 +416,22 @@ class _FlashcardGameState extends State<FlashcardGame> {
     _confettiController.play();
 
     final titleText = _knownCards == 20
-        ? 'Tuyệt vời!'
-        : (_knownCards == 0 ? 'Cố gắng lên!' : 'Chúc mừng!');
+        ? _t('flashcard_dialog_perfect_title')
+        : (_knownCards == 0
+            ? _t('flashcard_dialog_try_title')
+            : _t('flashcard_dialog_good_title'));
 
     final subtitle = _knownCards == 20
-        ? 'Bạn đã biết tất cả ${_shuffledFlashCards.length}/${_shuffledFlashCards.length} từ!'
+        ? _tr('flashcard_dialog_good_body', params: {
+            'known': '${_shuffledFlashCards.length}',
+            'total': '${_shuffledFlashCards.length}'
+          })
         : (_knownCards == 0
-            ? 'Bạn phải cố gắng nhiều hơn.'
-            : 'Bạn đã biết $_knownCards/${_shuffledFlashCards.length} từ.');
+            ? _t('flashcard_dialog_try_body')
+            : _tr('flashcard_dialog_good_body', params: {
+                'known': '$_knownCards',
+                'total': '${_shuffledFlashCards.length}'
+              }));
 
     showGeneralDialog(
       context: context,
@@ -514,7 +529,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      '✅ Đã biết',
+                                      '✅ ${_t('flashcard_dialog_known_label')}',
                                       style: TextStyle(
                                         color:
                                             Colors.white.withValues(alpha: 0.9),
@@ -565,7 +580,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      '⏭️ Bỏ qua',
+                                      '⏭️ ${_t('flashcard_dialog_skipped_label')}',
                                       style: TextStyle(
                                         color:
                                             Colors.white.withValues(alpha: 0.9),
@@ -636,7 +651,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Lưu từ',
+                                  _t('flashcard_dialog_save_words'),
                                   style: TextStyle(
                                     fontSize: screenWidth * 0.04,
                                     fontWeight: FontWeight.w600,
@@ -667,7 +682,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Chơi lại',
+                                  _t('flashcard_dialog_play_again'),
                                   style: TextStyle(
                                     fontSize: screenWidth * 0.04,
                                     fontWeight: FontWeight.bold,
@@ -693,7 +708,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                             ),
                           ),
                           child: Text(
-                            'Bỏ qua',
+                            _t('flashcard_dialog_skip'),
                             style: TextStyle(
                               fontSize: screenWidth * 0.038,
                               fontWeight: FontWeight.w500,
@@ -735,7 +750,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                 CircularProgressIndicator(color: Colors.white),
                 SizedBox(height: 20),
                 Text(
-                  'Đang tải từ vựng...',
+                  'Loading vocabulary...',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -772,9 +787,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
                     color: Colors.white,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Bạn chưa tra từ nào trong từ điển.\nHãy tra từ trước khi chơi game!',
-                    style: TextStyle(
+                  Text(
+                    _t('no_vocabulary'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -785,7 +800,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                   ElevatedButton.icon(
                     onPressed: widget.onBack,
                     icon: const Icon(Icons.arrow_back),
-                    label: const Text('Quay lại'),
+                    label: Text(_t('flashcard_dialog_skip')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF7B6BE8),
@@ -848,9 +863,9 @@ class _FlashcardGameState extends State<FlashcardGame> {
                               size: 28,
                             ),
                           ),
-                          const Text(
-                            'Thẻ ghi nhớ',
-                            style: TextStyle(
+                          Text(
+                            _t('flashcard_header_title'),
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -896,7 +911,10 @@ class _FlashcardGameState extends State<FlashcardGame> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Thẻ ${_currentCardIndex + 1} trong số ${_shuffledFlashCards.length}',
+                        _tr('flashcard_progress_label', params: {
+                          'current': '${_currentCardIndex + 1}',
+                          'total': '${_shuffledFlashCards.length}'
+                        }),
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 14,
@@ -999,7 +1017,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                 ),
                               ),
                               child: Text(
-                                'Bỏ qua',
+                                _t('flashcard_skip'),
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: isDark ? Colors.white : Colors.black87,
@@ -1013,7 +1031,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                               onPressed: () =>
                                   _saveWordToDictionary(currentCard.word),
                               icon: const Icon(Icons.bookmark_add, size: 20),
-                              label: const Text('Lưu'),
+                              label: Text(_t('flashcard_save')),
                               style: OutlinedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),
@@ -1043,14 +1061,14 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                 ),
                                 elevation: 0,
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.check_circle, size: 20),
-                                  SizedBox(width: 8),
+                                  const Icon(Icons.check_circle, size: 20),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    'Tôi biết từ này',
-                                    style: TextStyle(
+                                    _t('flashcard_known'),
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -1366,7 +1384,7 @@ class _FlashcardGameState extends State<FlashcardGame> {
                                 ),
                                 SizedBox(width: screenWidth * 0.01),
                                 Text(
-                                  'Đã dịch sang Tiếng Việt',
+                                  _t('flashcard_translated_label'),
                                   style: TextStyle(
                                     fontSize: exampleFontSize * 0.85,
                                     color: const Color(0xFF26C6DA),

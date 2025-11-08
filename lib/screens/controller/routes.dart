@@ -1,6 +1,7 @@
 // routes.dart
 import 'package:flutter/material.dart';
 
+import '../features/about/about_screen.dart';
 import '../features/expand/expand_selector_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../home/home_dashboard_screen.dart';
@@ -13,6 +14,7 @@ class Routes {
       '/my_learning': (context) => const MyLearningScreen(),
       '/expand': (context) => const ExpandScreen(),
       '/settings': (context) => const SettingsScreen(),
+      '/about': (context) => const AboutScreen(),
     };
   }
 }

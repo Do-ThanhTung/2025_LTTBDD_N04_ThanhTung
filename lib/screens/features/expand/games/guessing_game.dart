@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator_plus/translator_plus.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../services/vocabulary_service.dart';
 
 class GuessingWord {
@@ -148,6 +149,10 @@ class GuessingGame extends StatefulWidget {
 }
 
 class _GuessingGameState extends State<GuessingGame> {
+  String _t(String key) => AppLocalizations.t(context, key);
+  String _tr(String key, Map<String, String> params) =>
+      AppLocalizations.tr(context, key, params: params);
+
   String _userGuess = '';
   bool _showResult = false;
   bool _isCorrect = false;
@@ -366,8 +371,8 @@ class _GuessingGameState extends State<GuessingGame> {
     if (!isLoggedIn) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Vui lòng đăng nhập để lưu từ'),
+          SnackBar(
+            content: Text(_t('flashcard_login_required')),
             duration: Duration(seconds: 2),
             backgroundColor: Colors.red,
           ),
@@ -619,7 +624,7 @@ class _GuessingGameState extends State<GuessingGame> {
                     ),
                   ),
                   Text(
-                    'Đoán từ',
+                    _t('guessing_header_title'),
                     style: TextStyle(
                       fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,
@@ -732,10 +737,10 @@ class _GuessingGameState extends State<GuessingGame> {
                   Expanded(
                     child: Text(
                       _hintsUsed == 1
-                          ? 'Đã dùng 1 gợi ý'
+                          ? _t('guessing_hints_used_one')
                           : _hintsUsed == 2
-                              ? 'Đã dùng 2 gợi ý'
-                              : 'Đã dùng 3 gợi ý',
+                              ? _t('guessing_hints_used_two')
+                              : _t('guessing_hints_used_three'),
                       style: TextStyle(
                         fontSize: smallFontSize,
                         color:
@@ -784,7 +789,8 @@ class _GuessingGameState extends State<GuessingGame> {
                 child: OutlinedButton.icon(
                   onPressed: _hintsUsed >= 3 ? null : _useHint,
                   icon: const Icon(Icons.lightbulb_outline, size: 20),
-                  label: Text('Gợi ý (${3 - _hintsUsed})'),
+                  label: Text(_tr('guessing_hint_button',
+                      {'remaining': '${3 - _hintsUsed}'})),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: BorderSide(
@@ -813,8 +819,8 @@ class _GuessingGameState extends State<GuessingGame> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Kiểm tra',
+                  child: Text(
+                    _t('guessing_check_button'),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -878,7 +884,9 @@ class _GuessingGameState extends State<GuessingGame> {
             ),
             SizedBox(height: screenHeight * 0.02),
             Text(
-              _isCorrect ? 'Chính xác!' : 'Chưa đúng!',
+              _isCorrect
+                  ? _t('guessing_result_correct')
+                  : _t('guessing_result_incorrect'),
               style: TextStyle(
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.bold,
@@ -888,7 +896,7 @@ class _GuessingGameState extends State<GuessingGame> {
             if (!_isCorrect) ...[
               SizedBox(height: screenHeight * 0.015),
               Text(
-                'Đáp án đúng: ${_currentWord.word}',
+                _tr('guessing_correct_answer', {'word': _currentWord.word}),
                 style: TextStyle(
                   fontSize: answerFontSize,
                   fontWeight: FontWeight.bold,
@@ -937,7 +945,7 @@ class _GuessingGameState extends State<GuessingGame> {
                   child: OutlinedButton.icon(
                     onPressed: () => _saveWordToDictionary(_currentWord.word),
                     icon: Icon(Icons.bookmark_add, size: iconSize),
-                    label: Text('Lưu từ',
+                    label: Text(_t('guessing_save_word'),
                         style: TextStyle(fontSize: definitionFontSize)),
                     style: OutlinedButton.styleFrom(
                       padding:
@@ -974,8 +982,8 @@ class _GuessingGameState extends State<GuessingGame> {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Hoàn thành',
+              child: Text(
+                _t('guessing_complete_button'),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

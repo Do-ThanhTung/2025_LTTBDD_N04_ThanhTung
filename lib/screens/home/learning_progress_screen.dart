@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../l10n/app_localizations.dart';
+
 class MyLearningScreen extends StatefulWidget {
   const MyLearningScreen({super.key});
 
@@ -95,7 +97,7 @@ class _MyLearningScreenState extends State<MyLearningScreen>
             children: [
               // Header
               Text(
-                '📚 Quá trình học tập',
+                '📚 ${AppLocalizations.t(context, 'today_learning')}',
                 style: TextStyle(
                   fontSize: screenWidth * 0.065,
                   fontWeight: FontWeight.bold,
@@ -121,8 +123,8 @@ class _MyLearningScreenState extends State<MyLearningScreen>
                 child: _buildBasicCard(
                   context,
                   screenWidth,
-                  '⭐ Từ đã lưu',
-                  '${savedWords.length} từ',
+                  '⭐ ${AppLocalizations.t(context, 'saved_words_label')}',
+                  '${savedWords.length} ${AppLocalizations.t(context, 'home_stats_words')}',
                   isDark,
                 ),
               ),
@@ -134,8 +136,8 @@ class _MyLearningScreenState extends State<MyLearningScreen>
                 child: _buildBasicCard(
                   context,
                   screenWidth,
-                  '📕 Truyện đã đọc',
-                  '${readStories.length} truyện',
+                  '📕 ${AppLocalizations.t(context, 'read_stories_label')}',
+                  '${readStories.length} ${AppLocalizations.t(context, 'stories_count')}',
                   isDark,
                 ),
               ),
@@ -211,7 +213,7 @@ class _MyLearningScreenState extends State<MyLearningScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '📖 Từ học hôm nay',
+                '📖 ${AppLocalizations.t(context, 'daily_words_label')}',
                 style: TextStyle(
                   fontSize: screenWidth * 0.038,
                   fontWeight: FontWeight.w600,
@@ -305,7 +307,7 @@ class _MyLearningScreenState extends State<MyLearningScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '📖 Từ học hôm nay ($todayWords)',
+                '📖 ${AppLocalizations.t(context, 'daily_words_label')} ($todayWords)',
                 style: TextStyle(
                   fontSize: screenWidth * 0.048,
                   fontWeight: FontWeight.bold,

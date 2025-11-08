@@ -58,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       valueListenable: AppPrimaryColor.color,
       builder: (context, primaryColor, _) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+        String t(String key) => AppLocalizations.t(context, key);
 
         return Container(
           decoration: BoxDecoration(
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.t(context, 'study_chill'),
+                                t('study_chill'),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
@@ -138,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                AppLocalizations.t(context, 'learn_more_fun'),
+                                t('learn_more_fun'),
                                 style: TextStyle(
                                   color: Colors.white
                                       .withAlpha((0.95 * 255).round()),
@@ -164,8 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: _buildFeatureCard(
                                   context,
-                                  title:
-                                      AppLocalizations.t(context, 'dictionary'),
+                                  title: t('dictionary'),
                                   icon: Icons.search,
                                   gradient: const LinearGradient(
                                     begin: Alignment.topLeft,
@@ -208,8 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: _buildFeatureCard(
                                   context,
-                                  title: AppLocalizations.t(
-                                      context, 'translation'),
+                                  title: t('translation'),
                                   icon: Icons.translate,
                                   gradient: const LinearGradient(
                                     begin: Alignment.topRight,
@@ -256,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: _buildFeatureCard(
                                   context,
-                                  title: 'Game',
+                                  title: t('game'),
                                   icon: Icons.videogame_asset,
                                   gradient: const LinearGradient(
                                     begin: Alignment.bottomLeft,
@@ -299,8 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: _buildFeatureCard(
                                   context,
-                                  title: AppLocalizations.t(
-                                      context, 'short_stories'),
+                                  title: t('short_stories'),
                                   icon: Icons.menu_book,
                                   gradient: const LinearGradient(
                                     begin: Alignment.bottomRight,
@@ -366,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Thống kê',
+                                  t('home_stats_title'),
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -383,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     _buildStatItem(
                                       context,
                                       '$_searchCount',
-                                      'Từ',
+                                      t('home_stats_words'),
                                       const LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -397,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     _buildStatItem(
                                       context,
                                       '$_gamesPlayed',
-                                      'Trò chơi',
+                                      t('home_stats_games'),
                                       const LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -411,7 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     _buildStatItem(
                                       context,
                                       '$_totalTrophies',
-                                      'Cúp',
+                                      t('home_stats_trophies'),
                                       const LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,

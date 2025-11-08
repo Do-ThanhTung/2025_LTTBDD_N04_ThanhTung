@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator_plus/translator_plus.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../services/vocabulary_service.dart';
 
 class MatchingPair {
@@ -89,6 +90,10 @@ class MatchingGame extends StatefulWidget {
 }
 
 class _MatchingGameState extends State<MatchingGame> {
+  String _t(String key) => AppLocalizations.t(context, key);
+  String _tr(String key, Map<String, String> params) =>
+      AppLocalizations.tr(context, key, params: params);
+
   int _score = 0;
   int? _selectedEnglishId;
   List<int> _matchedPairs = [];
@@ -261,8 +266,8 @@ class _MatchingGameState extends State<MatchingGame> {
     if (!isLoggedIn) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Vui lòng đăng nhập để lưu từ'),
+          SnackBar(
+            content: Text(_t('flashcard_login_required')),
             duration: Duration(seconds: 2),
             backgroundColor: Colors.red,
           ),
@@ -302,11 +307,11 @@ class _MatchingGameState extends State<MatchingGame> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Row(
+          title: Row(
             children: [
               Icon(Icons.bookmark_add, color: Color(0xFF5EC9B4)),
               SizedBox(width: 8),
-              Text('Chọn từ cần lưu'),
+              Text(_t('matching_select_words_title')),
             ],
           ),
           content: SizedBox(
@@ -354,7 +359,7 @@ class _MatchingGameState extends State<MatchingGame> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
+              child: Text(_t('matching_cancel')),
             ),
             ElevatedButton(
               onPressed: selectedWords.isEmpty
@@ -371,7 +376,8 @@ class _MatchingGameState extends State<MatchingGame> {
                 backgroundColor: const Color(0xFF5EC9B4),
                 disabledBackgroundColor: Colors.grey[300],
               ),
-              child: Text('Lưu (${selectedWords.length})'),
+              child: Text(_tr('matching_save_button',
+                  {'count': '${selectedWords.length}'})),
             ),
           ],
         ),
@@ -515,7 +521,7 @@ class _MatchingGameState extends State<MatchingGame> {
                           Navigator.of(context).pop();
                           _showSelectWordsDialog();
                         },
-                        child: const Text('Lưu từ',
+                        child: Text(_t('matching_save_words'),
                             style: TextStyle(color: Colors.white)),
                       ),
                       Row(
@@ -525,7 +531,7 @@ class _MatchingGameState extends State<MatchingGame> {
                               Navigator.of(context).pop();
                               widget.onBack();
                             },
-                            child: const Text('Bỏ qua',
+                            child: Text(_t('matching_skip'),
                                 style: TextStyle(color: Colors.white)),
                           ),
                           const SizedBox(width: 8),
@@ -540,7 +546,7 @@ class _MatchingGameState extends State<MatchingGame> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: const Text('Chơi lại'),
+                            child: Text(_t('matching_play_again')),
                           ),
                         ],
                       ),
@@ -699,7 +705,7 @@ class _MatchingGameState extends State<MatchingGame> {
                     ),
                   ),
                   Text(
-                    'Ghép từ',
+                    _t('matching_header_title'),
                     style: TextStyle(
                       fontSize: titleFontSize,
                       fontWeight: FontWeight.bold,

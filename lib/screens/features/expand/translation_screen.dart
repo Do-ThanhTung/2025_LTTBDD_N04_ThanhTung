@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:translator_plus/translator_plus.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translator_plus/translator_plus.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class TranslationScreen extends StatefulWidget {
   const TranslationScreen({super.key});
@@ -19,6 +21,9 @@ class _TranslationScreenState extends State<TranslationScreen> {
   String _sourceLang = 'en';
   String _targetLang = 'vi';
   List<Map<String, String>> _translationHistory = [];
+
+  String _t(BuildContext context, String key) =>
+      AppLocalizations.t(context, key);
 
   @override
   void initState() {
@@ -42,9 +47,9 @@ class _TranslationScreenState extends State<TranslationScreen> {
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(_t(context, 'copied_to_clipboard')),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -112,7 +117,9 @@ class _TranslationScreenState extends State<TranslationScreen> {
     final input = _controller.text.trim();
     if (input.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter text to translate')),
+        SnackBar(
+          content: Text(_t(context, 'enter_text_to_translate')),
+        ),
       );
       return;
     }
@@ -133,7 +140,15 @@ class _TranslationScreenState extends State<TranslationScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Translation failed: $e')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.tr(
+              context,
+              'translation_failed_error',
+              params: {'error': '$e'},
+            ),
+          ),
+        ),
       );
     }
   }
@@ -211,9 +226,9 @@ class _TranslationScreenState extends State<TranslationScreen> {
                           ),
                         ),
                       ),
-                      const Text(
-                        'Translation',
-                        style: TextStyle(
+                      Text(
+                        _t(context, 'translation_screen_title'),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -488,14 +503,14 @@ class _TranslationScreenState extends State<TranslationScreen> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.auto_awesome, size: 20),
-                              SizedBox(width: 8),
+                              const Icon(Icons.auto_awesome, size: 20),
+                              const SizedBox(width: 8),
                               Text(
-                                'Translate Now',
-                                style: TextStyle(
+                                _t(context, 'translate_now'),
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -612,7 +627,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Translation History',
+                                _t(context, 'translation_history_title'),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -625,7 +640,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
                               TextButton(
                                 onPressed: _clearHistory,
                                 child: Text(
-                                  'Clear',
+                                  _t(context, 'clear'),
                                   style: TextStyle(
                                     color: Colors.grey.shade600,
                                     fontSize: 13,

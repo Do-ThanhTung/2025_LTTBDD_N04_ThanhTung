@@ -1,9 +1,12 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/app_localizations.dart';
 import 'screens/auth/auth_wrapper.dart';
+import 'screens/controller/routes.dart';
 import 'services/notification_service.dart';
 
 class AppTheme {
@@ -43,21 +46,63 @@ class AppTheme {
 class AppLocale {
   static final ValueNotifier<Locale> locale = ValueNotifier(const Locale('en'));
   static const _key = 'app_locale';
+  static const _supportedCodes = ['en', 'vi'];
+  static bool _followsSystemLocale = false;
+
+  static bool get followsSystemLocale => _followsSystemLocale;
+
+  static Locale _resolveSystemLocale() {
+    final systemLocale = PlatformDispatcher.instance.locale;
+    if (_supportedCodes.contains(systemLocale.languageCode)) {
+      return Locale(systemLocale.languageCode);
+    }
+    return const Locale('en');
+  }
 
   static Future<void> load() async {
     try {
       final p = await SharedPreferences.getInstance();
-      final code = p.getString(_key) ?? 'en';
-      locale.value = Locale(code);
+      final code = p.getString(_key);
+      if (code == null) {
+        // Default to English
+        _followsSystemLocale = false;
+        locale.value = const Locale('en');
+      } else if (code == 'system') {
+        _followsSystemLocale = true;
+        locale.value = _resolveSystemLocale();
+      } else if (_supportedCodes.contains(code)) {
+        _followsSystemLocale = false;
+        locale.value = Locale(code);
+      } else {
+        // Default to English
+        _followsSystemLocale = false;
+        await p.setString(_key, 'en');
+        locale.value = const Locale('en');
+      }
     } catch (e) {
+      _followsSystemLocale = false;
       locale.value = const Locale('en');
     }
+
+    PlatformDispatcher.instance.onLocaleChanged = () {
+      if (_followsSystemLocale) {
+        locale.value = _resolveSystemLocale();
+      }
+    };
   }
 
   static Future<void> save(Locale loc) async {
     final p = await SharedPreferences.getInstance();
     await p.setString(_key, loc.languageCode);
+    _followsSystemLocale = false;
     locale.value = loc;
+  }
+
+  static Future<void> resetToSystem() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_key, 'system');
+    _followsSystemLocale = true;
+    locale.value = _resolveSystemLocale();
   }
 }
 
@@ -173,6 +218,7 @@ class MyApp extends StatelessWidget {
                     fontFamily: 'Poppins',
                   ),
                   themeMode: themeMode,
+                  routes: Routes.getRoutes(context),
                   home: const AuthWrapper(),
                 );
               },
