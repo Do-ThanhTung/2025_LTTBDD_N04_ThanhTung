@@ -120,300 +120,285 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const Color(0xFFFFF5F8)
           ];
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(AppLocalizations.t(context, 'settings')),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: gradientColors,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _SettingsHeader(primaryColor: _primaryColor),
-                const SizedBox(height: 24),
-                _SectionLabel(title: AppLocalizations.t(context, 'account')),
-                const SizedBox(height: 12),
-                _SettingCard(
-                  child: Column(
-                    children: [
-                      _SettingTile(
-                        icon: Icons.person,
-                        title: AppLocalizations.t(context, 'profile'),
-                        subtitle:
-                            AppLocalizations.t(context, 'profile_subtitle'),
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Profile editing coming soon.')),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1),
-                      _SettingTile(
-                        icon: Icons.lock,
-                        title: AppLocalizations.t(context, 'security'),
-                        subtitle:
-                            AppLocalizations.t(context, 'security_subtitle'),
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text('Security settings coming soon.')),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SettingsHeader(primaryColor: _primaryColor),
+              const SizedBox(height: 24),
+              _SectionLabel(title: AppLocalizations.t(context, 'account')),
+              const SizedBox(height: 12),
+              _SettingCard(
+                child: Column(
+                  children: [
+                    _SettingTile(
+                      icon: Icons.person,
+                      title: AppLocalizations.t(context, 'profile'),
+                      subtitle: AppLocalizations.t(context, 'profile_subtitle'),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Profile editing coming soon.')),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    _SettingTile(
+                      icon: Icons.lock,
+                      title: AppLocalizations.t(context, 'security'),
+                      subtitle:
+                          AppLocalizations.t(context, 'security_subtitle'),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Security settings coming soon.')),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                _SectionLabel(
-                    title: AppLocalizations.t(context, 'preferences')),
-                const SizedBox(height: 12),
-                _SettingCard(
-                  child: Column(
-                    children: [
-                      _ToggleTile(
-                        icon: Icons.dark_mode,
-                        title: AppLocalizations.t(context, 'dark_mode'),
-                        subtitle:
-                            AppLocalizations.t(context, 'dark_mode_subtitle'),
-                        value: _isDarkMode,
-                        onChanged: (value) {
-                          _toggleDarkMode(value);
-                        },
-                      ),
-                      const Divider(height: 1),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 14),
-                        child: Row(
-                          children: [
-                            _TileIcon(
-                                icon: Icons.language, color: _primaryColor),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.t(context, 'language'),
-                                    style: theme.textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    AppLocalizations.t(
-                                        context, 'language_subtitle'),
-                                    style: theme.textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            DropdownButton<String>(
-                              value: _selectedLanguage,
-                              borderRadius: BorderRadius.circular(12),
-                              items: [
-                                DropdownMenuItem(
-                                  value: 'en',
-                                  child: Text(
-                                      AppLocalizations.t(context, 'english')),
+              ),
+              const SizedBox(height: 24),
+              _SectionLabel(title: AppLocalizations.t(context, 'preferences')),
+              const SizedBox(height: 12),
+              _SettingCard(
+                child: Column(
+                  children: [
+                    _ToggleTile(
+                      icon: Icons.dark_mode,
+                      title: AppLocalizations.t(context, 'dark_mode'),
+                      subtitle:
+                          AppLocalizations.t(context, 'dark_mode_subtitle'),
+                      value: _isDarkMode,
+                      onChanged: (value) {
+                        _toggleDarkMode(value);
+                      },
+                    ),
+                    const Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                      child: Row(
+                        children: [
+                          _TileIcon(icon: Icons.language, color: _primaryColor),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.t(context, 'language'),
+                                  style: theme.textTheme.titleMedium,
                                 ),
-                                DropdownMenuItem(
-                                  value: 'vi',
-                                  child: Text(AppLocalizations.t(
-                                      context, 'vietnamese')),
+                                const SizedBox(height: 4),
+                                Text(
+                                  AppLocalizations.t(
+                                      context, 'language_subtitle'),
+                                  style: theme.textTheme.bodySmall,
                                 ),
                               ],
-                              onChanged: _changeLanguage,
                             ),
-                          ],
-                        ),
-                      ),
-                      const Divider(height: 1),
-                      _ToggleTile(
-                        icon: Icons.notifications_active,
-                        title: AppLocalizations.t(context, 'notifications'),
-                        subtitle: AppLocalizations.t(
-                            context, 'notifications_subtitle'),
-                        value: _notificationsEnabled,
-                        onChanged: _toggleNotifications,
-                      ),
-                      const Divider(height: 1),
-                      _ToggleTile(
-                        icon: Icons.record_voice_over,
-                        title: AppLocalizations.t(context, 'text_to_speech'),
-                        subtitle:
-                            AppLocalizations.t(context, 'tts_description'),
-                        value: _ttsEnabled,
-                        onChanged: _toggleTts,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _SectionLabel(
-                    title: AppLocalizations.t(context, 'primary_color')),
-                const SizedBox(height: 12),
-                _SettingCard(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.t(context, 'choose_a_color'),
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 16),
-                        Wrap(
-                          spacing: 14,
-                          runSpacing: 12,
-                          children: [
-                            for (final color in AppPrimaryColor.colors)
-                              GestureDetector(
-                                onTap: () => _selectPrimaryColor(color),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: color,
-                                    border: Border.all(
-                                      color: color == _primaryColor
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                      width: 3,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: color.withValues(alpha: 0.28),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 6),
-                                      ),
-                                    ],
-                                  ),
-                                  child: color == _primaryColor
-                                      ? const Icon(Icons.check,
-                                          color: Colors.white, size: 20)
-                                      : null,
-                                ),
+                          ),
+                          DropdownButton<String>(
+                            value: _selectedLanguage,
+                            borderRadius: BorderRadius.circular(12),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'en',
+                                child: Text(
+                                    AppLocalizations.t(context, 'english')),
                               ),
-                          ],
-                        ),
-                      ],
+                              DropdownMenuItem(
+                                value: 'vi',
+                                child: Text(
+                                    AppLocalizations.t(context, 'vietnamese')),
+                              ),
+                            ],
+                            onChanged: _changeLanguage,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const Divider(height: 1),
+                    _ToggleTile(
+                      icon: Icons.notifications_active,
+                      title: AppLocalizations.t(context, 'notifications'),
+                      subtitle:
+                          AppLocalizations.t(context, 'notifications_subtitle'),
+                      value: _notificationsEnabled,
+                      onChanged: _toggleNotifications,
+                    ),
+                    const Divider(height: 1),
+                    _ToggleTile(
+                      icon: Icons.record_voice_over,
+                      title: AppLocalizations.t(context, 'text_to_speech'),
+                      subtitle: AppLocalizations.t(context, 'tts_description'),
+                      value: _ttsEnabled,
+                      onChanged: _toggleTts,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                _SectionLabel(title: AppLocalizations.t(context, 'support')),
-                const SizedBox(height: 12),
-                _SettingCard(
+              ),
+              const SizedBox(height: 24),
+              _SectionLabel(
+                  title: AppLocalizations.t(context, 'primary_color')),
+              const SizedBox(height: 12),
+              _SettingCard(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _SettingTile(
-                        icon: Icons.help_center,
-                        title: AppLocalizations.t(context, 'help_support'),
-                        subtitle: AppLocalizations.t(
-                            context, 'help_support_subtitle'),
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Help center coming soon.')),
-                          );
-                        },
+                      Text(
+                        AppLocalizations.t(context, 'choose_a_color'),
+                        style: theme.textTheme.titleMedium,
                       ),
-                      const Divider(height: 1),
-                      _SettingTile(
-                        icon: Icons.description,
-                        title: AppLocalizations.t(context, 'about'),
-                        subtitle: 'Version 1.0.0',
-                        onTap: () {
-                          showAboutDialog(
-                            context: context,
-                            applicationName: 'English Learning App',
-                            applicationVersion: '1.0.0',
-                            applicationLegalese: '© 2025 Your Company',
-                          );
-                        },
-                      ),
-                      const Divider(height: 1),
-                      if (_isLoggedIn)
-                        _SettingTile(
-                          icon: Icons.logout,
-                          title: AppLocalizations.t(context, 'logout'),
-                          subtitle: AppLocalizations.t(
-                              context, 'logout_message_short'),
-                          onTap: () {
-                            showDialog<void>(
-                              context: context,
-                              builder: (dialogContext) => AlertDialog(
-                                title: Text(AppLocalizations.t(
-                                    dialogContext, 'confirm_logout')),
-                                content: Text(AppLocalizations.t(
-                                    dialogContext, 'logout_message')),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(dialogContext).pop(),
-                                    child: Text(AppLocalizations.t(
-                                        dialogContext, 'cancel')),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 14,
+                        runSpacing: 12,
+                        children: [
+                          for (final color in AppPrimaryColor.colors)
+                            GestureDetector(
+                              onTap: () => _selectPrimaryColor(color),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: color,
+                                  border: Border.all(
+                                    color: color == _primaryColor
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                    width: 3,
                                   ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      final prefs =
-                                          await SharedPreferences.getInstance();
-                                      await prefs.setBool(
-                                          'is_logged_in', false);
-                                      if (!mounted) {
-                                        return;
-                                      }
-
-                                      Navigator.of(dialogContext).pop();
-                                      ScaffoldMessenger.of(dialogContext)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Logged out.')),
-                                      );
-                                      _loadSettings();
-                                    },
-                                    child: Text(AppLocalizations.t(
-                                        dialogContext, 'logout')),
-                                  ),
-                                ],
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: color.withValues(alpha: 0.28),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: color == _primaryColor
+                                    ? const Icon(Icons.check,
+                                        color: Colors.white, size: 20)
+                                    : null,
                               ),
-                            );
-                          },
-                        )
-                      else
-                        _SettingTile(
-                          icon: Icons.login,
-                          title: AppLocalizations.t(context, 'login'),
-                          subtitle: 'Sign in to your account',
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ));
-                          },
-                        ),
+                            ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 24),
+              _SectionLabel(title: AppLocalizations.t(context, 'support')),
+              const SizedBox(height: 12),
+              _SettingCard(
+                child: Column(
+                  children: [
+                    _SettingTile(
+                      icon: Icons.help_center,
+                      title: AppLocalizations.t(context, 'help_support'),
+                      subtitle:
+                          AppLocalizations.t(context, 'help_support_subtitle'),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Help center coming soon.')),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    _SettingTile(
+                      icon: Icons.description,
+                      title: AppLocalizations.t(context, 'about'),
+                      subtitle: 'Version 1.0.0',
+                      onTap: () {
+                        showAboutDialog(
+                          context: context,
+                          applicationName: 'English Learning App',
+                          applicationVersion: '1.0.0',
+                          applicationLegalese: '© 2025 Your Company',
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    if (_isLoggedIn)
+                      _SettingTile(
+                        icon: Icons.logout,
+                        title: AppLocalizations.t(context, 'logout'),
+                        subtitle:
+                            AppLocalizations.t(context, 'logout_message_short'),
+                        onTap: () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (dialogContext) => AlertDialog(
+                              title: Text(AppLocalizations.t(
+                                  dialogContext, 'confirm_logout')),
+                              content: Text(AppLocalizations.t(
+                                  dialogContext, 'logout_message')),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(dialogContext).pop(),
+                                  child: Text(AppLocalizations.t(
+                                      dialogContext, 'cancel')),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    await prefs.setBool('is_logged_in', false);
+                                    if (!mounted) {
+                                      return;
+                                    }
+
+                                    Navigator.of(dialogContext).pop();
+                                    ScaffoldMessenger.of(dialogContext)
+                                        .showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Logged out.')),
+                                    );
+                                    _loadSettings();
+                                  },
+                                  child: Text(AppLocalizations.t(
+                                      dialogContext, 'logout')),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    else
+                      _SettingTile(
+                        icon: Icons.login,
+                        title: AppLocalizations.t(context, 'login'),
+                        subtitle: 'Sign in to your account',
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ));
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

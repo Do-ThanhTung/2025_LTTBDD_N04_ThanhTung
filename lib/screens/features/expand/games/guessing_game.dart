@@ -248,7 +248,9 @@ class _GuessingGameState extends State<GuessingGame> {
           middlePositions.shuffle(random);
 
           for (var pos in middlePositions) {
-            if (_revealedPositions.length >= initialReveal) break;
+            if (_revealedPositions.length >= initialReveal) {
+              break;
+            }
             _revealedPositions.add(pos);
           }
         }
@@ -359,15 +361,33 @@ class _GuessingGameState extends State<GuessingGame> {
 
   Future<void> _saveWordToDictionary(String word) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> recentSearches = prefs.getStringList('recent_searches') ?? [];
+    final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
 
-    recentSearches.remove(word);
-    recentSearches.insert(0, word);
-    if (recentSearches.length > 20) {
-      recentSearches = recentSearches.sublist(0, 20);
+    if (!isLoggedIn) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vui lòng đăng nhập để lưu từ'),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
     }
 
-    await prefs.setStringList('recent_searches', recentSearches);
+    final provider = prefs.getString('login_provider') ?? 'default';
+    final savedWordsKey = '${provider}_saved_words';
+    List<String> savedWords = prefs.getStringList(savedWordsKey) ?? [];
+
+    if (!savedWords.contains(word)) {
+      savedWords.insert(0, word);
+      if (savedWords.length > 100) {
+        savedWords = savedWords.sublist(0, 100);
+      }
+
+      await prefs.setStringList(savedWordsKey, savedWords);
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

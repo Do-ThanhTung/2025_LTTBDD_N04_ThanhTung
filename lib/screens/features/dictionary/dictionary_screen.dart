@@ -27,7 +27,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   final TextEditingController _searchController = TextEditingController();
   late final FocusNode _searchFocusNode = FocusNode();
   final FlutterTts _flutterTts = FlutterTts();
-  final Set<String> _savedWords = {};
+  Set<String> _savedWords = {};
 
   @override
   void initState() {
@@ -98,6 +98,30 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
 
     // If logged in, save the word
     _toggleSaveWord(word);
+
+    // Save to SharedPreferences with provider prefix
+    final provider = prefs.getString('login_provider') ?? 'default';
+    final savedWordsKey = '${provider}_saved_words';
+    List<String> savedWords = prefs.getStringList(savedWordsKey) ?? [];
+
+    if (savedWords.contains(word)) {
+      savedWords.remove(word);
+    } else {
+      savedWords.insert(0, word);
+      if (savedWords.length > 100) {
+        savedWords = savedWords.sublist(0, 100);
+      }
+    }
+    await prefs.setStringList(savedWordsKey, savedWords);
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(savedWords.contains(word) ? 'Đã lưu từ' : 'Đã bỏ lưu từ'),
+        duration: const Duration(seconds: 1),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void _showLoginRequiredDialog(String word) {
@@ -152,97 +176,93 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Hero(
-      tag: 'hero_dictionary',
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Scaffold(
-          backgroundColor:
-              isDark ? const Color(0xFF1a1a2e) : const Color(0xFFF3E5F5),
-          body: Column(
-            children: [
-              // Header with gradient
-              Container(
-                padding: const EdgeInsets.only(
-                  top: 50,
-                  left: 20,
-                  right: 20,
-                  bottom: 24,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor:
+            isDark ? const Color(0xFF1a1a2e) : const Color(0xFFF3E5F5),
+        body: Column(
+          children: [
+            // Header with gradient
+            Container(
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 20,
+                right: 20,
+                bottom: 24,
+              ),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
                 ),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
-                  ),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFB39DDB),
-                      Color(0xFF9575CD),
-                      Color(0xFF7E57C2),
-                    ],
-                    stops: [0.0, 0.5, 1.0],
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    // Top bar with back button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.of(context).maybePop(),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color:
-                                  Colors.white.withAlpha((0.2 * 255).round()),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.t(context, 'practice_dictionary'),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.search,
-                          color: Colors.white70,
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Search box
-                    _buildSearchWidget(),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFB39DDB),
+                    Color(0xFF9575CD),
+                    Color(0xFF7E57C2),
                   ],
+                  stops: [0.0, 0.5, 1.0],
                 ),
               ),
+              child: Column(
+                children: [
+                  // Top bar with back button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).maybePop(),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withAlpha((0.2 * 255).round()),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.t(context, 'practice_dictionary'),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.search,
+                        color: Colors.white70,
+                        size: 24,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Search box
+                  _buildSearchWidget(),
+                ],
+              ),
+            ),
 
-              // Content area
-              const SizedBox(height: 12),
-              if (inProgress)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: LinearProgressIndicator(),
-                )
-              else if (responseModel != null)
-                Expanded(child: _buildResponseWidget())
-              else
-                Expanded(child: _buildEmptyState()),
-            ],
-          ),
+            // Content area
+            const SizedBox(height: 12),
+            if (inProgress)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: LinearProgressIndicator(),
+              )
+            else if (responseModel != null)
+              Expanded(child: _buildResponseWidget())
+            else
+              Expanded(child: _buildEmptyState()),
+          ],
         ),
       ),
     );
@@ -556,32 +576,59 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       // Cập nhật số từ đã tra (chỉ khi tra thành công và chưa tra từ này bao giờ)
       if (responseModel != null) {
         final prefs = await SharedPreferences.getInstance();
-        // Lấy danh sách các từ đã tra
-        List<String> searchedWords =
-            prefs.getStringList('searched_words') ?? [];
-        String normalizedWord = word.toLowerCase().trim();
+        final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
 
-        // Chỉ tăng count nếu từ chưa được tra bao giờ
-        if (!searchedWords.contains(normalizedWord)) {
-          searchedWords.add(normalizedWord);
-          await prefs.setStringList('searched_words', searchedWords);
-          await prefs.setInt('search_count', searchedWords.length);
-        }
+        // Chỉ lưu dữ liệu nếu đã login
+        if (isLoggedIn) {
+          // Get provider to create provider-specific keys
+          final provider = prefs.getString('login_provider') ?? 'default';
+          final searchedWordsKey = '${provider}_searched_words';
+          final searchCountKey = '${provider}_search_count';
+          final savedWordsKey = '${provider}_saved_words';
 
-        // Lưu từ vựng kèm nghĩa và ví dụ cho game
-        if (responseModel!.meanings != null &&
-            responseModel!.meanings!.isNotEmpty) {
-          final meaning = responseModel!.meanings!.first;
-          if (meaning.definitions != null && meaning.definitions!.isNotEmpty) {
-            final definition = meaning.definitions!.first.definition ?? '';
-            final example =
-                meaning.definitions!.first.example ?? 'No example available';
+          // Load saved words to update UI state
+          List<String> loadedSavedWords =
+              prefs.getStringList(savedWordsKey) ?? [];
+          setState(() {
+            _savedWords = loadedSavedWords.toSet();
+          });
 
-            await VocabularyService.instance.saveVocabularyItem(
-              normalizedWord,
-              definition,
-              example,
-            );
+          // Lấy danh sách các từ đã tra
+          List<String> searchedWords =
+              prefs.getStringList(searchedWordsKey) ?? [];
+          String normalizedWord = word.toLowerCase().trim();
+
+          // Chỉ tăng count nếu từ chưa được tra bao giờ
+          if (!searchedWords.contains(normalizedWord)) {
+            searchedWords.add(normalizedWord);
+            await prefs.setStringList(searchedWordsKey, searchedWords);
+            await prefs.setInt(searchCountKey, searchedWords.length);
+          }
+
+          // Lưu từ vựng kèm nghĩa và ví dụ cho game
+          if (responseModel!.meanings != null &&
+              responseModel!.meanings!.isNotEmpty) {
+            final meaning = responseModel!.meanings!.first;
+            if (meaning.definitions != null &&
+                meaning.definitions!.isNotEmpty) {
+              final definition = meaning.definitions!.first.definition ?? '';
+              final example =
+                  meaning.definitions!.first.example ?? 'No example available';
+
+              await VocabularyService.instance.saveVocabularyItem(
+                normalizedWord,
+                definition,
+                example,
+              );
+
+              // Update today's word count
+              final today = DateTime.now();
+              final todayKey =
+                  '${provider}_today_${today.year}_${today.month}_${today.day}';
+              final todayCount = prefs.getInt(todayKey) ?? 0;
+              await prefs.setInt(todayKey, todayCount + 1);
+              await prefs.setInt('${provider}_today_words', todayCount + 1);
+            }
           }
         }
       }

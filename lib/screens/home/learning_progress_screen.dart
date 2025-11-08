@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,18 +10,44 @@ class MyLearningScreen extends StatefulWidget {
   State<MyLearningScreen> createState() => _MyLearningScreenState();
 }
 
-class _MyLearningScreenState extends State<MyLearningScreen> {
+class _MyLearningScreenState extends State<MyLearningScreen>
+    with WidgetsBindingObserver {
   late SharedPreferences prefs;
   List<String> savedWords = [];
   List<String> readStories = [];
   int todayWords = 0;
   int currentStreak = 0;
+  Timer? _autoRefreshTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadData();
-    _initializeSampleData();
+    // Auto-refresh every 500ms to catch SharedPreferences changes
+    _autoRefreshTimer = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (_) {
+        if (mounted) {
+          _loadData();
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _autoRefreshTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Reload data when app resumes from background
+    if (state == AppLifecycleState.resumed) {
+      _loadData();
+    }
   }
 
   @override
@@ -28,35 +56,18 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
     _loadData();
   }
 
-  Future<void> _initializeSampleData() async {
-    prefs = await SharedPreferences.getInstance();
-    // Check if already initialized
-    if ((prefs.getStringList('saved_words') ?? []).isEmpty) {
-      final sampleWords = [
-        'Awesome',
-        'Incredible',
-        'Beautiful',
-        'Wonderful',
-        'Amazing'
-      ];
-      await prefs.setStringList('saved_words', sampleWords);
-      setState(() {
-        savedWords = sampleWords;
-      });
-    }
-  }
-
   Future<void> _loadData() async {
     prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
 
     setState(() {
       if (isLoggedIn) {
+        final provider = prefs.getString('login_provider') ?? 'default';
         // Load data only if logged in
-        savedWords = prefs.getStringList('saved_words') ?? [];
-        readStories = prefs.getStringList('read_stories') ?? [];
-        todayWords = prefs.getInt('today_words') ?? 0;
-        currentStreak = prefs.getInt('current_streak') ?? 0;
+        savedWords = prefs.getStringList('${provider}_saved_words') ?? [];
+        readStories = prefs.getStringList('${provider}_read_stories') ?? [];
+        todayWords = prefs.getInt('${provider}_today_words') ?? 0;
+        currentStreak = prefs.getInt('${provider}_current_streak') ?? 0;
       } else {
         // Show 0 if not logged in
         savedWords = [];
@@ -73,68 +84,63 @@ class _MyLearningScreenState extends State<MyLearningScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      body: Container(
-        color: isDark ? Colors.black : Colors.white,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(screenWidth * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Header
-                Text(
-                  '📚 Quá trình học tập',
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.065,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
+    return Container(
+      color: isDark ? Colors.black : Colors.white,
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              Text(
+                '📚 Quá trình học tập',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.065,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
-                SizedBox(height: screenHeight * 0.04),
+              ),
+              SizedBox(height: screenHeight * 0.04),
 
-                // Daily Words - Full width with Streak Badge
-                GestureDetector(
-                  onTap: () =>
-                      _showTodayWordsList(context, screenWidth, isDark),
-                  child: _buildTodayWordsCard(
-                    context,
-                    screenWidth,
-                    isDark,
-                  ),
+              // Daily Words - Full width with Streak Badge
+              GestureDetector(
+                onTap: () => _showTodayWordsList(context, screenWidth, isDark),
+                child: _buildTodayWordsCard(
+                  context,
+                  screenWidth,
+                  isDark,
                 ),
-                SizedBox(height: screenHeight * 0.02),
+              ),
+              SizedBox(height: screenHeight * 0.02),
 
-                // Saved Words (Clickable)
-                GestureDetector(
-                  onTap: () =>
-                      _showSavedWordsList(context, screenWidth, isDark),
-                  child: _buildBasicCard(
-                    context,
-                    screenWidth,
-                    '⭐ Từ đã lưu',
-                    '${savedWords.length} từ',
-                    isDark,
-                  ),
+              // Saved Words (Clickable)
+              GestureDetector(
+                onTap: () => _showSavedWordsList(context, screenWidth, isDark),
+                child: _buildBasicCard(
+                  context,
+                  screenWidth,
+                  '⭐ Từ đã lưu',
+                  '${savedWords.length} từ',
+                  isDark,
                 ),
-                SizedBox(height: screenHeight * 0.02),
+              ),
+              SizedBox(height: screenHeight * 0.02),
 
-                // Read Stories (Clickable)
-                GestureDetector(
-                  onTap: () =>
-                      _showReadStoriesList(context, screenWidth, isDark),
-                  child: _buildBasicCard(
-                    context,
-                    screenWidth,
-                    '📕 Truyện đã đọc',
-                    '${readStories.length} truyện',
-                    isDark,
-                  ),
+              // Read Stories (Clickable)
+              GestureDetector(
+                onTap: () => _showReadStoriesList(context, screenWidth, isDark),
+                child: _buildBasicCard(
+                  context,
+                  screenWidth,
+                  '📕 Truyện đã đọc',
+                  '${readStories.length} truyện',
+                  isDark,
                 ),
-                SizedBox(height: screenHeight * 0.08),
-              ],
-            ),
+              ),
+              SizedBox(height: screenHeight * 0.08),
+            ],
           ),
         ),
       ),

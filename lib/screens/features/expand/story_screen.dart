@@ -316,7 +316,8 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
   Future<void> _checkIfStoryRead() async {
     final prefs = await SharedPreferences.getInstance();
-    final readStories = prefs.getStringList('read_stories') ?? [];
+    final provider = prefs.getString('login_provider') ?? 'default';
+    final readStories = prefs.getStringList('${provider}_read_stories') ?? [];
     setState(() {
       _isStoryRead = readStories.contains(widget.story.title);
     });
@@ -324,7 +325,8 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
 
   Future<void> _toggleStoryRead() async {
     final prefs = await SharedPreferences.getInstance();
-    final readStories = prefs.getStringList('read_stories') ?? [];
+    final provider = prefs.getString('login_provider') ?? 'default';
+    final readStories = prefs.getStringList('${provider}_read_stories') ?? [];
 
     setState(() {
       _isStoryRead = !_isStoryRead;
@@ -333,7 +335,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     if (_isStoryRead) {
       if (!readStories.contains(widget.story.title)) {
         readStories.add(widget.story.title);
-        await prefs.setStringList('read_stories', readStories);
+        await prefs.setStringList('${provider}_read_stories', readStories);
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -346,7 +348,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       }
     } else {
       readStories.remove(widget.story.title);
-      await prefs.setStringList('read_stories', readStories);
+      await prefs.setStringList('${provider}_read_stories', readStories);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -716,8 +718,44 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                           runSpacing: keywordPadding * 1.5,
                           children: widget.story.keywords.map((keyword) {
                             return GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 // Save to favorites
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                final isLoggedIn =
+                                    prefs.getBool('is_logged_in') ?? false;
+
+                                if (!isLoggedIn) {
+                                  if (!mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Vui lòng đăng nhập để lưu từ'),
+                                      duration: Duration(seconds: 2),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                // Get provider for key prefix
+                                final provider =
+                                    prefs.getString('login_provider') ??
+                                        'default';
+                                final savedWordsKey = '${provider}_saved_words';
+                                List<String> savedWords =
+                                    prefs.getStringList(savedWordsKey) ?? [];
+
+                                if (!savedWords.contains(keyword)) {
+                                  savedWords.insert(0, keyword);
+                                  if (savedWords.length > 100) {
+                                    savedWords = savedWords.sublist(0, 100);
+                                  }
+                                  await prefs.setStringList(
+                                      savedWordsKey, savedWords);
+                                }
+
+                                if (!mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text('Đã lưu: $keyword'),

@@ -28,108 +28,401 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadStats();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadStats();
+  }
+
   Future<void> _loadStats() async {
     final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+
     setState(() {
-      _searchCount = prefs.getInt('search_count') ?? 0;
-      _gamesPlayed = prefs.getInt('games_played') ?? 0;
-      _totalTrophies = prefs.getInt('total_trophies') ?? 0;
+      if (isLoggedIn) {
+        final provider = prefs.getString('login_provider') ?? 'default';
+        _searchCount = prefs.getInt('${provider}_search_count') ?? 0;
+        _gamesPlayed = prefs.getInt('${provider}_games_played') ?? 0;
+        _totalTrophies = prefs.getInt('${provider}_total_trophies') ?? 0;
+      } else {
+        _searchCount = 0;
+        _gamesPlayed = 0;
+        _totalTrophies = 0;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ValueListenableBuilder<Color>(
-        valueListenable: AppPrimaryColor.color,
-        builder: (context, primaryColor, _) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ValueListenableBuilder<Color>(
+      valueListenable: AppPrimaryColor.color,
+      builder: (context, primaryColor, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [
-                        const Color(0xFF1a1a2e),
-                        const Color(0xFF16213e),
-                        const Color(0xFF0f1419),
-                      ]
-                    : [
-                        const Color(0xFFF8F7FF),
-                        const Color(0xFFFCF8FF),
-                        const Color(0xFFFFF5F8),
-                      ],
-              ),
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [
+                      const Color(0xFF1a1a2e),
+                      const Color(0xFF16213e),
+                      const Color(0xFF0f1419),
+                    ]
+                  : [
+                      const Color(0xFFF8F7FF),
+                      const Color(0xFFFCF8FF),
+                      const Color(0xFFFFF5F8),
+                    ],
             ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header with gradient background
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF64B5F6),
-                            const Color(0xFF42A5F5),
-                            const Color(0xFF2196F3),
-                          ],
-                          stops: const [0.0, 0.5, 1.0],
-                        ),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(32),
-                          bottomRight: Radius.circular(32),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF2196F3)
-                                .withAlpha((0.3 * 255).round()),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                            spreadRadius: -5,
-                          ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header with gradient background
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          const Color(0xFF64B5F6),
+                          const Color(0xFF42A5F5),
+                          const Color(0xFF2196F3),
                         ],
+                        stops: const [0.0, 0.5, 1.0],
                       ),
-                      child: Stack(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(32),
+                        bottomRight: Radius.circular(32),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF2196F3)
+                              .withAlpha((0.3 * 255).round()),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                          spreadRadius: -5,
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        // Bong bóng sáng ngẫu nhiên
+                        ..._buildRandomBubbles(),
+                        // Nội dung chính
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.t(context, 'study_chill'),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      offset: Offset(0, 2),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.t(context, 'learn_more_fun'),
+                                style: TextStyle(
+                                  color: Colors.white
+                                      .withAlpha((0.95 * 255).round()),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Feature Cards Grid (2x2)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Transform.translate(
+                      offset: const Offset(0, -40),
+                      child: Column(
                         children: [
-                          // Bong bóng sáng ngẫu nhiên
-                          ..._buildRandomBubbles(),
-                          // Nội dung chính
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildFeatureCard(
+                                  context,
+                                  title:
+                                      AppLocalizations.t(context, 'dictionary'),
+                                  icon: Icons.search,
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFB39DDB),
+                                      Color(0xFF9575CD),
+                                      Color(0xFF7E57C2),
+                                    ],
+                                    stops: [0.0, 0.5, 1.0],
+                                  ),
+                                  circleCount: 3,
+                                  heroTag: 'hero_dictionary',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                    secondaryAnimation) =>
+                                                const DictionaryScreen(),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration: const Duration(
+                                                milliseconds: 500),
+                                          ),
+                                        )
+                                        .then((_) =>
+                                            _loadStats()); // Reload stats khi quay lại
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildFeatureCard(
+                                  context,
+                                  title: AppLocalizations.t(
+                                      context, 'translation'),
+                                  icon: Icons.translate,
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                    colors: [
+                                      Color(0xFF26C6DA),
+                                      Color(0xFF00ACC1),
+                                      Color(0xFF00897B),
+                                    ],
+                                    stops: [0.0, 0.5, 1.0],
+                                  ),
+                                  circleCount: 4,
+                                  heroTag: 'hero_translation',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                    secondaryAnimation) =>
+                                                const TranslationScreen(),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration: const Duration(
+                                                milliseconds: 500),
+                                          ),
+                                        )
+                                        .then((_) =>
+                                            _loadStats()); // Reload stats khi quay lại
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildFeatureCard(
+                                  context,
+                                  title: 'Game',
+                                  icon: Icons.videogame_asset,
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.topRight,
+                                    colors: [
+                                      Color(0xFFF06292),
+                                      Color(0xFFEC407A),
+                                      Color(0xFFE91E63),
+                                    ],
+                                    stops: [0.0, 0.5, 1.0],
+                                  ),
+                                  circleCount: 5,
+                                  heroTag: 'hero_game',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                    secondaryAnimation) =>
+                                                const GameScreen(),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration: const Duration(
+                                                milliseconds: 500),
+                                          ),
+                                        )
+                                        .then((_) =>
+                                            _loadStats()); // Reload stats khi quay lại
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildFeatureCard(
+                                  context,
+                                  title: AppLocalizations.t(
+                                      context, 'short_stories'),
+                                  icon: Icons.menu_book,
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.bottomRight,
+                                    end: Alignment.topLeft,
+                                    colors: [
+                                      Color(0xFF4DD0E1),
+                                      Color(0xFF26C6DA),
+                                      Color(0xFF00BCD4),
+                                    ],
+                                    stops: [0.0, 0.5, 1.0],
+                                  ),
+                                  circleCount: 6,
+                                  heroTag: 'hero_story',
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                    secondaryAnimation) =>
+                                                const StoryScreen(),
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration: const Duration(
+                                                milliseconds: 500),
+                                          ),
+                                        )
+                                        .then((_) =>
+                                            _loadStats()); // Reload stats khi quay lại
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Quick Stats
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.grey.shade800
+                                      .withAlpha((0.7 * 255).round())
+                                  : Colors.white.withAlpha((0.8 * 255).round()),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withAlpha((0.05 * 255).round()),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.t(context, 'study_chill'),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
+                                  'Thống kê',
+                                  style: TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black26,
-                                        offset: Offset(0, 2),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.grey.shade800,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  AppLocalizations.t(context, 'learn_more_fun'),
-                                  style: TextStyle(
-                                    color: Colors.white
-                                        .withAlpha((0.95 * 255).round()),
-                                    fontSize: 14,
-                                  ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _buildStatItem(
+                                      context,
+                                      '$_searchCount',
+                                      'Từ',
+                                      const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFB39DDB),
+                                          Color(0xFF9575CD),
+                                          Color(0xFF7E57C2),
+                                        ],
+                                      ),
+                                    ),
+                                    _buildStatItem(
+                                      context,
+                                      '$_gamesPlayed',
+                                      'Trò chơi',
+                                      const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFF06292),
+                                          Color(0xFFEC407A),
+                                          Color(0xFFE91E63),
+                                        ],
+                                      ),
+                                    ),
+                                    _buildStatItem(
+                                      context,
+                                      '$_totalTrophies',
+                                      'Cúp',
+                                      const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFFFD54F),
+                                          Color(0xFFFFCA28),
+                                          Color(0xFFFFC107),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -137,301 +430,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
+                  ),
 
-                    // Feature Cards Grid (2x2)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      child: Transform.translate(
-                        offset: const Offset(0, -40),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildFeatureCard(
-                                    context,
-                                    title: AppLocalizations.t(
-                                        context, 'dictionary'),
-                                    icon: Icons.search,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color(0xFFB39DDB),
-                                        Color(0xFF9575CD),
-                                        Color(0xFF7E57C2),
-                                      ],
-                                      stops: [0.0, 0.5, 1.0],
-                                    ),
-                                    circleCount: 3,
-                                    heroTag: 'hero_dictionary',
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                  const DictionaryScreen(),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 500),
-                                            ),
-                                          )
-                                          .then((_) =>
-                                              _loadStats()); // Reload stats khi quay lại
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildFeatureCard(
-                                    context,
-                                    title: AppLocalizations.t(
-                                        context, 'translation'),
-                                    icon: Icons.translate,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      colors: [
-                                        Color(0xFF26C6DA),
-                                        Color(0xFF00ACC1),
-                                        Color(0xFF00897B),
-                                      ],
-                                      stops: [0.0, 0.5, 1.0],
-                                    ),
-                                    circleCount: 4,
-                                    heroTag: 'hero_translation',
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                  const TranslationScreen(),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 500),
-                                            ),
-                                          )
-                                          .then((_) =>
-                                              _loadStats()); // Reload stats khi quay lại
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildFeatureCard(
-                                    context,
-                                    title: 'Game',
-                                    icon: Icons.videogame_asset,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                      colors: [
-                                        Color(0xFFF06292),
-                                        Color(0xFFEC407A),
-                                        Color(0xFFE91E63),
-                                      ],
-                                      stops: [0.0, 0.5, 1.0],
-                                    ),
-                                    circleCount: 5,
-                                    heroTag: 'hero_game',
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                  const GameScreen(),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 500),
-                                            ),
-                                          )
-                                          .then((_) =>
-                                              _loadStats()); // Reload stats khi quay lại
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildFeatureCard(
-                                    context,
-                                    title: AppLocalizations.t(
-                                        context, 'short_stories'),
-                                    icon: Icons.menu_book,
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.bottomRight,
-                                      end: Alignment.topLeft,
-                                      colors: [
-                                        Color(0xFF4DD0E1),
-                                        Color(0xFF26C6DA),
-                                        Color(0xFF00BCD4),
-                                      ],
-                                      stops: [0.0, 0.5, 1.0],
-                                    ),
-                                    circleCount: 6,
-                                    heroTag: 'hero_story',
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation,
-                                                      secondaryAnimation) =>
-                                                  const StoryScreen(),
-                                              transitionsBuilder: (context,
-                                                  animation,
-                                                  secondaryAnimation,
-                                                  child) {
-                                                return FadeTransition(
-                                                  opacity: animation,
-                                                  child: child,
-                                                );
-                                              },
-                                              transitionDuration:
-                                                  const Duration(
-                                                      milliseconds: 500),
-                                            ),
-                                          )
-                                          .then((_) =>
-                                              _loadStats()); // Reload stats khi quay lại
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Quick Stats
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? Colors.grey.shade800
-                                        .withAlpha((0.7 * 255).round())
-                                    : Colors.white
-                                        .withAlpha((0.8 * 255).round()),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black
-                                        .withAlpha((0.05 * 255).round()),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Thống kê',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark
-                                          ? Colors.white
-                                          : Colors.grey.shade800,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      _buildStatItem(
-                                        context,
-                                        '$_searchCount',
-                                        'Từ',
-                                        const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color(0xFFB39DDB),
-                                            Color(0xFF9575CD),
-                                            Color(0xFF7E57C2),
-                                          ],
-                                        ),
-                                      ),
-                                      _buildStatItem(
-                                        context,
-                                        '$_gamesPlayed',
-                                        'Trò chơi',
-                                        const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color(0xFFF06292),
-                                            Color(0xFFEC407A),
-                                            Color(0xFFE91E63),
-                                          ],
-                                        ),
-                                      ),
-                                      _buildStatItem(
-                                        context,
-                                        '$_totalTrophies',
-                                        'Cúp',
-                                        const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color(0xFFFFD54F),
-                                            Color(0xFFFFCA28),
-                                            Color(0xFFFFC107),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Thêm khoảng trống ở cuối để luôn có thể scroll
-                    const SizedBox(height: 40),
-                  ],
-                ),
+                  // Thêm khoảng trống ở cuối để luôn có thể scroll
+                  const SizedBox(height: 40),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

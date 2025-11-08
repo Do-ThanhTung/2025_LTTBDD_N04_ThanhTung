@@ -313,11 +313,15 @@ class _LoginScreenState extends State<LoginScreen> {
       await Future.delayed(const Duration(seconds: 2));
 
       final prefs = await SharedPreferences.getInstance();
-      // Generate fake user email from provider
-      final email = 'user.${provider.toLowerCase()}@example.com';
+
+      // Create provider-specific user ID (e.g., zalo_user, google_user, facebook_user)
+      // This ensures each provider has separate data storage
+      final userId = '${provider.toLowerCase()}_user';
+      final email = '$userId@example.com';
 
       await prefs.setString('user_email', email);
-      await prefs.setString('user_id', provider.toLowerCase());
+      await prefs.setString('user_id', userId);
+      await prefs.setString('login_provider', provider.toLowerCase());
       await prefs.setBool('is_logged_in', true);
 
       if (!mounted) return;
